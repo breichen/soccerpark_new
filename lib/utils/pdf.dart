@@ -1,21 +1,15 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:io';
 
-import 'package:flutter/material.dart' as mt;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:google_fonts/google_fonts.dart';
 import 'package:printing/printing.dart';
 
 import '../main.dart';
 import './data.dart';
 import './export.dart';
-import '../widgets/header.dart';
 import '../widgets/toast.dart';
 
 double pdfLinewidth = 1;
@@ -460,8 +454,6 @@ PdfColor pdfTableColor = PdfColor.fromHex("#757575");
 Future<pw.Document> createPdfSingleRound(
     BuildContext context, int round) async {
   final pdf = pw.Document();
-  pw.Row header = await getPdfHeader(context);
-  pw.Widget table = await pdfRoundTable(context, round);
   pw.Widget footerCol = await pdfFooterColumn(context);
 
   pdf.addPage(await pdfRoundPage(context, footerCol, round, true, 0));

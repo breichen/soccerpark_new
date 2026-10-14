@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -12,13 +11,10 @@ class Footer extends StatelessWidget {
   final double sep = 4;
   final double vsep = 2;
 
-  Locality loc = Locality.SALZBURG;
-
   Footer();
 
   @override
   Widget build(BuildContext context) {
-    loc = App.of(context).getLocality();
     return Container(
         color: Color(0xFF005005),
         width: double.infinity,
@@ -26,6 +22,7 @@ class Footer extends StatelessWidget {
   }
 
   Widget getFooter(BuildContext context) {
+    Locality loc = App.of(context).getLocality();
     if (loc == Locality.SALZBURG) return getFooterSbg(context);
     if (loc == Locality.WAGRAIN) return getFooterWag(context);
     return getFooterGold(context);

@@ -1,19 +1,11 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
-import 'dart:ui' as ui;
 
 import '../main.dart';
 import '../utils/data.dart';
 import '../utils/share.dart';
 import './holespage.dart';
 import './faqpage.dart';
-import './infopage.dart';
 import './newroundpage.dart';
 import './orderspage.dart';
 import './rulespage.dart';

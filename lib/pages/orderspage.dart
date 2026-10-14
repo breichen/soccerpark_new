@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 
 import '../main.dart';
-import '../utils/data.dart';
 import '../widgets/appbar.dart';
 import '../widgets/footer.dart';
 import '../widgets/header.dart';

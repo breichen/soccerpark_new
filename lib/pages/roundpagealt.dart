@@ -129,7 +129,6 @@ class _RoundPageState extends State<RoundPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double sep = 8;
     return Scaffold(
       appBar: CustomAppBar(context, AppLocalizations.of(context)!.round,
           MenuItemE.COUNT, getQuickButtons(context)),

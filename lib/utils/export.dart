@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 import '../main.dart';
@@ -12,9 +11,6 @@ Future<String> getFilePath(BuildContext context, String filename) async {
   List<Directory>? l =
       (await getExternalStorageDirectories(type: StorageDirectory.documents));
   if (l == null) return "";
-
-  Directory directory = l.first;
-  final path2 = directory.path + "/" + filename + ".csv";
 
   final path = "/storage/emulated/0/Documents/Soccerpark/" +
       Data.getFilenamePrefix(App.of(context).getLocality()) +

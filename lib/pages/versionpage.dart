@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 
 import '../widgets/appbar.dart';
@@ -8,7 +6,6 @@ import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/text.dart';
-import '../utils/data.dart';
 
 class VersionPage extends StatefulWidget {
   const VersionPage({super.key});
@@ -24,8 +21,6 @@ class _VersionPageState extends State<VersionPage> {
   }
 
   Widget build(BuildContext context) {
-    final double sep = 8;
-
     return Scaffold(
         appBar: CustomAppBar(context, AppLocalizations.of(context)!.version,
             MenuItemE.VERSION, []),

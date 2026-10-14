@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:soccerpark/widgets/button.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:soccerpark/generated/app_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import '../main.dart';
 import '../widgets/space.dart';
 import '../widgets/text.dart';
-import './addplayerdialog.dart';
 
 class TwoButtonDialog extends StatelessWidget {
   TwoButtonDialog(this.title, this.text, this.buttonText1, this.buttonText2,

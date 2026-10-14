@@ -94,7 +94,7 @@ class LineChartWidget extends StatelessWidget {
             children: entries));
   }
 
-  TextStyle style =
+  final TextStyle style =
       GoogleFonts.lato(color: Colors.black, fontSize: 12, height: 1.0);
 
   SideTitles get _bottomTitles => SideTitles(

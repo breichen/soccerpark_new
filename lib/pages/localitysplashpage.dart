@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
 import './mainpage.dart';
-import './localitysplashpage.dart';
 import '../utils/data.dart';
-import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
-import '../widgets/header.dart';
 import '../widgets/space.dart';
-import '../widgets/text.dart';
 
 class LocalitySplashPage extends StatelessWidget {
   const LocalitySplashPage({super.key});

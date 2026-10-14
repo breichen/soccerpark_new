@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soccerpark/widgets/button.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 
 import '../main.dart';
 import '../utils/data.dart';
-import '../utils/share.dart';
 import '../widgets/sharebutton.dart';
 import '../widgets/space.dart';
 
@@ -16,7 +14,7 @@ class HoleDialog extends StatelessWidget {
   final Locality loc;
   final int holeId;
 
-  GlobalKey _globalKey = new GlobalKey();
+  final GlobalKey _globalKey = new GlobalKey();
 
   @override
   Widget build(BuildContext context) {

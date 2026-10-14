@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';

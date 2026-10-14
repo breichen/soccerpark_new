@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 
-import '../utils/data.dart';
-import '../utils/share.dart';
 import '../widgets/appbar.dart';
 import '../widgets/footer.dart';
 import '../widgets/header.dart';
@@ -28,8 +24,6 @@ class InfoPage extends StatefulWidget {
 }
 
 class _InfoPageState extends State<InfoPage> {
-  GlobalKey _globalKey = new GlobalKey();
-
   @override
   void initState() {
     super.initState();

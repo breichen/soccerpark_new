@@ -94,9 +94,6 @@ class _FinishPageState extends State<FinishPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double sep = 8;
-    final double linewidth = 2;
-
     List<ScorePair> scores = [];
     for (var i = 0; i < totalScores.length; i++) {
       scores.add(ScorePair(widget.data.names[i], totalScores[i]));

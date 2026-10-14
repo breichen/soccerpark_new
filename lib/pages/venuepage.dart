@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:soccerpark/widgets/button.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,7 +29,6 @@ class _VenuePageState extends State<VenuePage> {
 
   @override
   Widget build(BuildContext context) {
-    final double sep = 8;
     Locality loc = App.of(context).getLocality();
 
     return Scaffold(

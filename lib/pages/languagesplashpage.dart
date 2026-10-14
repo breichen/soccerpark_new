@@ -12,9 +12,6 @@ class LanguageSplashPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double sep = 8;
-    double height_flags = 60;
-
     return Scaffold(
         appBar: null,
         body: ListView(children: [

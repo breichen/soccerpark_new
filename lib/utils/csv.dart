@@ -1,13 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:csv/csv.dart';
-import 'package:flutter/services.dart';
 
-import '../main.dart';
-import './data.dart';
 import './export.dart';
 import '../widgets/toast.dart';
 
@@ -53,15 +49,6 @@ void storeCsv(
   CustomToast.showToastIcon(
       context, AppLocalizations.of(context)!.saved_as + " " + path, Icons.check,
       dur: 5);
-}
-
-Future<String?> _findLocalPath() async {
-  if (Platform.isAndroid) {
-    return "/sdcard/download/";
-  } else {
-    var directory = await getApplicationDocumentsDirectory();
-    return directory.path + Platform.pathSeparator + 'Download';
-  }
 }
 
 List<List<String>> getCsvDataSingleRound(String date, List<String> names,

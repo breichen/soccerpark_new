@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import '../youtube/player/youtube_player.dart';
 import '../youtube/utils/youtube_player_controller.dart';

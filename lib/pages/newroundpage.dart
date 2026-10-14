@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:material_color_generator/material_color_generator.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
@@ -15,7 +12,6 @@ import '../widgets/toast.dart';
 import '../widgets/space.dart';
 import '../dialogs/addplayerdialog.dart';
 import '../dialogs/editplayerdialog.dart';
-import '../dialogs/twobuttondialog.dart';
 import '../dialogs/singlebuttoncanceldialog.dart';
 import './roundpage.dart';
 
@@ -75,12 +71,12 @@ class _NewRoundPageState extends State<NewRoundPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => RoundPage(0)),
-    ).whenComplete(() => {Navigator.of(context).pop()});
+    ).whenComplete(() => Navigator.of(context).pop());
   }
 
   @override
   Widget build(BuildContext context) {
-    overlay = Overlay.of(context)!.context.findRenderObject() as RenderBox;
+    overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
 
     return Scaffold(
         resizeToAvoidBottomInset: false,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -1416,7 +1415,6 @@ class Data {
   static Future<RoundData> getRoundData(int round) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    List<int> indices = [];
     List<String> names = [];
     List<List<int>> scores = [];
     for (var pl = 1; pl <= 5; pl++) {
