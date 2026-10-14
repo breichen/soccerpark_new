@@ -172,7 +172,7 @@ class _FinishPageState extends State<FinishPage> {
                           flex: 1,
                           child: Center(
                             child: ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 400),
+                              constraints: BoxConstraints(maxWidth: 700),
                               child: LineChartWidget(getData(),
                                   legendEntries: widget.data.names),
                             ),
