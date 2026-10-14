@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 import '../main.dart';
 import './data.dart';
@@ -50,7 +49,7 @@ Future<pw.Container> getPdfHeaderLogo(BuildContext context) async {
 }
 
 Future<pw.Row> getPdfHeader(BuildContext context) async {
-  pw.TextStyle style = await pdfTextStyle();
+  pw.TextStyle style = pdfTextStyle();
 
   return pw.Row(children: [
     pw.Spacer(),
@@ -78,7 +77,7 @@ Future<pw.Widget> pdfFooterColumn(BuildContext context) async {
 
 Future<pw.Widget> pdfFooter(BuildContext context) async {
   Locality loc = App.of(context).getLocality();
-  pw.TextStyle style = await pdfFooterTextStyle();
+  pw.TextStyle style = pdfFooterTextStyle();
 
   pw.MemoryImage circle = pw.MemoryImage(
     (await rootBundle.load('assets/pics/circle.png')).buffer.asUint8List(),
@@ -179,7 +178,7 @@ Future<pw.Widget> getDateRow(BuildContext context, int round) async {
             AppLocalizations.of(context)!.time_at +
             " " +
             parts[1],
-        style: await pdfTableTextStyle())
+        style: pdfTableTextStyle())
   ]);
 }
 
@@ -203,13 +202,13 @@ Future<pw.Widget> pdfHeaderRow(BuildContext context, List<String> names) async {
 
 Future<pw.Widget> pdfLastRow(
     BuildContext context, List<int> totalScores) async {
-  final int parTotal = Data.getPars(App.of(context).getLocality())
-      .fold<int>(0, (a, b) => a + b);
+  final int parTotal =
+      Data.getPars(App.of(context).getLocality()).fold<int>(0, (a, b) => a + b);
   List<pw.Widget> widgets = [
     await pdfHeaderCellFix(AppLocalizations.of(context)!.sum, pdfHoleWidth,
         true, pdfDlinewidth, pdfLinewidth, pdfLinewidth, pdfDlinewidth),
-    await pdfHeaderCellFix(parTotal.toString(), pdfParwidth, false, pdfLinewidth, pdfLinewidth,
-        pdfDlinewidth, pdfDlinewidth)
+    await pdfHeaderCellFix(parTotal.toString(), pdfParwidth, false,
+        pdfLinewidth, pdfLinewidth, pdfDlinewidth, pdfDlinewidth)
   ];
   for (var i = 0; i < totalScores.length; i++)
     widgets.add(await pdfTotalCell(
@@ -263,7 +262,7 @@ Future<pw.Widget> pdfHeaderCellFix(String text, double width, bool alignleft,
     child: pw.Text(text,
         maxLines: 1,
         textAlign: alignleft ? pw.TextAlign.left : pw.TextAlign.center,
-        style: await pdfTableTextStyleBold()),
+        style: pdfTableTextStyleBold()),
     width: width,
     padding:
         pw.EdgeInsets.fromLTRB(alignleft ? pdfhpad : 0, pdfvpad, 0, pdfvpad),
@@ -278,7 +277,7 @@ Future<pw.Widget> pdfHeaderCell(
           child: pw.Text(text,
               maxLines: 1,
               textAlign: pw.TextAlign.center,
-              style: await pdfTableTextStyleBold()),
+              style: pdfTableTextStyleBold()),
           padding: pw.EdgeInsets.fromLTRB(0, pdfvpad, 0, pdfvpad)));
 }
 
@@ -300,23 +299,17 @@ Future<pw.Text> pdfTotalCellText(String text) async {
   return pw.Text(text,
       maxLines: 1,
       textAlign: pw.TextAlign.center,
-      style: await pdfTableTextStyleBold());
+      style: pdfTableTextStyleBold());
 }
 
-Future<pw.Widget> pdfCellFix(
-    String text,
-    double width,
-    bool alignleft,
-    double left,
-    double top,
-    double right,
-    double bottom) async {
+Future<pw.Widget> pdfCellFix(String text, double width, bool alignleft,
+    double left, double top, double right, double bottom) async {
   return pw.Container(
       decoration: pdfDecoration(left, top, right, bottom),
       child: pw.Text(text,
           maxLines: 1,
           textAlign: alignleft ? pw.TextAlign.left : pw.TextAlign.center,
-          style: await pdfTableTextStyle()),
+          style: pdfTableTextStyle()),
       width: width,
       padding:
           pw.EdgeInsets.fromLTRB(alignleft ? pdfhpad : 0, pdfvpad, 0, pdfvpad));
@@ -343,39 +336,26 @@ Future<pw.Text> pdfCellText(String text, {bool empty = false}) async {
   return pw.Text(text,
       maxLines: 1,
       textAlign: pw.TextAlign.center,
-      style: empty ? await pdfEmptyTextStyle() : await pdfTableTextStyle());
+      style: empty ? pdfEmptyTextStyle() : pdfTableTextStyle());
 }
 
-Future<pw.TextStyle> pdfTextStyle() async {
-  final font = await PdfGoogleFonts.nunitoExtraLight();
-  return pw.TextStyle(font: font, fontSize: 14);
-}
+pw.TextStyle pdfTextStyle() =>
+    pw.TextStyle(font: PdfFonts.regular, fontSize: 14);
 
-Future<pw.TextStyle> pdfTitleTextStyle() async {
-  final font = await PdfGoogleFonts.nunitoBold();
-  return pw.TextStyle(font: font, fontSize: 16);
-}
+pw.TextStyle pdfTitleTextStyle() =>
+    pw.TextStyle(font: PdfFonts.bold, fontSize: 16);
 
-Future<pw.TextStyle> pdfFooterTextStyle() async {
-  final font = await PdfGoogleFonts.nunitoExtraLight();
-  return pw.TextStyle(font: font, fontSize: 11);
-}
+pw.TextStyle pdfFooterTextStyle() =>
+    pw.TextStyle(font: PdfFonts.regular, fontSize: 11);
 
-Future<pw.TextStyle> pdfTableTextStyle() async {
-  final font = await PdfGoogleFonts.nunitoExtraLight();
-  return pw.TextStyle(font: font, fontSize: 12);
-}
+pw.TextStyle pdfTableTextStyle() =>
+    pw.TextStyle(font: PdfFonts.regular, fontSize: 12);
 
-Future<pw.TextStyle> pdfEmptyTextStyle() async {
-  final font = await PdfGoogleFonts.nunitoExtraLight();
-  return pw.TextStyle(
-      font: font, fontSize: 12, color: PdfColor.fromHex("#FFFFFF"));
-}
+pw.TextStyle pdfEmptyTextStyle() => pw.TextStyle(
+    font: PdfFonts.regular, fontSize: 12, color: PdfColor.fromHex("#FFFFFF"));
 
-Future<pw.TextStyle> pdfTableTextStyleBold() async {
-  final font = await PdfGoogleFonts.nunitoBold();
-  return pw.TextStyle(font: font, fontSize: 12);
-}
+pw.TextStyle pdfTableTextStyleBold() =>
+    pw.TextStyle(font: PdfFonts.bold, fontSize: 12);
 
 pw.BoxDecoration pdfDecoration(
     double left, double top, double right, double bottom) {
@@ -391,8 +371,41 @@ pw.BoxDecoration pdfDecoration(
 
 PdfColor pdfTableColor = PdfColor.fromHex("#757575");
 
+/// Nunito fonts bundled as assets (assets/fonts/), so PDF export works
+/// offline and does not download anything.
+class PdfFonts {
+  static const _regularAsset = 'assets/fonts/Nunito-ExtraLight.ttf';
+  static const _boldAsset = 'assets/fonts/Nunito-Bold.ttf';
+
+  static ByteData? _regularData;
+  static ByteData? _boldData;
+  static pw.Font? _regular;
+  static pw.Font? _bold;
+
+  /// Reads the font files from the asset bundle once. Optional: you can call
+  /// this early (e.g. in main()) so the first export is instant.
+  static Future<void> preload() async {
+    _regularData ??= await rootBundle.load(_regularAsset);
+    _boldData ??= await rootBundle.load(_boldAsset);
+  }
+
+  /// Call at the start of every document. Creates one font object per
+  /// document, so each font is embedded in the PDF only once.
+  static Future<void> prepare() async {
+    await preload();
+    _regular = pw.Font.ttf(_regularData!);
+    _bold = pw.Font.ttf(_boldData!);
+  }
+
+  static pw.Font get regular =>
+      _regular ?? (throw StateError('Call PdfFonts.prepare() first'));
+  static pw.Font get bold =>
+      _bold ?? (throw StateError('Call PdfFonts.prepare() first'));
+}
+
 Future<pw.Document> createPdfSingleRound(
     BuildContext context, int round) async {
+  await PdfFonts.prepare();
   final pdf = pw.Document();
   pw.Widget footerCol = await pdfFooterColumn(context);
 
@@ -404,6 +417,7 @@ Future<pw.Document> createPdfMultipleRounds(
     BuildContext context, List<int> roundsToBeIncremented) async {
   assert(roundsToBeIncremented.length > 0);
 
+  await PdfFonts.prepare();
   final pdf = pw.Document();
   pw.Widget footerCol = await pdfFooterColumn(context);
 
@@ -427,7 +441,7 @@ Future<pw.Page> pdfRoundPage(BuildContext context, pw.Widget footerCol,
   if (titleId > 0) {
     widgets.add(pw.Row(children: [
       pw.Text(AppLocalizations.of(context)!.round + " " + titleId.toString(),
-          style: await pdfTitleTextStyle()),
+          style: pdfTitleTextStyle()),
       pw.Spacer()
     ]));
     widgets.add(pdfSpace(10));
@@ -450,8 +464,7 @@ Future<pw.Page> pdfSummaryPage(BuildContext context, pw.Widget footerCol,
   widgets.add(pdfSpace(40));
 
   widgets.add(pw.Row(children: [
-    pw.Text(AppLocalizations.of(context)!.summary,
-        style: await pdfTitleTextStyle()),
+    pw.Text(AppLocalizations.of(context)!.summary, style: pdfTitleTextStyle()),
     pw.Spacer()
   ]));
   widgets.add(pdfSpace(10));
@@ -567,8 +580,7 @@ Future<pw.Widget> pdfDateRow(
     String dateOnly = parts[0];
     if (roundsToBeIncremented.length > 3) {
       final firstDot = dateOnly.indexOf('.');
-      final secondDot =
-          firstDot < 0 ? -1 : dateOnly.indexOf('.', firstDot + 1);
+      final secondDot = firstDot < 0 ? -1 : dateOnly.indexOf('.', firstDot + 1);
       if (secondDot > 0) dateOnly = dateOnly.substring(0, secondDot + 1);
     }
 
