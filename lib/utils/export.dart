@@ -58,7 +58,7 @@ Future<bool> saveExportFile(BuildContext context, Uint8List bytes,
 PopupMenuButton<ExportMenuItemE> getExportMenuImpl(
     BuildContext context, void Function(ExportMenuItemE value) func) {
   return PopupMenuButton<ExportMenuItemE>(
-    icon: const Icon(Icons.file_download),
+    icon: const Icon(Icons.save_alt),
     offset: const Offset(30, 0),
     itemBuilder: (context) => getExportItems(context),
     onSelected: func,
