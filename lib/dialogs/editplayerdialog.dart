@@ -31,6 +31,7 @@ class _EditPlayerDialogState extends State<EditPlayerDialog> {
     textController.text = widget.name;
 
     return Dialog(
+      clipBehavior: Clip.antiAlias,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,

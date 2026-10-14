@@ -88,6 +88,7 @@ class _RoundTimelineDialogState extends State<RoundTimelineDialog> {
     print("w");
     print(Theme.of(context).dialogTheme.backgroundColor);
     return Dialog(
+      clipBehavior: Clip.antiAlias,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,

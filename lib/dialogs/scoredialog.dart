@@ -25,6 +25,7 @@ class ScoreDialog extends StatelessWidget {
     final int maxi = 2 * par + 1;
 
     return Dialog(
+      clipBehavior: Clip.antiAlias,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -45,7 +45,7 @@ class _PlayHoleDialogState extends State<PlayHoleDialog> {
     final int maxi = 2 * par + 1;
 
     return Dialog(
-      //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0),), //this right here
+      clipBehavior: Clip.antiAlias,
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
