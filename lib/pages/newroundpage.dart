@@ -93,6 +93,7 @@ class _NewRoundPageState extends State<NewRoundPage> {
               Expanded(flex: 1, child: getRightColumn()),
               SpaceH(outsep),
             ]),
+            Space(20),
             Visibility(
                 child: Footer(),
                 visible: false,
