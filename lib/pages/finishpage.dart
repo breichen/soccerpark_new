@@ -170,15 +170,18 @@ class _FinishPageState extends State<FinishPage> {
                       SpaceH(32),
                       Expanded(
                           flex: 1,
-                          child: Container(
-                              //color: Colors.grey[300],
-                              height: 200,
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 400),
                               child: LineChartWidget(getData(),
-                                  legendEntries: widget.data.names))),
+                                  legendEntries: widget.data.names),
+                            ),
+                          )),
                       SpaceH(32),
                     ]),
                     Space(8),
                     getRadioButtons(),
+                    Space(20),
                     Visibility(
                         child: Footer(),
                         visible: false,
