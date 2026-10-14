@@ -1,54 +1,43 @@
-import 'dart:io';
+import 'dart:convert';
+import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
-import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:csv/csv.dart';
+import 'package:flutter/material.dart';
 
 import './export.dart';
-import '../widgets/toast.dart';
 
-void generateCsvSingleRound(
+/// Austrian/German Excel expects ';' as separator. Use ',' if your users
+/// mainly open the files in Google Sheets or other tools.
+const String csvDelimiter = ';';
+
+Future<bool> generateCsvSingleRound(
     BuildContext context,
     String date,
     List<String> names,
     List<List<int>> scores,
     List<int> totalScores,
-    String filename) async {
-  List<List<String>> data =
-      getCsvDataSingleRound(date, names, scores, totalScores);
-
-  storeCsv(context, data, filename);
+    String filename) {
+  final data = getCsvDataSingleRound(date, names, scores, totalScores);
+  return storeCsv(context, data, filename);
 }
 
-void generateCsvMultipleRounds(
+Future<bool> generateCsvMultipleRounds(
     BuildContext context,
     List<String> dates,
     List<List<String>> names,
     List<List<List<int>>> scores,
     List<List<int>> totalScores,
-    String filename) async {
-  List<List<String>> data =
-      getCsvDataMultipleRounds(dates, names, scores, totalScores);
-
-  storeCsv(context, data, filename);
+    String filename) {
+  final data = getCsvDataMultipleRounds(dates, names, scores, totalScores);
+  return storeCsv(context, data, filename);
 }
 
-void storeCsv(
-    BuildContext context, List<List<String>> data, String filename) async {
-  final path = await getFilePath(context, filename + ".csv");
-  if (path == "") {
-    CustomToast.showToast(
-        context, AppLocalizations.of(context)!.could_not_store);
-    return;
-  }
-  final File file = await File(path).create(recursive: true);
-
-  String csvData = ListToCsvConverter().convert(data);
-  await file.writeAsString(csvData);
-
-  CustomToast.showToastIcon(
-      context, AppLocalizations.of(context)!.saved_as + " " + path, Icons.check,
-      dur: 5);
+Future<bool> storeCsv(
+    BuildContext context, List<List<String>> data, String filename) {
+  final csv = ListToCsvConverter(fieldDelimiter: csvDelimiter).convert(data);
+  // UTF-8 BOM so Excel detects the encoding (umlauts in player names).
+  final bytes = Uint8List.fromList([0xEF, 0xBB, 0xBF, ...utf8.encode(csv)]);
+  return saveExportFile(context, bytes, filename, 'csv');
 }
 
 List<List<String>> getCsvDataSingleRound(String date, List<String> names,

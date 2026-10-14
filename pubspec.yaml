@@ -37,6 +37,7 @@ dependencies:
   url_launcher:
   cloud_firestore:
   firebase_core:
+  file_picker:
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -172,7 +173,6 @@ flutter:
     - assets/pics/pdf_icon.png
     - assets/pics/pdf_icon_2.png
     - assets/pics/excel_icon.png
-    - assets/pics/export.png
     - assets/pics/circle.png
 
     - assets/pics/bahnen.png

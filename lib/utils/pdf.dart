@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
@@ -10,7 +8,6 @@ import 'package:printing/printing.dart';
 import '../main.dart';
 import './data.dart';
 import './export.dart';
-import '../widgets/toast.dart';
 
 double pdfLinewidth = 1;
 double pdfDlinewidth = 2;
@@ -25,8 +22,8 @@ double pdfSummaryWidth = 120;
 Future<bool> generatePdfSingleRound(
     BuildContext context, int round, String filename) async {
   pw.Document doc = await createPdfSingleRound(context, round);
-  await savePdf(context, doc, filename);
-  return true;
+  if (!context.mounted) return false;
+  return savePdf(context, doc, filename);
 }
 
 // ATTENTION: Rounds have to be incremented by 1!
@@ -34,8 +31,8 @@ Future<bool> generatePdfMultipleRounds(BuildContext context,
     List<int> roundsToBeIncremented, String filename) async {
   pw.Document doc =
       await createPdfMultipleRounds(context, roundsToBeIncremented);
-  await savePdf(context, doc, filename);
-  return true;
+  if (!context.mounted) return false;
+  return savePdf(context, doc, filename);
 }
 
 Future<pw.Container> getPdfHeaderLogo(BuildContext context) async {
@@ -162,10 +159,16 @@ Future<pw.Column> pdfRoundTable(BuildContext context, int round) async {
   return pw.Column(children: rows);
 }
 
+/// Splits "dd.mm.yyyy hh:mm" into [date, time]; tolerates a missing time.
+List<String> splitDateTime(String date) {
+  final idx = date.indexOf(' ');
+  if (idx < 0) return [date.trim(), ''];
+  return [date.substring(0, idx).trim(), date.substring(idx + 1).trim()];
+}
+
 Future<pw.Widget> getDateRow(BuildContext context, int round) async {
   String date = await Data.getDate(round);
-  int idx = date.indexOf(" ");
-  List parts = [date.substring(0, idx).trim(), date.substring(idx + 1).trim()];
+  final parts = splitDateTime(date);
 
   return pw.Row(children: [
     pw.Text(
@@ -200,10 +203,12 @@ Future<pw.Widget> pdfHeaderRow(BuildContext context, List<String> names) async {
 
 Future<pw.Widget> pdfLastRow(
     BuildContext context, List<int> totalScores) async {
+  final int parTotal = Data.getPars(App.of(context).getLocality())
+      .fold<int>(0, (a, b) => a + b);
   List<pw.Widget> widgets = [
     await pdfHeaderCellFix(AppLocalizations.of(context)!.sum, pdfHoleWidth,
         true, pdfDlinewidth, pdfLinewidth, pdfLinewidth, pdfDlinewidth),
-    await pdfHeaderCellFix("72", pdfParwidth, false, pdfLinewidth, pdfLinewidth,
+    await pdfHeaderCellFix(parTotal.toString(), pdfParwidth, false, pdfLinewidth, pdfLinewidth,
         pdfDlinewidth, pdfDlinewidth)
   ];
   for (var i = 0; i < totalScores.length; i++)
@@ -230,8 +235,7 @@ Future<pw.Widget> pdfTableRow(
         pdfDlinewidth,
         top,
         pdfLinewidth,
-        bottom,
-        true),
+        bottom),
     await pdfCellFix(
         Data.getPars(App.of(context).getLocality())[holeId - 1].toString(),
         pdfParwidth,
@@ -239,8 +243,7 @@ Future<pw.Widget> pdfTableRow(
         pdfLinewidth,
         top,
         pdfDlinewidth,
-        bottom,
-        false),
+        bottom),
   ];
   for (var i = 0; i < scores.length; i++)
     widgets.add(await pdfCell(
@@ -307,8 +310,7 @@ Future<pw.Widget> pdfCellFix(
     double left,
     double top,
     double right,
-    double bottom,
-    bool underline) async {
+    double bottom) async {
   return pw.Container(
       decoration: pdfDecoration(left, top, right, bottom),
       child: pw.Text(text,
@@ -322,7 +324,7 @@ Future<pw.Widget> pdfCellFix(
 
 Future<pw.Widget> pdfCell(
     String text, double left, double top, double right, double bottom,
-    {bool empty: false}) async {
+    {bool empty = false}) async {
   return pw.Expanded(
       child:
           await pdfCellContainer(text, left, top, right, bottom, empty: empty));
@@ -330,14 +332,14 @@ Future<pw.Widget> pdfCell(
 
 Future<pw.Widget> pdfCellContainer(
     String text, double left, double top, double right, double bottom,
-    {bool empty: false}) async {
+    {bool empty = false}) async {
   return pw.Container(
       decoration: pdfDecoration(left, top, right, bottom),
       child: await pdfCellText(text, empty: empty),
       padding: pw.EdgeInsets.fromLTRB(0, pdfvpad, 0, pdfvpad));
 }
 
-Future<pw.Text> pdfCellText(String text, {bool empty: false}) async {
+Future<pw.Text> pdfCellText(String text, {bool empty = false}) async {
   return pw.Text(text,
       maxLines: 1,
       textAlign: pw.TextAlign.center,
@@ -377,68 +379,6 @@ Future<pw.TextStyle> pdfTableTextStyleBold() async {
 
 pw.BoxDecoration pdfDecoration(
     double left, double top, double right, double bottom) {
-  if (left == 0.0) {
-    if (top == 0.0)
-      return pw.BoxDecoration(
-        border: pw.Border(
-          left: pw.BorderSide(width: left, color: pdfTableColor),
-          bottom: pw.BorderSide(width: bottom, color: pdfTableColor),
-        ),
-      );
-    else if (bottom == 0.0)
-      return pw.BoxDecoration(
-        border: pw.Border(
-          left: pw.BorderSide(width: left, color: pdfTableColor),
-          top: pw.BorderSide(width: top, color: pdfTableColor),
-        ),
-      );
-    else
-      return pw.BoxDecoration(
-        border: pw.Border(
-          left: pw.BorderSide(width: left, color: pdfTableColor),
-          top: pw.BorderSide(width: top, color: pdfTableColor),
-          bottom: pw.BorderSide(width: bottom, color: pdfTableColor),
-        ),
-      );
-  } else if (right == 0.0) {
-    if (top == 0.0)
-      return pw.BoxDecoration(
-        border: pw.Border(
-          left: pw.BorderSide(width: left, color: pdfTableColor),
-          bottom: pw.BorderSide(width: bottom, color: pdfTableColor),
-        ),
-      );
-    else if (bottom == 0.0)
-      return pw.BoxDecoration(
-        border: pw.Border(
-          left: pw.BorderSide(width: left, color: pdfTableColor),
-          top: pw.BorderSide(width: top, color: pdfTableColor),
-        ),
-      );
-    else
-      return pw.BoxDecoration(
-        border: pw.Border(
-          left: pw.BorderSide(width: left, color: pdfTableColor),
-          top: pw.BorderSide(width: top, color: pdfTableColor),
-          bottom: pw.BorderSide(width: bottom, color: pdfTableColor),
-        ),
-      );
-  } else if (top == 0.0)
-    return pw.BoxDecoration(
-      border: pw.Border(
-        left: pw.BorderSide(width: left, color: pdfTableColor),
-        right: pw.BorderSide(width: right, color: pdfTableColor),
-        bottom: pw.BorderSide(width: bottom, color: pdfTableColor),
-      ),
-    );
-  else if (bottom == 0.0)
-    return pw.BoxDecoration(
-      border: pw.Border(
-        left: pw.BorderSide(width: left, color: pdfTableColor),
-        top: pw.BorderSide(width: top, color: pdfTableColor),
-        right: pw.BorderSide(width: right, color: pdfTableColor),
-      ),
-    );
   return pw.BoxDecoration(
     border: pw.Border(
       left: pw.BorderSide(width: left, color: pdfTableColor),
@@ -622,17 +562,14 @@ Future<pw.Widget> pdfDateRow(
   int l = roundsToBeIncremented.length;
   for (var i = 0; i < roundsToBeIncremented.length; i++) {
     String date = await Data.getDate(roundsToBeIncremented[l - i - 1] + 1);
-    int idx = date.indexOf(" ");
-    List parts = [
-      date.substring(0, idx).trim(),
-      date.substring(idx + 1).trim()
-    ];
+    final parts = splitDateTime(date);
 
     String dateOnly = parts[0];
     if (roundsToBeIncremented.length > 3) {
-      int idx1 = dateOnly.indexOf(".");
-      int idx2 = dateOnly.substring(idx1 + 1).indexOf(".");
-      dateOnly = dateOnly.substring(0, idx1 + idx2 + 2);
+      final firstDot = dateOnly.indexOf('.');
+      final secondDot =
+          firstDot < 0 ? -1 : dateOnly.indexOf('.', firstDot + 1);
+      if (secondDot > 0) dateOnly = dateOnly.substring(0, secondDot + 1);
     }
 
     widgets.add(await pdfCell(
@@ -660,11 +597,7 @@ Future<pw.Widget> pdfTimeRow(
   int l = roundsToBeIncremented.length;
   for (var i = 0; i < roundsToBeIncremented.length; i++) {
     String date = await Data.getDate(roundsToBeIncremented[l - i - 1] + 1);
-    int idx = date.indexOf(" ");
-    List parts = [
-      date.substring(0, idx).trim(),
-      date.substring(idx + 1).trim()
-    ];
+    final parts = splitDateTime(date);
 
     widgets.add(await pdfCell(
         parts[1],
@@ -682,12 +615,7 @@ Future<pw.Widget> pdfTimeRow(
 }
 
 Future<List<IndexNamePair>> getAllPlayersForPdf(List<List<int>> indices) async {
-  Set<int> allIndicesSet = Set<int>();
-  for (var i = 0; i < indices.length; i++) {
-    int idx = indices.length - i - 1;
-    for (var j = 0; j < indices[idx].length; j++)
-      allIndicesSet.add(indices[idx][j]);
-  }
+  final allIndicesSet = <int>{for (final list in indices) ...list};
 
   List<IndexNamePair> players = [];
   for (var id in allIndicesSet)
@@ -700,25 +628,9 @@ Future<List<IndexNamePair>> getAllPlayersForPdf(List<List<int>> indices) async {
 
 Future<bool> savePdf(
     BuildContext context, pw.Document pdf, String filename) async {
-  filename = filename.replaceAll(' ', '__');
-  filename = filename.replaceAll('.', '_');
-  filename = filename.replaceAll(':', '_');
-
-  final path = await getFilePath(context, filename + ".pdf");
-  if (path == "") {
-    CustomToast.showToast(
-        context, AppLocalizations.of(context)!.could_not_store);
-    return false;
-  }
-
-  final File file = await File(path).create(recursive: true);
-
-  await file.writeAsBytes(await pdf.save());
-
-  CustomToast.showToastIcon(
-      context, AppLocalizations.of(context)!.saved_as + " " + path, Icons.check,
-      dur: 5);
-  return true;
+  final bytes = await pdf.save();
+  if (!context.mounted) return false;
+  return saveExportFile(context, bytes, filename, 'pdf');
 }
 
 pw.Widget pdfSpace(double _height) {
