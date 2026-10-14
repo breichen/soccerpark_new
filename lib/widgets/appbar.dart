@@ -130,10 +130,5 @@ class PdfButton extends IconButton {
 
 class ExportButton extends IconButton {
   ExportButton(VoidCallback onPressed)
-      : super(
-            onPressed: onPressed,
-            icon: Image.asset(
-              'assets/pics/export.png',
-              color: Colors.white,
-            ));
+      : super(onPressed: onPressed, icon: Icon(Icons.save_alt));
 }
