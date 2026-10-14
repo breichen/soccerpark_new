@@ -159,7 +159,7 @@ class _ExportDialogState extends State<ExportDialog> {
     List<Widget> rows = [];
     for (var i = 0; i < dates.length; i++) {
       rows.add(getRow(i));
-      //rows.add(Space(10));
+      rows.add(Space(5));
     }
     return Column(children: rows);
   }
@@ -188,7 +188,7 @@ class _ExportDialogState extends State<ExportDialog> {
 
   Widget getTextColumn(int i) {
     return Column(
-        children: [Space(15), getDateText(i), getNamesText(i)],
+        children: [getDateText(i), getNamesText(i)],
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start);
   }
