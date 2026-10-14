@@ -91,7 +91,7 @@ flutter_icons:
     icon_size: 48 # min:48, max:256, default: 48    
   macos:
     generate: true
-    image_path: "assets/pics/ball.jpg"
+    image_path: "assets/pics/ball_medium.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
