@@ -15,6 +15,7 @@ StreamSubscription<RemoteMessage>? _foregroundSubscription;
 /// background. While the app is open, we show a banner ourselves.
 /// Call once after Firebase.initializeApp().
 void listenForForegroundNotifications() {
+  if (kIsWeb) return; // push is only set up for Android/iOS
   _foregroundSubscription ??=
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     final n = message.notification;
@@ -42,6 +43,7 @@ void listenForForegroundNotifications() {
 }
 
 Future<void> requestNotificationPermission() async {
+  if (kIsWeb) return;
   try {
     await FirebaseMessaging.instance.requestPermission();
   } catch (e) {
@@ -50,6 +52,7 @@ Future<void> requestNotificationPermission() async {
 }
 
 Future<void> updateNotificationLanguage(bool english) async {
+  if (kIsWeb) return; // topics are not supported by firebase_messaging on web
   // Debug builds use separate topics, so tests never reach real users.
   final prefix = kDebugMode ? 'dev_' : '';
   final lang = english ? 'en' : 'de';

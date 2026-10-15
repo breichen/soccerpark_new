@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
-import '../youtube/player/youtube_player.dart';
-import '../youtube/utils/youtube_player_controller.dart';
-import '../youtube/utils/youtube_player_flags.dart';
-import '../youtube/widgets/youtube_player_builder.dart';
-import '../youtube/widgets/duration_widgets.dart';
-import '../youtube/widgets/full_screen_button.dart';
-import '../youtube/widgets/progress_bar.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
@@ -16,6 +9,7 @@ import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/text.dart';
+import './rules_video.dart';
 
 class RulesPage extends StatefulWidget {
   const RulesPage({super.key});
@@ -26,15 +20,6 @@ class RulesPage extends StatefulWidget {
 
 class _RulesPageState extends State<RulesPage> {
   final double sep = 8;
-  bool fullScreen = false;
-
-  YoutubePlayerController _controller = YoutubePlayerController(
-    initialVideoId: 'Xi9x7aQrEp8',
-    flags: YoutubePlayerFlags(
-      autoPlay: false,
-      mute: false,
-    ),
-  );
 
   String getVideoId() {
     var loc = App.of(context).getLocality();
@@ -43,32 +28,13 @@ class _RulesPageState extends State<RulesPage> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    _controller = YoutubePlayerController(
-      initialVideoId: getVideoId(),
-      flags: YoutubePlayerFlags(
-        autoPlay: false,
-        mute: false,
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     return getContent();
   }
 
   Widget getContent() {
-    return YoutubePlayerBuilder(
-        player: getYouTubeVideo(),
-        onEnterFullScreen: () {
-          this.fullScreen = true;
-        },
-        onExitFullScreen: () {
-          this.fullScreen = false;
-        },
+    return RulesVideoBuilder(
+        videoId: getVideoId(),
         builder: (context, player) {
           return Scaffold(
               appBar: CustomAppBar(context, AppLocalizations.of(context)!.rules,
@@ -180,30 +146,5 @@ class _RulesPageState extends State<RulesPage> {
     return [
       AppLocalizations.of(context)!.rules_goldberg_1,
     ];
-  }
-
-  YoutubePlayer getYouTubeVideo() {
-    return YoutubePlayer(
-      controller: _controller,
-      bottomActions: [
-        CurrentPosition(),
-        const SizedBox(width: 4.0),
-        ProgressBar(
-            isExpanded: true,
-            colors: ProgressBarColors(
-                playedColor: mainred,
-                handleColor: mainred,
-                backgroundColor: Colors.red[100],
-                bufferedColor: Colors.red[300])),
-        const SizedBox(width: 4.0),
-        RemainingDuration(),
-        FullScreenButton(
-          controller: _controller,
-        ),
-      ],
-      //onReady: () {
-      //    _controller.addListener(listener);
-      //},
-    );
   }
 }

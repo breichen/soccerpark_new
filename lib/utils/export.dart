@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
@@ -8,6 +9,7 @@ import 'package:soccerpark/generated/app_localizations.dart';
 import '../main.dart';
 import '../widgets/toast.dart';
 import './data.dart';
+import './download_stub.dart' if (dart.library.js_interop) './download_web.dart';
 
 enum ExportMenuItemE { CSV, PDF, COUNT }
 
@@ -29,6 +31,22 @@ Future<bool> saveExportFile(BuildContext context, Uint8List bytes,
   final l10n = AppLocalizations.of(context)!;
   final prefix = Data.getFilenamePrefix(App.of(context).getLocality());
   final fileName = '${sanitizeFileName(prefix + baseName)}.$extension';
+
+  // Web: the browser has no save dialog we control, so trigger a download.
+  if (kIsWeb) {
+    try {
+      final mime = extension == 'pdf' ? 'application/pdf' : 'text/csv';
+      downloadBytes(bytes, fileName, mime);
+      CustomToast.showToastIcon(
+          context, '${l10n.saved_as} $fileName', Icons.check,
+          dur: 5);
+      return true;
+    } catch (e) {
+      debugPrint('Export failed: $e');
+      CustomToast.showToast(context, l10n.could_not_store);
+      return false;
+    }
+  }
 
   try {
     final path = await FilePicker.saveFile(

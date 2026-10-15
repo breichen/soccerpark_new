@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -38,8 +39,12 @@ final List<Color> colors = [
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  listenForForegroundNotifications();
+  // Firebase (push notifications) is only configured for Android/iOS.
+  if (!kIsWeb) {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    listenForForegroundNotifications();
+  }
   runApp(App());
 }
 
@@ -135,7 +140,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Soccerpark',
       scaffoldMessengerKey: messengerKey,
       locale: _locale,
       theme: ThemeData(
