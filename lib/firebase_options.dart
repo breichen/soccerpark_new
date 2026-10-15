@@ -56,13 +56,12 @@ class DefaultFirebaseOptions {
     projectId: 'soccerpark-aa64d',
     storageBucket: 'soccerpark-aa64d.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAK5RzmraKIOsvSh7gDH0hBv6OF8uJDPBM',
-    appId: '1:1018336090361:ios:ad4eb9eef2f8154b8eea28',
+    appId: '1:1018336090361:ios:75f02b950484960f8eea28',
     messagingSenderId: '1018336090361',
     projectId: 'soccerpark-aa64d',
     storageBucket: 'soccerpark-aa64d.firebasestorage.app',
-    iosBundleId: 'com.example.soccerparkNew',
+    iosBundleId: 'com.soccerpark.austria',
   );
 }
