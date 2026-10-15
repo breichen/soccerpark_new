@@ -136,6 +136,10 @@ flutter:
     - assets/fonts/Nunito-ExtraLight.ttf
     - assets/fonts/Nunito-Bold.ttf
 
+    # Lato for the google_fonts package (loaded from here instead of the network).
+    # Files: Lato-Light.ttf, Lato-Regular.ttf, Lato-Bold.ttf (run tool/fetch_lato.sh)
+    - assets/google_fonts/
+
     - assets/pics/soccer.png
     - assets/pics/soccer_wagrain.png
     - assets/pics/soccer_goldberg.png

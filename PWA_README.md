@@ -17,3 +17,5 @@ Diese Dateien in dein echtes Projekt kopieren (überschreiben/ergänzen). Androi
 - `lib/youtube_player_flutter` wird von der App nicht importiert (reine Kopie des Pakets).
 - Mobile weiter wie bisher: `flutter build apk` / `flutter build ipa`.
 - `lib/youtube/player/raw_youtube_player.dart`: baseUrl war ein data:-URI (YouTube Fehler 153) und der Errors-Handler warf wegen `int.parse(int)`; beides behoben.
+- Lato offline: pubspec lists assets/google_fonts/; put Lato-Light/Regular/Bold.ttf there (tool/fetch_lato.sh).
+- Windows: powershell -ExecutionPolicy Bypass -File tool\fetch_lato.ps1
