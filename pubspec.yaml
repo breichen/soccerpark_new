@@ -156,6 +156,9 @@ flutter:
           weight: 700
   
   assets:
+    - assets/fonts/Nunito-ExtraLight.ttf
+    - assets/fonts/Nunito-Bold.ttf
+
     - assets/pics/soccer.png
     - assets/pics/soccer_wagrain.png
     - assets/pics/soccer_goldberg.png
