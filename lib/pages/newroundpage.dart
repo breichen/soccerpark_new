@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
 import '../utils/data.dart';
+import '../utils/persist_stub.dart'
+    if (dart.library.js_interop) '../utils/persist_web.dart';
 import '../widgets/appbar.dart';
 import '../widgets/button.dart';
 import '../widgets/footer.dart';
@@ -67,6 +69,9 @@ class _NewRoundPageState extends State<NewRoundPage> {
       //  Data.storeScore(0, i + 1, hole, (i + hole) % 6 + 6); // TODO: Remove
     }
     Data.storeCurrentDate();
+
+    // Web only: ask the browser to keep this data (no-op on Android/iOS).
+    requestPersistentStorage();
 
     Navigator.push(
       context,
