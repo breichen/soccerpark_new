@@ -16,3 +16,4 @@ Diese Dateien in dein echtes Projekt kopieren (überschreiben/ergänzen). Androi
   `rules_video_web.dart` ein YouTube-iframe. `lib/youtube` wird für Web nicht kompiliert.
 - `lib/youtube_player_flutter` wird von der App nicht importiert (reine Kopie des Pakets).
 - Mobile weiter wie bisher: `flutter build apk` / `flutter build ipa`.
+- `lib/youtube/player/raw_youtube_player.dart`: baseUrl war ein data:-URI (YouTube Fehler 153) und der Errors-Handler warf wegen `int.parse(int)`; beides behoben.

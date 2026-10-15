@@ -76,8 +76,9 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
         key: widget.key,
         initialData: InAppWebViewInitialData(
           data: player,
-          baseUrl:
-              WebUri.uri(UriData.fromString('https://www.youtube.com').uri),
+          // Must be a real https origin. UriData.fromString(...).uri produced a
+          // data: URI (origin null, no Referer), which YouTube rejects (error 153).
+          baseUrl: WebUri('https://www.youtube-nocookie.com'),
           encoding: 'utf-8',
           mimeType: 'text/html',
         ),
@@ -196,8 +197,11 @@ class _RawYoutubePlayerState extends State<RawYoutubePlayer>
             ..addJavaScriptHandler(
               handlerName: 'Errors',
               callback: (args) {
+                // The JS side sends a number, not a String.
+                final code = int.tryParse(args.first.toString()) ?? 0;
+                debugPrint('YouTube player error: $code');
                 controller!.updateValue(
-                  controller!.value.copyWith(errorCode: int.parse(args.first)),
+                  controller!.value.copyWith(errorCode: code),
                 );
               },
             )
