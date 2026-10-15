@@ -36,7 +36,6 @@ dependencies:
   fl_chart:
   url_launcher:
   cloud_firestore:
-  firebase_core:
   file_picker:
   package_info_plus:
 
@@ -46,6 +45,8 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   intl:
+  firebase_core: ^4.15.0
+  firebase_messaging: ^16.7.0
 
 dev_dependencies:
   material_color_generator:

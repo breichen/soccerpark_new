@@ -1,8 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:material_color_generator/material_color_generator.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:soccerpark/firebase_options.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:soccerpark/utils/firebase.dart';
 
 import 'utils/data.dart';
 import 'pages/mainpage.dart';
@@ -33,7 +36,9 @@ final List<Color> colors = [
   mainpink
 ];
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(App());
 }
 
@@ -58,21 +63,18 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    Data.isEnglish().then((english) => setState(() {
-          _locale = Locale.fromSubtags(languageCode: english ? 'en' : 'de');
-        }));
-    Data.getLocality().then((loc) => setState(() {
-          _locality = loc;
-        }));
-    Data.isCompare().then((comp) => setState(() {
-          _compare = comp;
-        }));
-    Data.isIntermediate().then((interm) => setState(() {
-          _intermediate = interm;
-        }));
+    requestNotificationPermission();
+    loadSettings(); // initState duplicates loadSettings(), so just call it
   }
 
   void loadSettings() {
+    Data.isEnglish().then((english) {
+      setState(() {
+        _locale = Locale.fromSubtags(languageCode: english ? 'en' : 'de');
+      });
+      updateNotificationLanguage(english);
+    });
+
     Data.isEnglish().then((english) => setState(() {
           _locale = Locale.fromSubtags(languageCode: english ? 'en' : 'de');
         }));
