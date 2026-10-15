@@ -39,6 +39,7 @@ final List<Color> colors = [
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  listenForForegroundNotifications();
   runApp(App());
 }
 
@@ -64,7 +65,7 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     requestNotificationPermission();
-    loadSettings(); // initState duplicates loadSettings(), so just call it
+    loadSettings();
   }
 
   void loadSettings() {
@@ -75,9 +76,6 @@ class _AppState extends State<App> {
       updateNotificationLanguage(english);
     });
 
-    Data.isEnglish().then((english) => setState(() {
-          _locale = Locale.fromSubtags(languageCode: english ? 'en' : 'de');
-        }));
     Data.getLocality().then((loc) => setState(() {
           _locality = loc;
         }));
@@ -124,6 +122,7 @@ class _AppState extends State<App> {
   void setLocale(bool english) {
     setLocaleImpl(Locale.fromSubtags(languageCode: english ? 'en' : 'de'));
     Data.setLanguage(english);
+    updateNotificationLanguage(english);
   }
 
   void setLocaleImpl(Locale value) {
@@ -137,6 +136,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      scaffoldMessengerKey: messengerKey,
       locale: _locale,
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: maincolor),

@@ -1,5 +1,45 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+/// Attach this to MaterialApp(scaffoldMessengerKey: ...) so notifications
+/// received while the app is open can be shown without a BuildContext.
+final GlobalKey<ScaffoldMessengerState> messengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
+StreamSubscription<RemoteMessage>? _foregroundSubscription;
+
+/// FCM only shows notifications automatically when the app is in the
+/// background. While the app is open, we show a banner ourselves.
+/// Call once after Firebase.initializeApp().
+void listenForForegroundNotifications() {
+  _foregroundSubscription ??=
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    final n = message.notification;
+    if (n == null) return; // data-only message, nothing to display
+
+    final messenger = messengerKey.currentState;
+    if (messenger == null) return;
+
+    messenger.hideCurrentSnackBar();
+    messenger.showSnackBar(SnackBar(
+      duration: const Duration(seconds: 8),
+      behavior: SnackBarBehavior.floating,
+      showCloseIcon: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (n.title != null && n.title!.isNotEmpty)
+            Text(n.title!, style: const TextStyle(fontWeight: FontWeight.bold)),
+          if (n.body != null && n.body!.isNotEmpty) Text(n.body!),
+        ],
+      ),
+    ));
+  });
+}
 
 Future<void> requestNotificationPermission() async {
   try {
