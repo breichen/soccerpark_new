@@ -1,0 +1,10 @@
+# Place this file inside the "app" folder on the web server (next to index.html).
+# Works on Apache / LiteSpeed. Serves .wasm correctly and keeps the files that
+# trigger app updates from being cached, so users get new versions.
+AddType application/wasm .wasm
+
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html|flutter_bootstrap\.js|flutter_service_worker\.js|manifest\.json|version\.json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

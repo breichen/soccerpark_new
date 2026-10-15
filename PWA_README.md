@@ -20,3 +20,4 @@ Diese Dateien in dein echtes Projekt kopieren (überschreiben/ergänzen). Androi
 - Lato offline: pubspec lists assets/google_fonts/; put Lato-Light/Regular/Bold.ttf there (tool/fetch_lato.sh).
 - Windows: powershell -ExecutionPolicy Bypass -File tool\fetch_lato.ps1
 - Web: navigator.storage.persist() is requested when a new round starts (lib/utils/persist_web.dart).
+- WordPress subfolder deployment: see deploy/wordpress/DEPLOY.md (+ .htaccess).
