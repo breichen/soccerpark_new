@@ -1323,7 +1323,7 @@ class Data {
       {List<int>? holes}) {
     var list = getPersonalHighscoresImm(prefs, hole);
     DateTime date = DateTime.now();
-    String formattedDate = DateFormat('dd.MM.yyyy hh:mm').format(date);
+    String formattedDate = DateFormat('dd.MM.yyyy HH:mm').format(date);
 
     bool found = false;
     bool modified = false;
@@ -1407,7 +1407,7 @@ class Data {
       {List<int>? holes}) {
     var list = getOverallHighscoresImm(prefs, hole);
     DateTime date = DateTime.now();
-    String formattedDate = DateFormat('dd.MM.yyyy hh:mm').format(date);
+    String formattedDate = DateFormat('dd.MM.yyyy HH:mm').format(date);
 
     bool stored = false;
     for (var i = 0; i < list.length; i++) {
