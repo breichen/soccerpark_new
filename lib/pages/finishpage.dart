@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
-import 'package:soccerpark/widgets/button.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
@@ -15,7 +14,6 @@ import '../dialogs/onlinehighscoredialog.dart';
 import '../widgets/toast.dart';
 import '../widgets/appbar.dart';
 import '../widgets/space.dart';
-import '../widgets/radio.dart';
 import '../widgets/chart.dart';
 
 class FinishPage extends StatefulWidget {
@@ -169,96 +167,194 @@ class _FinishPageState extends State<FinishPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<ScorePair> scores = [];
-    for (var i = 0; i < totalScores.length; i++) {
-      scores.add(ScorePair(widget.data.names[i], totalScores[i]));
-    }
-    scores.sort(
-      (a, b) => a.score.compareTo(b.score),
-    );
+    final l = AppLocalizations.of(context)!;
+    final locality = widget.data.loc;
+    final parTotal = widget.pars.reduce((a, b) => a + b);
 
-    List<int> ranks = [];
-    for (var i = 0; i < scores.length; i++) ranks.add(i + 1);
-    for (var i = 1; i < ranks.length; i++) {
-      if (scores[i].score == scores[i - 1].score) ranks[i] = ranks[i - 1];
+    // Rangliste: wenigste Schläge zuerst, Gleichstand = gleicher Platz.
+    final order = List<int>.generate(totalScores.length, (i) => i)
+      ..sort((a, b) => totalScores[a].compareTo(totalScores[b]));
+    final ranks = <int>[];
+    for (var i = 0; i < order.length; i++) {
+      ranks.add(i > 0 && totalScores[order[i]] == totalScores[order[i - 1]]
+          ? ranks[i - 1]
+          : i + 1);
     }
 
-    List<Widget> rows = [];
-    for (var i = 0; i < ranks.length; i++) {
-      rows.add(Row(children: [
-        SizedBox(
-          child: Text(
-            ranks[i].toString() + ".",
-            style: styleRanking,
-            textAlign: TextAlign.right,
-          ),
-          width: 37,
-        ),
-        SpaceH(8),
-        Text(
-          scores[i].name,
-          style: styleRanking,
-          textAlign: TextAlign.left,
-        ),
-        Spacer(),
-        Text(
-          scores[i].score.toString(),
-          style: styleRanking,
-          textAlign: TextAlign.right,
-        ),
-        SpaceH(15)
-      ]));
-      if (i != ranks.length - 1) rows.add(Space(4));
+    final rows = <Widget>[];
+    for (var i = 0; i < order.length; i++) {
+      if (i > 0) {
+        rows.add(Divider(height: 1, thickness: 1, color: Colors.grey[200]));
+      }
+      rows.add(getRankRow(ranks[i], widget.data.names[order[i]],
+          totalScores[order[i]], parTotal));
     }
 
     return Scaffold(
-        appBar: CustomAppBar(context, AppLocalizations.of(context)!.finish,
-            MenuItemE.COUNT, [getExportMenu(context), getShareButton()]),
-        body: Stack(children: [
+        appBar: CustomAppBar(context, l.finish, MenuItemE.COUNT,
+            [getExportMenu(context), getShareButton()]),
+        bottomNavigationBar: SafeArea(
+            child: Container(
+                padding: EdgeInsets.fromLTRB(16, 10, 16, 12),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(top: BorderSide(color: Colors.grey[300]!))),
+                child: FilledButton.icon(
+                    style: FilledButton.styleFrom(
+                        backgroundColor: maincolor,
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14))),
+                    onPressed: () => goToMainPage(context),
+                    icon: Icon(Icons.home_outlined, color: Colors.white),
+                    label: Text(l.menu,
+                        style: GoogleFonts.lato(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold))))),
+        body: ListView(children: [
           RepaintBoundary(
               key: _globalKey,
               child: Container(
                   color: bgcolor,
-                  child: ListView(children: <Widget>[
-                    Space(20),
-                    FullWidthButton(AppLocalizations.of(context)!.menu, () {
-                      goToMainPage(context);
-                    }),
-                    Space(20),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20),
-                      padding: EdgeInsets.symmetric(vertical: 15),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey[400]!,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          color: Colors.grey[200]),
-                      child: Column(children: rows),
-                    ),
-                    Space(80),
-                    Row(children: [
-                      SpaceH(32),
-                      Expanded(
-                          flex: 1,
-                          child: Center(
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(children: [
+                          Icon(Icons.emoji_events,
+                              color: mainyellow, size: 30),
+                          SpaceH(8),
+                          Expanded(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                Text(l.round_finished,
+                                    style: GoogleFonts.lato(
+                                        color: maincolor,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold)),
+                                Text(
+                                    Data.getLocalityStringImm(locality) +
+                                        " · Par " +
+                                        parTotal.toString(),
+                                    style: GoogleFonts.lato(
+                                        color: Colors.grey[700],
+                                        fontSize: 14)),
+                              ])),
+                        ]),
+                        Space(14),
+                        Container(
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                border: Border.all(color: Colors.grey[300]!),
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Column(children: rows)),
+                        Space(20),
+                        Text(l.chart_title,
+                            style: GoogleFonts.lato(
+                                color: maincolor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold)),
+                        Space(10),
+                        Center(
                             child: ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 700),
-                              child: LineChartWidget(getData(),
-                                  legendEntries: widget.data.names,
-                                  parLine: getParLine(widget.pars),
-                                  tooltipTitle: (x) =>
-                                      AppLocalizations.of(context)!.hole +
-                                      " $x"),
-                            ),
-                          )),
-                      SpaceH(32),
-                    ]),
-                    Space(8),
-                    getRadioButtons(),
-                    Space(20)
-                  ])))
+                                constraints: BoxConstraints(maxWidth: 700),
+                                child: LineChartWidget(getData(),
+                                    legendEntries: widget.data.names,
+                                    parLine: getParLine(widget.pars),
+                                    tooltipTitle: (x) => l.hole + " $x"))),
+                      ]))),
+          Padding(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 16),
+              child: SizedBox(
+                  width: double.infinity,
+                  child: SegmentedButton<DetailType>(
+                    showSelectedIcon: false,
+                    style: SegmentedButton.styleFrom(
+                      foregroundColor: maincolor,
+                      selectedForegroundColor: Colors.white,
+                      selectedBackgroundColor: maincolor,
+                      side: BorderSide(color: maincolor),
+                      textStyle: GoogleFonts.lato(
+                          fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    segments: [
+                      ButtonSegment(
+                          value: DetailType.SINGLE,
+                          label: Text(capitalize(l.single))),
+                      ButtonSegment(
+                          value: DetailType.CUMULATED,
+                          label: Text(capitalize(l.cumulated))),
+                    ],
+                    selected: {detailType},
+                    onSelectionChanged: (s) =>
+                        setState(() => detailType = s.first),
+                  ))),
+        ]));
+  }
+
+  String capitalize(String s) =>
+      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+
+  /// Zeile der Rangliste: Platz (Medaille für 1-3), Name, Schläge und
+  /// Abstand zu Par.
+  Widget getRankRow(int rank, String name, int score, int par) {
+    const medalColors = [
+      Color(0xFFF1C40F),
+      Color(0xFFCFD8DC),
+      Color(0xFFE8C3A0)
+    ];
+    const medalText = [
+      Color(0xFF5C4500),
+      Color(0xFF37474F),
+      Color(0xFF6D3D12)
+    ];
+    final medal = rank <= 3;
+    final diff = score - par;
+    final diffColor =
+        diff < 0 ? maincolor : (diff > 0 ? mainred : Colors.grey[700]!);
+    final diffText =
+        diff == 0 ? "±0" : (diff > 0 ? "+" : "−") + diff.abs().toString();
+
+    return Container(
+        color: rank == 1 ? Color(0xFFFFFBEA) : Colors.white,
+        padding: EdgeInsets.fromLTRB(12, 10, 14, 10),
+        child: Row(children: [
+          Container(
+              width: 32,
+              height: 32,
+              alignment: Alignment.center,
+              decoration: medal
+                  ? BoxDecoration(
+                      color: medalColors[rank - 1], shape: BoxShape.circle)
+                  : null,
+              child: Text(rank.toString(),
+                  style: GoogleFonts.lato(
+                      color: medal ? medalText[rank - 1] : Colors.grey[600],
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold))),
+          SpaceH(12),
+          Expanded(
+              child: Text(name,
+                  overflow: TextOverflow.ellipsis,
+                  style: GoogleFonts.lato(
+                      color: Colors.black87,
+                      fontSize: rank == 1 ? 18 : 16,
+                      fontWeight: FontWeight.bold))),
+          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text(score.toString(),
+                style: GoogleFonts.lato(
+                    color: rank == 1 ? maincolor : Colors.black87,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold)),
+            Text(diffText,
+                style: GoogleFonts.lato(
+                    color: diffColor,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold)),
+          ]),
         ]));
   }
 
@@ -272,50 +368,6 @@ class _FinishPageState extends State<FinishPage> {
               AppLocalizations.of(context)!.share_text2 +
               Data.getWebsiteStringImm(context, App.of(context).getLocality()));
     });
-  }
-
-  Widget getRadioButtons() {
-    List<Widget> children = [];
-
-    // Comparison to par, unused.
-    /*
-      children.add(Row(children: [
-        SpaceH(20),
-        RadioButton(0, AppLocalizations.of(context)!.current_round, () {
-          setState(() {
-            generalType = GeneralType.CURRENT;
-          });
-        }, generalType != GeneralType.CURRENT),
-        //SpaceH(4),
-        RadioButton(2, AppLocalizations.of(context)!.comp, () {
-          setState(() {
-            generalType = GeneralType.COMPARE;
-          });
-        }, generalType != GeneralType.COMPARE),
-        Spacer()
-      ]));
-      children.add(Space(8));
-    */
-
-    children.add(
-      Row(children: [
-        SpaceH(20),
-        RadioButton(0, AppLocalizations.of(context)!.single, () {
-          setState(() {
-            detailType = DetailType.SINGLE;
-          });
-        }, detailType != DetailType.SINGLE),
-        //SpaceH(4),
-        RadioButton(2, AppLocalizations.of(context)!.cumulated, () {
-          setState(() {
-            detailType = DetailType.CUMULATED;
-          });
-        }, detailType != DetailType.CUMULATED),
-        Spacer()
-      ]),
-    );
-
-    return Column(children: children);
   }
 
   /// Par-Linie zur aktuellen Ansicht (nicht beim Vergleich mit Par).

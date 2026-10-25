@@ -1074,4 +1074,10 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get hole_done => 'Fertig';
+
+  @override
+  String get round_finished => 'Runde beendet';
+
+  @override
+  String get chart_title => 'Verlauf';
 }

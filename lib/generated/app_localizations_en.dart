@@ -1065,4 +1065,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get hole_done => 'Done';
+
+  @override
+  String get round_finished => 'Round complete';
+
+  @override
+  String get chart_title => 'Progress';
 }

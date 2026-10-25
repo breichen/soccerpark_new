@@ -405,5 +405,7 @@
             }
         }
     },
-    "hole_done": "Done"
+    "hole_done": "Done",
+    "round_finished": "Round complete",
+    "chart_title": "Progress"
 }

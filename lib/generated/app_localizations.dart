@@ -2083,6 +2083,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Fertig'**
   String get hole_done;
+
+  /// No description provided for @round_finished.
+  ///
+  /// In de, this message translates to:
+  /// **'Runde beendet'**
+  String get round_finished;
+
+  /// No description provided for @chart_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Verlauf'**
+  String get chart_title;
 }
 
 class _AppLocalizationsDelegate
