@@ -342,5 +342,6 @@
     "venue_transit": "Mit Bus und Bahn",
     "venue_transit_sub": "Fahrplanauskunft",
     "venue_description": "Wegbeschreibung",
-    "venue_description_sub": "Ausführlich auf der Website"
+    "venue_description_sub": "Ausführlich auf der Website",
+    "settings_venue": "Anlage"
 }

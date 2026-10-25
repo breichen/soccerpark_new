@@ -1023,4 +1023,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get venue_description_sub => 'Details on the website';
+
+  @override
+  String get settings_venue => 'Venue';
 }

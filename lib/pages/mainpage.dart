@@ -82,6 +82,8 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    // Neu aufbauen, wenn in den Einstellungen die Anlage gewechselt wird.
+    App.localityOf(context);
 
     return Scaffold(
         appBar: CustomAppBar(

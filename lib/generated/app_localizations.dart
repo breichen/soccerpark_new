@@ -2011,6 +2011,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Ausführlich auf der Website'**
   String get venue_description_sub;
+
+  /// No description provided for @settings_venue.
+  ///
+  /// In de, this message translates to:
+  /// **'Anlage'**
+  String get settings_venue;
 }
 
 class _AppLocalizationsDelegate

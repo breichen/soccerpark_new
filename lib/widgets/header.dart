@@ -12,7 +12,7 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final locality = App.of(context).getLocality();
+    final locality = App.localityOf(context);
     return Column(children: [
       Stack(clipBehavior: Clip.none, children: [
         SizedBox(
@@ -41,7 +41,7 @@ class HeaderLogo extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey[300]!)),
         child: Image.asset(
-            Data.getLocalityImageString(App.of(context).getLocality()),
+            Data.getLocalityImageString(App.localityOf(context)),
             fit: BoxFit.contain));
   }
 }

@@ -41,7 +41,7 @@ class ContactCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
-    final c = VenueContact.of(context, App.of(context).getLocality());
+    final c = VenueContact.of(context, App.localityOf(context));
 
     return Container(
         width: double.infinity,

@@ -1032,4 +1032,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get venue_description_sub => 'Ausführlich auf der Website';
+
+  @override
+  String get settings_venue => 'Anlage';
 }

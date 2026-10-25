@@ -369,5 +369,6 @@
     "venue_transit": "By public transport",
     "venue_transit_sub": "Timetable information",
     "venue_description": "Directions",
-    "venue_description_sub": "Details on the website"
+    "venue_description_sub": "Details on the website",
+    "settings_venue": "Venue"
 }

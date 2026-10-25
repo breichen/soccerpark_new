@@ -58,6 +58,22 @@ class App extends StatefulWidget {
 
   static _AppState of(BuildContext context) =>
       context.findAncestorStateOfType<_AppState>()!;
+
+  /// Gewählte Anlage. Anders als [of] baut sich das aufrufende Widget neu,
+  /// sobald die Anlage gewechselt wird (z. B. Kopfbild im Hauptmenü).
+  /// Nicht in initState verwenden.
+  static Locality localityOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<_AppScope>()!.locality;
+}
+
+/// Gibt Änderungen der Anlage an alle Seiten weiter.
+class _AppScope extends InheritedWidget {
+  const _AppScope({required this.locality, required super.child});
+
+  final Locality locality;
+
+  @override
+  bool updateShouldNotify(_AppScope old) => old.locality != locality;
 }
 
 class _AppState extends State<App> {
@@ -97,7 +113,7 @@ class _AppState extends State<App> {
   }
 
   void setLocality(Locality loc) {
-    _locality = loc;
+    setState(() => _locality = loc);
     Data.setLocality(loc);
   }
 
@@ -139,7 +155,9 @@ class _AppState extends State<App> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return _AppScope(
+        locality: _locality,
+        child: MaterialApp(
       title: 'Soccerpark',
       scaffoldMessengerKey: messengerKey,
       locale: _locale,
@@ -155,7 +173,7 @@ class _AppState extends State<App> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-    );
+    ));
   }
 }
 
