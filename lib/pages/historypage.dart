@@ -123,9 +123,9 @@ class _HistoryPageState extends State<HistoryPage> {
               child: Container(
                   color: bgcolor,
                   child: ListView(children: <Widget>[
-                    Space(10),
+                    Space(16),
                     getChartDropdown(types, holes),
-                    Space(10),
+                    Space(28),
                     getChart(),
                     Space(20),
                     getRoundCard(),
