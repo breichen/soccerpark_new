@@ -182,8 +182,11 @@ class _RoundPageState extends State<RoundPage> {
           SizedBox(
               width: holeWidth,
               child: Padding(
-                  padding: EdgeInsets.only(left: 12),
-                  child: Text(l.hole, style: styleHeader, maxLines: 1))),
+                  padding: EdgeInsets.only(right: 8),
+                  child: Text(l.hole,
+                      style: styleHeader,
+                      maxLines: 1,
+                      textAlign: TextAlign.right))),
           SizedBox(
               width: parWidth,
               child: Text("Par",
@@ -222,24 +225,31 @@ class _RoundPageState extends State<RoundPage> {
                         bottom: BorderSide(color: Colors.grey[200]!))),
                 padding: EdgeInsets.symmetric(vertical: 9),
                 child: Row(children: [
+                  // Bahnnummer rechtsbündig; links fester Platz für den
+                  // Pfeil der aktuellen Bahn, damit alle Zahlen
+                  // untereinander stehen (auch zweistellige).
                   SizedBox(
                       width: holeWidth - 4,
                       child: Padding(
-                          padding: EdgeInsets.only(left: current ? 2 : 8),
+                          padding: EdgeInsets.only(left: 2, right: 8),
                           child: Row(children: [
-                            // Aktuelle Bahn: grüner Pfeil (Icon statt
-                            // Zeichen, das sonst als Emoji erscheint).
-                            if (current)
-                              Icon(Icons.play_arrow_rounded,
-                                  color: maincolor, size: 18),
-                            Text(hole.toString(),
-                                style: GoogleFonts.lato(
-                                    color:
-                                        current ? maincolor : Colors.black87,
-                                    fontSize: 16,
-                                    fontWeight: current
-                                        ? FontWeight.bold
-                                        : FontWeight.normal)),
+                            SizedBox(
+                                width: 18,
+                                child: current
+                                    ? Icon(Icons.play_arrow_rounded,
+                                        color: maincolor, size: 18)
+                                    : null),
+                            Expanded(
+                                child: Text(hole.toString(),
+                                    textAlign: TextAlign.right,
+                                    style: GoogleFonts.lato(
+                                        color: current
+                                            ? maincolor
+                                            : Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: current
+                                            ? FontWeight.bold
+                                            : FontWeight.normal))),
                           ]))),
                   SizedBox(
                       width: parWidth,
@@ -291,9 +301,10 @@ class _RoundPageState extends State<RoundPage> {
           SizedBox(
               width: holeWidth,
               child: Padding(
-                  padding: EdgeInsets.only(left: 12),
+                  padding: EdgeInsets.only(right: 8),
                   child: Text(label,
                       maxLines: 1,
+                      textAlign: TextAlign.right,
                       style: GoogleFonts.lato(
                           color: Colors.black87,
                           fontSize: total ? 18 : 13,
