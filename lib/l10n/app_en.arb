@@ -279,5 +279,34 @@
     "holeAddSbg_17_4": "1 wooden wall to shoot through",
     "holeAddSbg_17_5": "1 sand bunker ca. 25x2m",
     "holeAddSbg_18_1": "1 sand bunker ca. 12x6m",
-    "holeAddSbg_18_2": "1 vulcano"
+    "holeAddSbg_18_2": "1 vulcano",
+    "online_highscores": "Online (month)",
+    "online_hs_title": "Monthly highscore!",
+    "online_hs_text": "{name} reaches place {rank} on this month's {locality} leaderboard with {score} strokes. Which name should be shown publicly?",
+    "@online_hs_text": {
+        "description": "Dialog text when a player reaches the monthly online top 10.",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "score": {
+                "type": "int"
+            },
+            "rank": {
+                "type": "int"
+            },
+            "locality": {
+                "type": "String"
+            }
+        }
+    },
+    "online_hs_name_label": "Display name",
+    "online_hs_name_invalid": "Please enter 2 to 20 characters.",
+    "online_hs_submit": "Submit",
+    "online_hs_skip": "Skip",
+    "online_hs_saved": "Added to the monthly leaderboard!",
+    "online_hs_too_late": "Someone was faster: the round no longer makes the top 10.",
+    "online_hs_error": "Submitting failed. Please check your internet connection.",
+    "online_hs_load_error": "Could not load the leaderboard. Please check your internet connection.",
+    "online_hs_empty": "No entries yet this month."
 }

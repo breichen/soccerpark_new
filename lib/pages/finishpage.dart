@@ -10,6 +10,9 @@ import '../utils/csv.dart';
 import '../utils/pdf.dart';
 import '../utils/share.dart';
 import '../utils/export.dart';
+import '../utils/online_highscores.dart';
+import '../dialogs/onlinehighscoredialog.dart';
+import '../widgets/toast.dart';
 import '../widgets/appbar.dart';
 import '../widgets/footer.dart';
 import '../widgets/space.dart';
@@ -63,6 +66,79 @@ class _FinishPageState extends State<FinishPage> {
         totalScores.add(widget.data.scores[i].reduce((a, b) => a + b));
       }
     });
+
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => checkOnlineHighscores());
+  }
+
+  /// Prüft nach einer vollen Runde, ob Spieler in die monatliche
+  /// Online-Bestenliste kommen, und bietet das Eintragen an.
+  /// Ohne Internet oder ohne Supabase-Konfiguration passiert nichts.
+  Future<void> checkOnlineHighscores() async {
+    print("checkOnlineHighscores");
+    if (!OnlineHighscores.isConfigured) return;
+    print("still here");
+
+    final loc = widget.data.loc;
+    List<OnlineHighscore> list;
+    try {
+      list = await OnlineHighscores.fetch(loc, OnlineHighscores.currentMonth());
+    } catch (e) {
+      debugPrint('Online highscores not available: $e');
+      return;
+    }
+
+    // Beste Runde zuerst; sobald einer nicht reicht, reicht keiner mehr.
+    final order = List<int>.generate(widget.data.names.length, (i) => i)
+      ..sort((a, b) => totalScores[a].compareTo(totalScores[b]));
+
+    for (final pl in order) {
+      if (!mounted) return;
+      final total = totalScores[pl];
+      final rank = OnlineHighscores.prospectiveRank(list, total);
+      if (rank == null) break;
+
+      final playerName = widget.data.names[pl];
+      final suggested = await OnlineHighscores.suggestedName(playerName);
+      if (!mounted) return;
+
+      final chosen = await showDialog<String>(
+          context: context,
+          barrierDismissible: false,
+          builder: (_) => OnlineHighscoreDialog(playerName, total, rank,
+              Data.getLocalityStringImm(loc), suggested));
+      if (chosen == null || !mounted) continue;
+
+      await OnlineHighscores.saveName(playerName, chosen);
+      try {
+        final placed =
+            await OnlineHighscores.submit(loc, chosen, widget.data.scores[pl]);
+        if (!mounted) return;
+        if (placed != null) {
+          CustomToast.showToastIcon(
+              context,
+              AppLocalizations.of(context)!.online_hs_saved,
+              Icons.emoji_events);
+        } else {
+          CustomToast.showToast(
+              context, AppLocalizations.of(context)!.online_hs_too_late);
+        }
+      } catch (e) {
+        debugPrint('Submitting online highscore failed: $e');
+        if (!mounted) return;
+        CustomToast.showToast(
+            context, AppLocalizations.of(context)!.online_hs_error);
+        continue;
+      }
+
+      // Liste für die weiteren Spieler aktualisieren.
+      try {
+        list =
+            await OnlineHighscores.fetch(loc, OnlineHighscores.currentMonth());
+      } catch (e) {
+        return;
+      }
+    }
   }
 
   void initChartData() {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1018336090361",
+    "project_id": "soccerpark-aa64d",
+    "storage_bucket": "soccerpark-aa64d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018336090361:android:66383e106e6675ba8eea28",
+        "android_client_info": {
+          "package_name": "com.soccerpark.austria"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoTWyvNzKG6Zl9TnfJVzBaSq4yIAzTJwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -839,4 +839,42 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get holeAddSbg_18_2 => '1 Vulkan';
+
+  @override
+  String get online_highscores => 'Online (Monat)';
+
+  @override
+  String get online_hs_title => 'Monats-Highscore!';
+
+  @override
+  String online_hs_text(String name, int score, int rank, String locality) {
+    return '${name} schafft mit ${score} Schlägen Platz ${rank} der Monatsbestenliste ${locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?';
+  }
+
+  @override
+  String get online_hs_name_label => 'Anzeigename';
+
+  @override
+  String get online_hs_name_invalid => 'Bitte 2 bis 20 Zeichen eingeben.';
+
+  @override
+  String get online_hs_submit => 'Eintragen';
+
+  @override
+  String get online_hs_skip => 'Nicht eintragen';
+
+  @override
+  String get online_hs_saved => 'In die Monatsbestenliste eingetragen!';
+
+  @override
+  String get online_hs_too_late => 'Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 10.';
+
+  @override
+  String get online_hs_error => 'Eintragen fehlgeschlagen. Bitte Internetverbindung prüfen.';
+
+  @override
+  String get online_hs_load_error => 'Bestenliste konnte nicht geladen werden. Bitte Internetverbindung prüfen.';
+
+  @override
+  String get online_hs_empty => 'In diesem Monat gibt es noch keine Einträge.';
 }

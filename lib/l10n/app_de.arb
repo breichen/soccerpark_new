@@ -279,5 +279,17 @@
     "holeAddSbg_17_4": "1 Holzwand zum Durchschießen",
     "holeAddSbg_17_5": "1 Sandbunker ca. 25x2m",
     "holeAddSbg_18_1": "1 Sandbunker ca. 12x6m",
-    "holeAddSbg_18_2": "1 Vulkan"
+    "holeAddSbg_18_2": "1 Vulkan",
+    "online_highscores": "Online (Monat)",
+    "online_hs_title": "Monats-Highscore!",
+    "online_hs_text": "{name} schafft mit {score} Schlägen Platz {rank} der Monatsbestenliste {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?",
+    "online_hs_name_label": "Anzeigename",
+    "online_hs_name_invalid": "Bitte 2 bis 20 Zeichen eingeben.",
+    "online_hs_submit": "Eintragen",
+    "online_hs_skip": "Nicht eintragen",
+    "online_hs_saved": "In die Monatsbestenliste eingetragen!",
+    "online_hs_too_late": "Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 10.",
+    "online_hs_error": "Eintragen fehlgeschlagen. Bitte Internetverbindung prüfen.",
+    "online_hs_load_error": "Bestenliste konnte nicht geladen werden. Bitte Internetverbindung prüfen.",
+    "online_hs_empty": "In diesem Monat gibt es noch keine Einträge."
 }

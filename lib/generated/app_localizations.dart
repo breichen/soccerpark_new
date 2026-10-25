@@ -1633,6 +1633,78 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'1 Vulkan'**
   String get holeAddSbg_18_2;
+
+  /// No description provided for @online_highscores.
+  ///
+  /// In de, this message translates to:
+  /// **'Online (Monat)'**
+  String get online_highscores;
+
+  /// No description provided for @online_hs_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Monats-Highscore!'**
+  String get online_hs_title;
+
+  /// No description provided for @online_hs_text.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} schafft mit {score} Schlägen Platz {rank} der Monatsbestenliste {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?'**
+  String online_hs_text(String name, int score, int rank, String locality);
+
+  /// No description provided for @online_hs_name_label.
+  ///
+  /// In de, this message translates to:
+  /// **'Anzeigename'**
+  String get online_hs_name_label;
+
+  /// No description provided for @online_hs_name_invalid.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte 2 bis 20 Zeichen eingeben.'**
+  String get online_hs_name_invalid;
+
+  /// No description provided for @online_hs_submit.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintragen'**
+  String get online_hs_submit;
+
+  /// No description provided for @online_hs_skip.
+  ///
+  /// In de, this message translates to:
+  /// **'Nicht eintragen'**
+  String get online_hs_skip;
+
+  /// No description provided for @online_hs_saved.
+  ///
+  /// In de, this message translates to:
+  /// **'In die Monatsbestenliste eingetragen!'**
+  String get online_hs_saved;
+
+  /// No description provided for @online_hs_too_late.
+  ///
+  /// In de, this message translates to:
+  /// **'Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 10.'**
+  String get online_hs_too_late;
+
+  /// No description provided for @online_hs_error.
+  ///
+  /// In de, this message translates to:
+  /// **'Eintragen fehlgeschlagen. Bitte Internetverbindung prüfen.'**
+  String get online_hs_error;
+
+  /// No description provided for @online_hs_load_error.
+  ///
+  /// In de, this message translates to:
+  /// **'Bestenliste konnte nicht geladen werden. Bitte Internetverbindung prüfen.'**
+  String get online_hs_load_error;
+
+  /// No description provided for @online_hs_empty.
+  ///
+  /// In de, this message translates to:
+  /// **'In diesem Monat gibt es noch keine Einträge.'**
+  String get online_hs_empty;
 }
 
 class _AppLocalizationsDelegate

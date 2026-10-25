@@ -830,4 +830,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get holeAddSbg_18_2 => '1 vulcano';
+
+  @override
+  String get online_highscores => 'Online (month)';
+
+  @override
+  String get online_hs_title => 'Monthly highscore!';
+
+  @override
+  String online_hs_text(String name, int score, int rank, String locality) {
+    return '${name} reaches place ${rank} on this month\'s ${locality} leaderboard with ${score} strokes. Which name should be shown publicly?';
+  }
+
+  @override
+  String get online_hs_name_label => 'Display name';
+
+  @override
+  String get online_hs_name_invalid => 'Please enter 2 to 20 characters.';
+
+  @override
+  String get online_hs_submit => 'Submit';
+
+  @override
+  String get online_hs_skip => 'Skip';
+
+  @override
+  String get online_hs_saved => 'Added to the monthly leaderboard!';
+
+  @override
+  String get online_hs_too_late => 'Someone was faster: the round no longer makes the top 10.';
+
+  @override
+  String get online_hs_error => 'Submitting failed. Please check your internet connection.';
+
+  @override
+  String get online_hs_load_error => 'Could not load the leaderboard. Please check your internet connection.';
+
+  @override
+  String get online_hs_empty => 'No entries yet this month.';
 }
