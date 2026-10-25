@@ -978,4 +978,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get copied => 'Copied to clipboard';
+
+  @override
+  String get about => 'About the app';
+
+  @override
+  String get whats_new => 'What\'s new';
+
+  @override
+  String get feedback_title => 'Feedback';
+
+  @override
+  String get rate_app => 'Rate the app';
+
+  @override
+  String get report_bug => 'Report a problem';
+
+  @override
+  String get legal_title => 'Legal';
+
+  @override
+  String get privacy => 'Privacy';
+
+  @override
+  String get licenses => 'Open-source licences';
 }

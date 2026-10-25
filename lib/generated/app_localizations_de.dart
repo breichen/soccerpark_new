@@ -987,4 +987,28 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get copied => 'In die Zwischenablage kopiert';
+
+  @override
+  String get about => 'Über die App';
+
+  @override
+  String get whats_new => 'Was ist neu';
+
+  @override
+  String get feedback_title => 'Feedback';
+
+  @override
+  String get rate_app => 'App bewerten';
+
+  @override
+  String get report_bug => 'Fehler melden';
+
+  @override
+  String get legal_title => 'Rechtliches';
+
+  @override
+  String get privacy => 'Datenschutz';
+
+  @override
+  String get licenses => 'Open-Source-Lizenzen';
 }

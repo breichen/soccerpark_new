@@ -1921,6 +1921,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'In die Zwischenablage kopiert'**
   String get copied;
+
+  /// No description provided for @about.
+  ///
+  /// In de, this message translates to:
+  /// **'Über die App'**
+  String get about;
+
+  /// No description provided for @whats_new.
+  ///
+  /// In de, this message translates to:
+  /// **'Was ist neu'**
+  String get whats_new;
+
+  /// No description provided for @feedback_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Feedback'**
+  String get feedback_title;
+
+  /// No description provided for @rate_app.
+  ///
+  /// In de, this message translates to:
+  /// **'App bewerten'**
+  String get rate_app;
+
+  /// No description provided for @report_bug.
+  ///
+  /// In de, this message translates to:
+  /// **'Fehler melden'**
+  String get report_bug;
+
+  /// No description provided for @legal_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Rechtliches'**
+  String get legal_title;
+
+  /// No description provided for @privacy.
+  ///
+  /// In de, this message translates to:
+  /// **'Datenschutz'**
+  String get privacy;
+
+  /// No description provided for @licenses.
+  ///
+  /// In de, this message translates to:
+  /// **'Open-Source-Lizenzen'**
+  String get licenses;
 }
 
 class _AppLocalizationsDelegate

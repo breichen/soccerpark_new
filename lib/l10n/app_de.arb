@@ -327,5 +327,13 @@
     "contact_address_label": "Adresse",
     "contact_phone_label": "Telefon",
     "contact_copy_hint": "Tipp: Lange drücken kopiert Adresse, Nummer oder Link.",
-    "copied": "In die Zwischenablage kopiert"
+    "copied": "In die Zwischenablage kopiert",
+    "about": "Über die App",
+    "whats_new": "Was ist neu",
+    "feedback_title": "Feedback",
+    "rate_app": "App bewerten",
+    "report_bug": "Fehler melden",
+    "legal_title": "Rechtliches",
+    "privacy": "Datenschutz",
+    "licenses": "Open-Source-Lizenzen"
 }

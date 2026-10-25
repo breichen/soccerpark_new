@@ -90,7 +90,7 @@ class MenuItem extends PopupMenuItem<int> {
       case MenuItemE.VENUE:
         return AppLocalizations.of(context)!.venue;
       case MenuItemE.VERSION:
-        return AppLocalizations.of(context)!.version;
+        return AppLocalizations.of(context)!.about;
       default:
         assert(false);
         return "";

@@ -142,6 +142,7 @@ flutter:
     - assets/google_fonts/
 
     - assets/pics/soccer.png
+    - assets/pics/ball.jpg
     - assets/pics/soccer_wagrain.png
     - assets/pics/soccer_goldberg.png
     - assets/pics/greyscale.png
