@@ -1739,7 +1739,7 @@ abstract class AppLocalizations {
   /// No description provided for @round_progress.
   ///
   /// In de, this message translates to:
-  /// **'{players} Spieler · {holes} von 18 Bahnen gespielt'**
+  /// **'{players} Personen · {holes} von 18 Bahnen gespielt'**
   String round_progress(int players, int holes);
 
   /// No description provided for @order_important.
@@ -2021,19 +2021,19 @@ abstract class AppLocalizations {
   /// No description provided for @players_title.
   ///
   /// In de, this message translates to:
-  /// **'Mitspieler'**
+  /// **'Mitspielende'**
   String get players_title;
 
   /// No description provided for @add_players.
   ///
   /// In de, this message translates to:
-  /// **'Spieler hinzufügen'**
+  /// **'Weitere hinzufügen'**
   String get add_players;
 
   /// No description provided for @new_player.
   ///
   /// In de, this message translates to:
-  /// **'Neuer Spieler'**
+  /// **'Neue Person'**
   String get new_player;
 
   /// No description provided for @long_press_hint.
@@ -2045,13 +2045,13 @@ abstract class AppLocalizations {
   /// No description provided for @select_players_hint.
   ///
   /// In de, this message translates to:
-  /// **'Wähle mindestens einen Spieler'**
+  /// **'Wähle mindestens eine Person'**
   String get select_players_hint;
 
   /// No description provided for @players_full_error.
   ///
   /// In de, this message translates to:
-  /// **'Es können höchstens 5 Spieler mitspielen.'**
+  /// **'Es können höchstens 5 Personen mitspielen.'**
   String get players_full_error;
 
   /// No description provided for @players_count.
@@ -2063,14 +2063,20 @@ abstract class AppLocalizations {
   /// No description provided for @start_round.
   ///
   /// In de, this message translates to:
-  /// **'Runde starten · {count} Spieler'**
+  /// **'Runde starten · {count} Personen'**
   String start_round(int count);
 
   /// No description provided for @start_round_one.
   ///
   /// In de, this message translates to:
-  /// **'Runde starten · 1 Spieler'**
+  /// **'Runde starten · 1 Person'**
   String get start_round_one;
+
+  /// No description provided for @round_progress_one.
+  ///
+  /// In de, this message translates to:
+  /// **'1 Person · {holes} von 18 Bahnen gespielt'**
+  String round_progress_one(int holes);
 }
 
 class _AppLocalizationsDelegate

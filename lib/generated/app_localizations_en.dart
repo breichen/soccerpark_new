@@ -1057,4 +1057,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get start_round_one => 'Start round · 1 player';
+
+  @override
+  String round_progress_one(int holes) {
+    return '1 player · ${holes} of 18 holes played';
+  }
 }

@@ -895,7 +895,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String round_progress(int players, int holes) {
-    return '${players} Spieler · ${holes} von 18 Bahnen gespielt';
+    return '${players} Personen · ${holes} von 18 Bahnen gespielt';
   }
 
   @override
@@ -1037,22 +1037,22 @@ class AppLocalizationsDe extends AppLocalizations {
   String get settings_venue => 'Anlage';
 
   @override
-  String get players_title => 'Mitspieler';
+  String get players_title => 'Mitspielende';
 
   @override
-  String get add_players => 'Spieler hinzufügen';
+  String get add_players => 'Weitere hinzufügen';
 
   @override
-  String get new_player => 'Neuer Spieler';
+  String get new_player => 'Neue Person';
 
   @override
   String get long_press_hint => 'Lange drücken: bearbeiten oder löschen';
 
   @override
-  String get select_players_hint => 'Wähle mindestens einen Spieler';
+  String get select_players_hint => 'Wähle mindestens eine Person';
 
   @override
-  String get players_full_error => 'Es können höchstens 5 Spieler mitspielen.';
+  String get players_full_error => 'Es können höchstens 5 Personen mitspielen.';
 
   @override
   String players_count(int count, int max) {
@@ -1061,9 +1061,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String start_round(int count) {
-    return 'Runde starten · ${count} Spieler';
+    return 'Runde starten · ${count} Personen';
   }
 
   @override
-  String get start_round_one => 'Runde starten · 1 Spieler';
+  String get start_round_one => 'Runde starten · 1 Person';
+
+  @override
+  String round_progress_one(int holes) {
+    return '1 Person · ${holes} von 18 Bahnen gespielt';
+  }
 }

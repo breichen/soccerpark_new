@@ -109,7 +109,9 @@ class _MainPageState extends State<MainPage> {
                       icon: Icons.play_arrow_rounded,
                       title: loc.continue_round,
                       subtitle: currPlayers > 0
-                          ? loc.round_progress(currPlayers, currHolesDone)
+                          ? (currPlayers == 1
+                              ? loc.round_progress_one(currHolesDone)
+                              : loc.round_progress(currPlayers, currHolesDone))
                           : null,
                       onTap: () => open(RoundPage(0), refresh: true),
                     ),

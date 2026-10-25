@@ -396,5 +396,13 @@
             }
         }
     },
-    "start_round_one": "Start round · 1 player"
+    "start_round_one": "Start round · 1 player",
+    "round_progress_one": "1 player · {holes} of 18 holes played",
+    "@round_progress_one": {
+        "placeholders": {
+            "holes": {
+                "type": "int"
+            }
+        }
+    }
 }
