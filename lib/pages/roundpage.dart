@@ -135,6 +135,14 @@ class _RoundPageState extends State<RoundPage> {
     final l = AppLocalizations.of(context)!;
     final intermediate = App.of(context).isIntermediate();
 
+    // Solange die Runde lädt, sind Namen, Schläge und Par noch leer:
+    // dann keine Tabelle bauen, nur den Ladekreis zeigen.
+    if (!loaded) {
+      return Scaffold(
+          appBar: CustomAppBar(context, l.round, MenuItemE.COUNT, []),
+          body: Center(child: CircularProgressIndicator()));
+    }
+
     final rows = <Widget>[];
     for (var hole = 1; hole <= 18; hole++) {
       rows.add(getHoleRow(hole));
@@ -145,10 +153,8 @@ class _RoundPageState extends State<RoundPage> {
     return Scaffold(
       appBar: CustomAppBar(
           context, l.round, MenuItemE.COUNT, getQuickButtons(context)),
-      bottomNavigationBar: playing && loaded ? getBottomBar(l) : null,
-      body: !loaded
-          ? Center(child: CircularProgressIndicator())
-          : Stack(children: [
+      bottomNavigationBar: playing ? getBottomBar(l) : null,
+      body: Stack(children: [
               // Die ganze Scorecard (auch fürs Teilen als Bild).
               ListView(controller: _scroll, children: [
                 RepaintBoundary(
