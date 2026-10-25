@@ -1777,6 +1777,126 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Website'**
   String get contact_web;
+
+  /// No description provided for @rules_section_game.
+  ///
+  /// In de, this message translates to:
+  /// **'Spielregeln'**
+  String get rules_section_game;
+
+  /// No description provided for @rules_section_info.
+  ///
+  /// In de, this message translates to:
+  /// **'Gut zu wissen'**
+  String get rules_section_info;
+
+  /// No description provided for @rules_t1.
+  ///
+  /// In de, this message translates to:
+  /// **'Grundprinzip'**
+  String get rules_t1;
+
+  /// No description provided for @rules_t2.
+  ///
+  /// In de, this message translates to:
+  /// **'Bahntafel'**
+  String get rules_t2;
+
+  /// No description provided for @rules_t3.
+  ///
+  /// In de, this message translates to:
+  /// **'Rote Pfeile'**
+  String get rules_t3;
+
+  /// No description provided for @rules_t4.
+  ///
+  /// In de, this message translates to:
+  /// **'Abschuss'**
+  String get rules_t4;
+
+  /// No description provided for @rules_t5.
+  ///
+  /// In de, this message translates to:
+  /// **'Rough, Bunker und Aus'**
+  String get rules_t5;
+
+  /// No description provided for @rules_t6.
+  ///
+  /// In de, this message translates to:
+  /// **'Spielreihenfolge'**
+  String get rules_t6;
+
+  /// No description provided for @rules_t7.
+  ///
+  /// In de, this message translates to:
+  /// **'Ball im Weg'**
+  String get rules_t7;
+
+  /// No description provided for @rules_t8.
+  ///
+  /// In de, this message translates to:
+  /// **'Maximale Schusszahl'**
+  String get rules_t8;
+
+  /// No description provided for @rules_t9.
+  ///
+  /// In de, this message translates to:
+  /// **'Wasserhindernis'**
+  String get rules_t9;
+
+  /// No description provided for @rules_max_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Höchstens 2 × Par – sonst 2 × Par + 1 aufschreiben'**
+  String get rules_max_hint;
+
+  /// No description provided for @rules_t10.
+  ///
+  /// In de, this message translates to:
+  /// **'Toiletten'**
+  String get rules_t10;
+
+  /// No description provided for @rules_t11.
+  ///
+  /// In de, this message translates to:
+  /// **'Rücksicht'**
+  String get rules_t11;
+
+  /// No description provided for @rules_t12.
+  ///
+  /// In de, this message translates to:
+  /// **'Überholen lassen'**
+  String get rules_t12;
+
+  /// No description provided for @rules_t13.
+  ///
+  /// In de, this message translates to:
+  /// **'Kindergeburtstage'**
+  String get rules_t13;
+
+  /// No description provided for @rules_t14.
+  ///
+  /// In de, this message translates to:
+  /// **'Nach der Runde'**
+  String get rules_t14;
+
+  /// No description provided for @rules_t15.
+  ///
+  /// In de, this message translates to:
+  /// **'Getränke und Snacks'**
+  String get rules_t15;
+
+  /// No description provided for @rules_t16.
+  ///
+  /// In de, this message translates to:
+  /// **'WLAN und Feedback'**
+  String get rules_t16;
+
+  /// No description provided for @rules_t17.
+  ///
+  /// In de, this message translates to:
+  /// **'Gutscheine und Fragen'**
+  String get rules_t17;
 }
 
 class _AppLocalizationsDelegate

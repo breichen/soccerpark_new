@@ -915,4 +915,64 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get contact_web => 'Website';
+
+  @override
+  String get rules_section_game => 'Spielregeln';
+
+  @override
+  String get rules_section_info => 'Gut zu wissen';
+
+  @override
+  String get rules_t1 => 'Grundprinzip';
+
+  @override
+  String get rules_t2 => 'Bahntafel';
+
+  @override
+  String get rules_t3 => 'Rote Pfeile';
+
+  @override
+  String get rules_t4 => 'Abschuss';
+
+  @override
+  String get rules_t5 => 'Rough, Bunker und Aus';
+
+  @override
+  String get rules_t6 => 'Spielreihenfolge';
+
+  @override
+  String get rules_t7 => 'Ball im Weg';
+
+  @override
+  String get rules_t8 => 'Maximale Schusszahl';
+
+  @override
+  String get rules_t9 => 'Wasserhindernis';
+
+  @override
+  String get rules_max_hint => 'Höchstens 2 × Par – sonst 2 × Par + 1 aufschreiben';
+
+  @override
+  String get rules_t10 => 'Toiletten';
+
+  @override
+  String get rules_t11 => 'Rücksicht';
+
+  @override
+  String get rules_t12 => 'Überholen lassen';
+
+  @override
+  String get rules_t13 => 'Kindergeburtstage';
+
+  @override
+  String get rules_t14 => 'Nach der Runde';
+
+  @override
+  String get rules_t15 => 'Getränke und Snacks';
+
+  @override
+  String get rules_t16 => 'WLAN und Feedback';
+
+  @override
+  String get rules_t17 => 'Gutscheine und Fragen';
 }

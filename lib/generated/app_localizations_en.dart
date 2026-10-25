@@ -906,4 +906,64 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contact_web => 'Website';
+
+  @override
+  String get rules_section_game => 'Rules of the game';
+
+  @override
+  String get rules_section_info => 'Good to know';
+
+  @override
+  String get rules_t1 => 'The basics';
+
+  @override
+  String get rules_t2 => 'Hole board';
+
+  @override
+  String get rules_t3 => 'Red arrows';
+
+  @override
+  String get rules_t4 => 'Tee-off';
+
+  @override
+  String get rules_t5 => 'Rough, bunkers and out of bounds';
+
+  @override
+  String get rules_t6 => 'Order of play';
+
+  @override
+  String get rules_t7 => 'Ball in the way';
+
+  @override
+  String get rules_t8 => 'Maximum number of shots';
+
+  @override
+  String get rules_t9 => 'Water hazard';
+
+  @override
+  String get rules_max_hint => 'At most 2 × par – otherwise write down 2 × par + 1';
+
+  @override
+  String get rules_t10 => 'Toilets';
+
+  @override
+  String get rules_t11 => 'Consideration';
+
+  @override
+  String get rules_t12 => 'Letting others pass';
+
+  @override
+  String get rules_t13 => 'Children\'s birthdays';
+
+  @override
+  String get rules_t14 => 'After your round';
+
+  @override
+  String get rules_t15 => 'Drinks and snacks';
+
+  @override
+  String get rules_t16 => 'Wi-Fi and feedback';
+
+  @override
+  String get rules_t17 => 'Vouchers and questions';
 }
