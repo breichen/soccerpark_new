@@ -868,4 +868,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get online_hs_empty => 'No entries yet this month.';
+
+  @override
+  String get leaderboards => 'Leaderboards';
+
+  @override
+  String get best_score => 'Best score';
+
+  @override
+  String get last_round => 'Last round';
+
+  @override
+  String get no_entries => 'No entries yet.';
 }

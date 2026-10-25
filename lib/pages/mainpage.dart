@@ -16,6 +16,8 @@ import '../widgets/space.dart';
 import '../widgets/appbar.dart';
 import './roundpage.dart';
 import './historypage.dart';
+import './highscorepage.dart';
+import '../utils/online_highscores.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -97,6 +99,13 @@ class _MainPageState extends State<MainPage> {
                 MaterialPageRoute(builder: (context) => HistoryPage()),
               );
             }, disable: !isHist),
+            Space(buttonSep),
+            FullWidthButton(AppLocalizations.of(context)!.leaderboards, () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HighscorePage()),
+              );
+            }, disable: !isHist && !OnlineHighscores.isConfigured),
             /*Space(buttonSep),
             FullWidthButton(AppLocalizations.of(context)!.info, () {
               Navigator.push(

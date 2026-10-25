@@ -1705,6 +1705,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'In diesem Monat gibt es noch keine Einträge.'**
   String get online_hs_empty;
+
+  /// No description provided for @leaderboards.
+  ///
+  /// In de, this message translates to:
+  /// **'Bestenlisten'**
+  String get leaderboards;
+
+  /// No description provided for @best_score.
+  ///
+  /// In de, this message translates to:
+  /// **'Bestwert'**
+  String get best_score;
+
+  /// No description provided for @last_round.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte Runde'**
+  String get last_round;
+
+  /// No description provided for @no_entries.
+  ///
+  /// In de, this message translates to:
+  /// **'Noch keine Einträge.'**
+  String get no_entries;
 }
 
 class _AppLocalizationsDelegate

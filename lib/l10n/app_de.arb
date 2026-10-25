@@ -291,5 +291,9 @@
     "online_hs_too_late": "Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 10.",
     "online_hs_error": "Eintragen fehlgeschlagen. Bitte Internetverbindung prüfen.",
     "online_hs_load_error": "Bestenliste konnte nicht geladen werden. Bitte Internetverbindung prüfen.",
-    "online_hs_empty": "In diesem Monat gibt es noch keine Einträge."
+    "online_hs_empty": "In diesem Monat gibt es noch keine Einträge.",
+    "leaderboards": "Bestenlisten",
+    "best_score": "Bestwert",
+    "last_round": "Letzte Runde",
+    "no_entries": "Noch keine Einträge."
 }

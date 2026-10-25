@@ -308,5 +308,9 @@
     "online_hs_too_late": "Someone was faster: the round no longer makes the top 10.",
     "online_hs_error": "Submitting failed. Please check your internet connection.",
     "online_hs_load_error": "Could not load the leaderboard. Please check your internet connection.",
-    "online_hs_empty": "No entries yet this month."
+    "online_hs_empty": "No entries yet this month.",
+    "leaderboards": "Leaderboards",
+    "best_score": "Best score",
+    "last_round": "Last round",
+    "no_entries": "No entries yet."
 }
