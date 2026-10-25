@@ -30,7 +30,7 @@ class VersionPage extends StatefulWidget {
 
 class _VersionPageState extends State<VersionPage> {
   String version = '';
-  String build = '';
+  String buildNumber = '';
 
   @override
   void initState() {
@@ -39,14 +39,14 @@ class _VersionPageState extends State<VersionPage> {
       if (mounted) {
         setState(() {
           version = info.version;
-          build = info.buildNumber;
+          buildNumber = info.buildNumber;
         });
       }
     });
   }
 
   String get versionText =>
-      build.isEmpty ? version : version + " (" + build + ")";
+      buildNumber.isEmpty ? version : version + " (" + buildNumber + ")";
 
   String get platformName {
     if (kIsWeb) return 'Web';
