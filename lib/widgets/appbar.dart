@@ -136,26 +136,6 @@ class TimelineButton extends IconButton {
       : super(onPressed: onPressed, icon: Icon(Icons.timeline));
 }
 
-class CsvButton extends IconButton {
-  CsvButton(VoidCallback onPressed)
-      : super(
-            onPressed: onPressed,
-            icon: Image.asset(
-              'assets/pics/csv.png',
-              color: Colors.white,
-            ));
-}
-
-class PdfButton extends IconButton {
-  PdfButton(VoidCallback onPressed)
-      : super(
-            onPressed: onPressed,
-            icon: Image.asset(
-              'assets/pics/pdf_icon_2.png',
-              color: Colors.white,
-            ));
-}
-
 class ExportButton extends IconButton {
   ExportButton(VoidCallback onPressed)
       : super(onPressed: onPressed, icon: Icon(Icons.save_alt));

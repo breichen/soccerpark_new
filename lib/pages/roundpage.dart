@@ -496,14 +496,16 @@ class _RoundPageState extends State<RoundPage> {
   List<int> get totalScores =>
       List.generate(names.length, (pl) => scores[pl].reduce((a, b) => a + b));
 
-  void exportCsv() {
-    Data.getDate(round).then((date) => generateCsvSingleRound(
-        context, date, names, scores, totalScores, date));
+  Future<void> exportCsv() async {
+    final date = await Data.getDate(round);
+    if (!mounted) return;
+    generateCsvSingleRound(context, date, names, scores, totalScores, date);
   }
 
-  void exportPdf() {
-    Data.getDate(round)
-        .then((date) => generatePdfSingleRound(context, round, date));
+  Future<void> exportPdf() async {
+    final date = await Data.getDate(round);
+    if (!mounted) return;
+    generatePdfSingleRound(context, round, date);
   }
 
   Widget getTimelineButton() {

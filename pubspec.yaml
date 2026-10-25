@@ -145,9 +145,6 @@ flutter:
     - assets/pics/ball.jpg
     - assets/pics/soccer_wagrain.png
     - assets/pics/soccer_goldberg.png
-    - assets/pics/greyscale.png
-    - assets/pics/greyscale_wagrain.png
-    - assets/pics/greyscale_goldberg.png
     - assets/pics/soccer_pic.jpg
     - assets/pics/soccer_pic_wagrain.jpg
     - assets/pics/soccer_pic_goldberg.jpg
@@ -157,9 +154,7 @@ flutter:
     - assets/pics/de.png
     - assets/pics/uk.png
     - assets/pics/csv.png
-    - assets/pics/pdf_icon.png
     - assets/pics/pdf_icon_2.png
-    - assets/pics/excel_icon.png
     - assets/pics/circle.png
 
     - assets/pics/bahnen.png

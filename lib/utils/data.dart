@@ -120,12 +120,6 @@ class Data {
     return 'assets/pics/soccer_goldberg.png';
   }
 
-  static String getLocalityGreyString(Locality loc) {
-    if (loc == Locality.SALZBURG) return 'assets/pics/greyscale.png';
-    if (loc == Locality.WAGRAIN) return 'assets/pics/greyscale_wagrain.png';
-    return 'assets/pics/greyscale_goldberg.png';
-  }
-
   static String getSoccerPicString(Locality loc) {
     if (loc == Locality.SALZBURG) return 'assets/pics/soccer_pic.jpg';
     if (loc == Locality.WAGRAIN) return 'assets/pics/soccer_pic_wagrain.jpg';
