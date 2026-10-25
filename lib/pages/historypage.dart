@@ -253,15 +253,13 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   Widget getChartDropdown(List<String> types, List<String> holes) {
-    return Row(children: [
-      SpaceH(16),
+    return dropdownRow([
       CustomDropdownButton(types, type, (int v) {
         setState(() {
           type = v;
           setChartData();
         });
-      }),
-      SpaceH(16),
+      }, icon: Icons.show_chart),
       Visibility(
           child: CustomDropdownButton(
               type == 0 ? (dates.isEmpty ? [""] : dates) : holes, detail,
@@ -272,21 +270,26 @@ class _HistoryPageState extends State<HistoryPage> {
                 setChartData();
               },
             );
-          }),
+          }, icon: type == 0 ? Icons.event : Icons.flag),
           visible: type == 1 || (type == 0 && !dates.isEmpty))
     ]);
   }
 
+  /// Chips nebeneinander; bricht auf schmalen Bildschirmen um.
+  Widget dropdownRow(List<Widget> children) {
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Wrap(spacing: 10, runSpacing: 8, children: children));
+  }
+
   Widget getListDropdown(List<String> highscoreTypes, List<String> holes) {
-    return Row(children: [
-      SpaceH(16),
+    return dropdownRow([
       CustomDropdownButton(highscoreTypes, highscoreType, (int v) {
         setState(() {
           highscoreType = v;
           setListData();
         });
-      }),
-      SpaceH(16),
+      }, icon: Icons.emoji_events),
       highscoreType == onlineType
           ? getOnlineMonthDropdown()
           : CustomDropdownButton(holes, highscoreDetail, (int v) {
@@ -296,7 +299,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   setListData();
                 },
               );
-            })
+            }, icon: Icons.flag)
     ]);
   }
 
@@ -312,7 +315,7 @@ class _HistoryPageState extends State<HistoryPage> {
         onlineMonthIdx = v;
       });
       loadOnlineHighscores();
-    });
+    }, icon: Icons.calendar_month);
   }
 
   Widget getButtons() {
