@@ -221,6 +221,7 @@ class _HistoryPageState extends State<HistoryPage> {
                     getListDropdown(highscoreTypes, holes),
                     Space(10),
                     getList(),
+                    Space(10),
                     Visibility(
                         child: Footer(),
                         visible: false,
