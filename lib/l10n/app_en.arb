@@ -312,5 +312,17 @@
     "leaderboards": "Leaderboards",
     "best_score": "Best score",
     "last_round": "Last round",
-    "no_entries": "No entries yet."
+    "no_entries": "No entries yet.",
+    "continue_round": "Continue round",
+    "round_progress": "{players} players · {holes} of 18 holes played",
+    "@round_progress": {
+        "placeholders": {
+            "players": {
+                "type": "int"
+            },
+            "holes": {
+                "type": "int"
+            }
+        }
+    }
 }

@@ -880,4 +880,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_entries => 'No entries yet.';
+
+  @override
+  String get continue_round => 'Continue round';
+
+  @override
+  String round_progress(int players, int holes) {
+    return '${players} players · ${holes} of 18 holes played';
+  }
 }

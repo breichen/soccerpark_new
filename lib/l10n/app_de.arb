@@ -295,5 +295,7 @@
     "leaderboards": "Bestenlisten",
     "best_score": "Bestwert",
     "last_round": "Letzte Runde",
-    "no_entries": "Noch keine Einträge."
+    "no_entries": "Noch keine Einträge.",
+    "continue_round": "Runde fortsetzen",
+    "round_progress": "{players} Spieler · {holes} von 18 Bahnen gespielt"
 }

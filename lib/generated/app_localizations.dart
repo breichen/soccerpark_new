@@ -1729,6 +1729,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Noch keine Einträge.'**
   String get no_entries;
+
+  /// No description provided for @continue_round.
+  ///
+  /// In de, this message translates to:
+  /// **'Runde fortsetzen'**
+  String get continue_round;
+
+  /// No description provided for @round_progress.
+  ///
+  /// In de, this message translates to:
+  /// **'{players} Spieler · {holes} von 18 Bahnen gespielt'**
+  String round_progress(int players, int holes);
 }
 
 class _AppLocalizationsDelegate
