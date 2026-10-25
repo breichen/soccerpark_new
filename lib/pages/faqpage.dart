@@ -7,7 +7,6 @@ import '../widgets/appbar.dart';
 import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
-import '../widgets/text.dart';
 
 class FaqPage extends StatefulWidget {
   const FaqPage({super.key});
@@ -17,70 +16,63 @@ class FaqPage extends StatefulWidget {
 }
 
 class _FaqPageState extends State<FaqPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  /// Geöffnete Frage (nur eine gleichzeitig), null = alle zu.
+  int? openIndex;
 
   @override
   Widget build(BuildContext context) {
-    final double sep = 12;
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final loc = AppLocalizations.of(context)!;
+    final faqs = [
+      [loc.question1, loc.answer1],
+      [loc.question2, loc.answer2],
+      [loc.question3, loc.answer3],
+      [loc.question4, loc.answer4],
+      [loc.question5, loc.answer5],
+      [loc.question6, loc.answer6],
+      [loc.question7, loc.answer7],
+      [loc.question8, loc.answer8],
+      [loc.question9, loc.answer9],
+      [loc.question10, loc.answer10],
+      [loc.question11, loc.answer11],
+      [loc.question12, loc.answer12],
+      [loc.question13, loc.answer13],
+      [loc.question14, loc.answer14],
+    ];
+
+    final items = <Widget>[];
+    for (var i = 0; i < faqs.length; i++) {
+      if (i > 0) {
+        items.add(Divider(height: 1, thickness: 1, color: Colors.grey[200]));
+      }
+      items.add(getFaq(i, faqs[i][0], faqs[i][1]));
+    }
+
     return Scaffold(
-        appBar: CustomAppBar(
-            context, AppLocalizations.of(context)!.faqs, MenuItemE.COUNT, []),
+        appBar: CustomAppBar(context, loc.faqs, MenuItemE.COUNT, []),
         body: Stack(children: [
           ListView(children: <Widget>[
             Header(),
-            getTitle(),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question1,
-                AppLocalizations.of(context)!.answer1),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question2,
-                AppLocalizations.of(context)!.answer2),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question3,
-                AppLocalizations.of(context)!.answer3),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question4,
-                AppLocalizations.of(context)!.answer4),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question5,
-                AppLocalizations.of(context)!.answer5),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question6,
-                AppLocalizations.of(context)!.answer6),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question7,
-                AppLocalizations.of(context)!.answer7),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question8,
-                AppLocalizations.of(context)!.answer8),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question9,
-                AppLocalizations.of(context)!.answer9),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question10,
-                AppLocalizations.of(context)!.answer10),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question11,
-                AppLocalizations.of(context)!.answer11),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question12,
-                AppLocalizations.of(context)!.answer12),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question13,
-                AppLocalizations.of(context)!.answer13),
-            Space(sep),
-            getFaq(AppLocalizations.of(context)!.question14,
-                AppLocalizations.of(context)!.answer14),
-            Space(sep),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(loc.faq_title,
+                          style: GoogleFonts.lato(
+                              color: maincolor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              height: 1.3)),
+                      Space(10),
+                      Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.grey[300]!),
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Column(children: items)),
+                    ])),
+            Space(16),
             Visibility(
                 child: Footer(),
                 visible: false,
@@ -92,58 +84,42 @@ class _FaqPageState extends State<FaqPage> {
         ]));
   }
 
-  Widget getTitle() {
-    return Container(
-      child: Text(AppLocalizations.of(context)!.faq_title,
-          style: GoogleFonts.lato(
-              color: maincolor,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              height: 1.3)),
-      padding: EdgeInsets.fromLTRB(16, 0, 0, 6),
-    );
-  }
-
-  Widget getFaq(String question, String answer) {
-    return Container(
-      alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(Icons.help, color: maincolor, size: 24),
-          SpaceH(4),
-          Expanded(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                QuestionText(question),
-                Space(4),
-                FloatText(answer, left: 6)
-              ])),
-        ]),
-      ),
-    );
-  }
-}
-
-class QuestionText extends StatelessWidget {
-  final String text;
-
-  QuestionText(this.text);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.fromLTRB(6, 0, 14, 0),
-        alignment: Alignment.topLeft,
-        //padding: itemEdges,
-        child: Text(
-          text,
-          style: GoogleFonts.lato(
-              color: maincolor,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              height: 1.3),
-        ));
+  /// Eine Frage; Antippen klappt die Antwort auf bzw. zu.
+  Widget getFaq(int index, String question, String answer) {
+    final open = openIndex == index;
+    return Material(
+        color: Colors.white,
+        child: InkWell(
+            onTap: () => setState(() => openIndex = open ? null : index),
+            child: Padding(
+                padding: EdgeInsets.fromLTRB(12, 12, 8, 12),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Expanded(
+                            child: Text(question,
+                                style: GoogleFonts.lato(
+                                    color: open ? maincolor : Colors.black87,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.3))),
+                        SpaceH(8),
+                        Icon(open ? Icons.expand_less : Icons.expand_more,
+                            color: open ? maincolor : Colors.grey[500]),
+                      ]),
+                      AnimatedSize(
+                          duration: Duration(milliseconds: 180),
+                          alignment: Alignment.topCenter,
+                          child: open
+                              ? Padding(
+                                  padding: EdgeInsets.only(top: 8, right: 24),
+                                  child: Text(answer,
+                                      style: GoogleFonts.lato(
+                                          color: Colors.grey[800],
+                                          fontSize: 15,
+                                          height: 1.4)))
+                              : SizedBox(width: double.infinity)),
+                    ]))));
   }
 }

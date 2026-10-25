@@ -897,4 +897,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String round_progress(int players, int holes) {
     return '${players} Spieler · ${holes} von 18 Bahnen gespielt';
   }
+
+  @override
+  String get order_important => 'Wichtig';
+
+  @override
+  String get order_notes => 'Bitte beachten';
 }

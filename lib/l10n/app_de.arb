@@ -297,5 +297,7 @@
     "last_round": "Letzte Runde",
     "no_entries": "Noch keine Einträge.",
     "continue_round": "Runde fortsetzen",
-    "round_progress": "{players} Spieler · {holes} von 18 Bahnen gespielt"
+    "round_progress": "{players} Spieler · {holes} von 18 Bahnen gespielt",
+    "order_important": "Wichtig",
+    "order_notes": "Bitte beachten"
 }

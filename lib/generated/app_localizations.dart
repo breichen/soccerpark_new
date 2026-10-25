@@ -1741,6 +1741,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{players} Spieler · {holes} von 18 Bahnen gespielt'**
   String round_progress(int players, int holes);
+
+  /// No description provided for @order_important.
+  ///
+  /// In de, this message translates to:
+  /// **'Wichtig'**
+  String get order_important;
+
+  /// No description provided for @order_notes.
+  ///
+  /// In de, this message translates to:
+  /// **'Bitte beachten'**
+  String get order_notes;
 }
 
 class _AppLocalizationsDelegate

@@ -888,4 +888,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String round_progress(int players, int holes) {
     return '${players} players · ${holes} of 18 holes played';
   }
+
+  @override
+  String get order_important => 'Important';
+
+  @override
+  String get order_notes => 'Please note';
 }
