@@ -37,8 +37,8 @@ class _HighscorePageState extends State<HighscorePage> {
   int onlineMonthIdx = 0;
   bool onlineLoading = false;
   bool onlineError = false;
-  int? expandedOnlineId;
-  int? expandedLocalIdx;
+  /// Aufgeklappter Eintrag ("local-<i>" oder "online-<id>").
+  String? expandedKey;
 
   @override
   void initState() {
@@ -97,7 +97,7 @@ class _HighscorePageState extends State<HighscorePage> {
   }
 
   void setListData() {
-    expandedLocalIdx = null;
+    expandedKey = null;
     if (highscoreType == onlineType) {
       loadOnlineHighscores();
       return;
@@ -125,7 +125,7 @@ class _HighscorePageState extends State<HighscorePage> {
     setState(() {
       onlineLoading = true;
       onlineError = false;
-      expandedOnlineId = null;
+      expandedKey = null;
     });
     try {
       if (onlineMonths.isEmpty) {
@@ -212,55 +212,25 @@ class _HighscorePageState extends State<HighscorePage> {
 
   Widget getHighscoreList() {
     final pars = Data.getPars(App.of(context).getLocality());
-    final List<Widget> cards = [];
+    final par = highscoreDetail == 0
+        ? pars.reduce((a, b) => a + b)
+        : pars[highscoreDetail - 1];
+    final rows = <RankRow>[];
     for (var i = 0; i < highscores.length; i++) {
       final entry = highscores[i];
-      // Lochdetails gibt es nur beim Gesamt-Highscore und nur für Runden,
-      // die nach der Erweiterung gespeichert wurden.
-      final holes = highscoreDetail == 0 ? entry.holes : null;
-      final expanded = holes != null && expandedLocalIdx == i;
-      cards.add(Card(
-          color: Colors.grey[300],
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: InkWell(
-              onTap: holes == null
-                  ? null
-                  : () => setState(() {
-                        expandedLocalIdx = expanded ? null : i;
-                      }),
-              child: Column(children: [
-                Space(4),
-                Row(children: [
-                  SpaceH(10),
-                  Expanded(
-                      child: Text(entry.name,
-                          style: styleBoldHist,
-                          overflow: TextOverflow.ellipsis)),
-                  Icon(Icons.sports_soccer, size: 16, color: Colors.black),
-                  SpaceH(4),
-                  Text(
-                    entry.score.toString(),
-                    style: styleBoldHist,
-                  ),
-                  SpaceH(10),
-                ]),
-                Space(4),
-                Row(children: [
-                  SpaceH(10),
-                  Icon(Icons.date_range, size: 16, color: Colors.black),
-                  SpaceH(4),
-                  Text(entry.date, style: styleHist),
-                  Spacer(),
-                  if (holes != null)
-                    Icon(expanded ? Icons.expand_less : Icons.expand_more,
-                        size: 20, color: Colors.black),
-                  SpaceH(8),
-                ]),
-                if (expanded && holes != null) getHoleTable(holes, pars),
-                Space(4),
-              ]))));
+      rows.add(RankRow(
+        key: 'local-$i',
+        value: entry.score.toDouble(),
+        name: entry.name,
+        subtitle: dateOnly(entry.date),
+        scoreText: entry.score.toString(),
+        diffToPar: (entry.score - par).toDouble(),
+        // Lochwerte gibt es nur beim Gesamt-Highscore (und nur bei Runden,
+        // die nach der Erweiterung gespeichert wurden).
+        holes: highscoreDetail == 0 ? entry.holes : null,
+      ));
     }
-    return Column(children: cards);
+    return buildRankedList(rows, pars);
   }
 
   Widget getOnlineList() {
@@ -279,57 +249,23 @@ class _HighscorePageState extends State<HighscorePage> {
               style: styleHist));
     }
 
-    final ranks = OnlineHighscores.displayRanks(onlineHighscores);
     final pars = Data.getPars(App.of(context).getLocality());
+    final par = pars.reduce((a, b) => a + b);
     final dateFormat = DateFormat('dd.MM.yyyy');
-    final List<Widget> cards = [];
-    for (var i = 0; i < onlineHighscores.length; i++) {
-      final entry = onlineHighscores[i];
-      final expanded = expandedOnlineId == entry.id;
-      cards.add(Card(
-          color: Colors.grey[300],
-          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: InkWell(
-              onTap: () => setState(() {
-                    expandedOnlineId = expanded ? null : entry.id;
-                  }),
-              child: Column(children: [
-                Space(4),
-                Row(children: [
-                  SpaceH(10),
-                  SizedBox(
-                      width: 28,
-                      child: Text(ranks[i].toString() + ".",
-                          style: styleBoldHist)),
-                  Expanded(
-                      child: Text(entry.name,
-                          style: styleBoldHist,
-                          overflow: TextOverflow.ellipsis)),
-                  Icon(Icons.sports_soccer, size: 16, color: Colors.black),
-                  SpaceH(4),
-                  Text(entry.total.toString(), style: styleBoldHist),
-                  SpaceH(10),
-                ]),
-                Space(4),
-                Row(children: [
-                  SpaceH(38),
-                  Icon(Icons.date_range, size: 16, color: Colors.black),
-                  SpaceH(4),
-                  Text(dateFormat.format(entry.createdAt), style: styleHist),
-                  Spacer(),
-                  Icon(expanded ? Icons.expand_less : Icons.expand_more,
-                      size: 20, color: Colors.black),
-                  SpaceH(8),
-                ]),
-                if (expanded) getHoleTable(entry.holes, pars),
-                Space(4),
-              ]))));
-    }
-    return Column(children: cards);
+    final rows = onlineHighscores
+        .map((entry) => RankRow(
+              key: 'online-${entry.id}',
+              value: entry.total.toDouble(),
+              name: entry.name,
+              subtitle: dateFormat.format(entry.createdAt),
+              scoreText: entry.total.toString(),
+              diffToPar: (entry.total - par).toDouble(),
+              holes: entry.holes,
+            ))
+        .toList();
+    return buildRankedList(rows, pars);
   }
 
-  /// Schläge pro Loch in zwei Zeilen à 9 Löcher; unter Par grün,
-  /// über Par rot.
   Widget getHoleTable(List<int> holes, List<int> pars) {
     final styleHole = GoogleFonts.lato(color: Colors.grey[700], fontSize: 11);
     TextStyle styleScore(int hole) {
@@ -365,45 +301,154 @@ class _HighscorePageState extends State<HighscorePage> {
   }
 
   Widget getAverageList() {
-    return Column(
-        children: averages
-            .map((entry) => Card(
-                color: Colors.grey[300],
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: Column(children: [
-                  Space(4),
-                  Row(children: [
-                    SpaceH(10),
-                    Text(entry.name, style: styleBoldHist),
-                    Spacer(),
-                    Icon(Icons.sports_soccer, size: 16, color: Colors.black),
-                    SpaceH(4),
-                    Text(
-                      entry.avg.toStringAsFixed(2),
-                      style: styleBoldHist,
-                    ),
-                    SpaceH(10),
-                  ]),
-                  Space(4),
-                  Row(children: [
-                    SpaceH(10),
-                    Icon(Icons.timeline, size: 16, color: Colors.black),
-                    SpaceH(4),
-                    Text(
-                        entry.games.toString() +
-                            " " +
-                            (entry.games == 1
-                                ? AppLocalizations.of(context)!.game
-                                : AppLocalizations.of(context)!.games),
-                        style: styleHist)
-                  ]),
-                  Space(4),
-                ])))
-            .toList());
+    final pars = Data.getPars(App.of(context).getLocality());
+    final par = highscoreDetail == 0
+        ? pars.reduce((a, b) => a + b)
+        : pars[highscoreDetail - 1];
+    final rows = <RankRow>[];
+    for (var i = 0; i < averages.length; i++) {
+      final entry = averages[i];
+      // Auf eine Nachkommastelle runden, damit Gleichstände gleich gewertet
+      // werden wie angezeigt.
+      final avg = (entry.avg * 10).round() / 10;
+      rows.add(RankRow(
+        key: 'avg-$i',
+        value: avg,
+        name: entry.name,
+        subtitle: entry.games.toString() +
+            " " +
+            (entry.games == 1
+                ? AppLocalizations.of(context)!.game
+                : AppLocalizations.of(context)!.games),
+        scoreText: formatDecimal(avg),
+        diffToPar: avg - par,
+        decimals: true,
+      ));
+    }
+    return buildRankedList(rows, pars);
   }
 
-  TextStyle styleBoldHist = GoogleFonts.lato(
-      color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold);
+  /// "12.10.2026 15:20" -> "12.10.2026"
+  String dateOnly(String date) {
+    final i = date.indexOf(' ');
+    return i < 0 ? date : date.substring(0, i);
+  }
+
+  String formatDecimal(double v) {
+    final s = v.toStringAsFixed(1);
+    return Localizations.localeOf(context).languageCode == 'de'
+        ? s.replaceAll('.', ',')
+        : s;
+  }
+
+  /// Eine weiße Karte mit Trennlinien; Platz, Name, Untertitel, Schläge
+  /// und Abstand zu Par. Gleiche Werte bekommen den gleichen Platz.
+  Widget buildRankedList(List<RankRow> rows, List<int> pars) {
+    final List<Widget> children = [];
+    for (var i = 0; i < rows.length; i++) {
+      final row = rows[i];
+      var rank = i + 1;
+      for (var j = i - 1; j >= 0 && rows[j].value == row.value; j--) {
+        rank = j + 1;
+      }
+      if (i > 0) {
+        children.add(Divider(height: 1, thickness: 1, color: Colors.grey[200]));
+      }
+      children.add(buildRankRow(row, rank, pars));
+    }
+    return Container(
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.grey[300]!),
+            borderRadius: BorderRadius.circular(12)),
+        child: Column(children: children));
+  }
+
+  Widget buildRankRow(RankRow row, int rank, List<int> pars) {
+    final holes = row.holes;
+    final expanded = holes != null && expandedKey == row.key;
+    final diff = row.diffToPar;
+    final diffColor =
+        diff < 0 ? maincolor : (diff > 0 ? mainred : Colors.grey[700]!);
+    final diffText = diff == 0
+        ? "±0"
+        : (diff > 0 ? "+" : "−") +
+            (row.decimals
+                ? formatDecimal(diff.abs())
+                : diff.abs().round().toString());
+
+    return Material(
+        color: Colors.white,
+        child: InkWell(
+            onTap: holes == null
+                ? null
+                : () => setState(() {
+                      expandedKey = expanded ? null : row.key;
+                    }),
+            child: Column(children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(12, 9, 8, 9),
+                  child: Row(children: [
+                    rankBadge(rank),
+                    SpaceH(10),
+                    Expanded(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                          Text(row.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.lato(
+                                  color: Colors.black87,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold)),
+                          Text(row.subtitle,
+                              style: GoogleFonts.lato(
+                                  color: Colors.grey[600], fontSize: 12)),
+                        ])),
+                    Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                      Text(row.scoreText,
+                          style: GoogleFonts.lato(
+                              color: rank == 1 ? maincolor : Colors.black87,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)),
+                      Text(diffText,
+                          style: GoogleFonts.lato(color: diffColor, fontSize: 12)),
+                    ]),
+                    SizedBox(
+                        width: 28,
+                        child: holes == null
+                            ? null
+                            : Icon(
+                                expanded ? Icons.expand_less : Icons.expand_more,
+                                size: 20,
+                                color: Colors.grey[500])),
+                  ])),
+              if (expanded && holes != null) getHoleTable(holes, pars),
+              if (expanded) Space(6),
+            ])));
+  }
+
+  /// Platz 1-3 als Medaille (Gold, Silber, Bronze), danach nur die Zahl.
+  Widget rankBadge(int rank) {
+    const medalColors = [Color(0xFFF1C40F), Color(0xFFCFD8DC), Color(0xFFE8C3A0)];
+    const medalText = [Color(0xFF5C4500), Color(0xFF37474F), Color(0xFF6D3D12)];
+    final medal = rank <= 3;
+    return Container(
+        width: 28,
+        height: 28,
+        alignment: Alignment.center,
+        decoration: medal
+            ? BoxDecoration(color: medalColors[rank - 1], shape: BoxShape.circle)
+            : null,
+        child: Text(rank.toString(),
+            style: GoogleFonts.lato(
+                color: medal ? medalText[rank - 1] : Colors.grey[600],
+                fontSize: 13,
+                fontWeight: FontWeight.bold)));
+  }
+
   TextStyle styleHist = GoogleFonts.lato(color: Colors.black, fontSize: 14);
 
   Widget getShareButton() {
@@ -417,4 +462,26 @@ class _HighscorePageState extends State<HighscorePage> {
               Data.getWebsiteStringImm(context, App.of(context).getLocality()));
     });
   }
+}
+
+/// Eine Zeile der Bestenliste.
+class RankRow {
+  RankRow(
+      {required this.key,
+      required this.value,
+      required this.name,
+      required this.subtitle,
+      required this.scoreText,
+      required this.diffToPar,
+      this.holes,
+      this.decimals = false});
+
+  final String key;
+  final double value; // für Platzierung (kleiner = besser)
+  final String name;
+  final String subtitle;
+  final String scoreText;
+  final double diffToPar;
+  final List<int>? holes;
+  final bool decimals;
 }
