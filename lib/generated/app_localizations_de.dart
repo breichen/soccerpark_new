@@ -1080,4 +1080,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get chart_title => 'Verlauf';
+
+  @override
+  String get choose_park_hint => 'Du kannst sie später in den Einstellungen ändern.';
 }

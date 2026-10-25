@@ -356,5 +356,6 @@
     "round_progress_one": "1 Person · {holes} von 18 Bahnen gespielt",
     "hole_done": "Fertig",
     "round_finished": "Runde beendet",
-    "chart_title": "Verlauf"
+    "chart_title": "Verlauf",
+    "choose_park_hint": "Du kannst sie später in den Einstellungen ändern."
 }

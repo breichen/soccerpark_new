@@ -407,5 +407,6 @@
     },
     "hole_done": "Done",
     "round_finished": "Round complete",
-    "chart_title": "Progress"
+    "chart_title": "Progress",
+    "choose_park_hint": "You can change it later in the settings."
 }

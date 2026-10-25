@@ -2095,6 +2095,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Verlauf'**
   String get chart_title;
+
+  /// No description provided for @choose_park_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Du kannst sie später in den Einstellungen ändern.'**
+  String get choose_park_hint;
 }
 
 class _AppLocalizationsDelegate

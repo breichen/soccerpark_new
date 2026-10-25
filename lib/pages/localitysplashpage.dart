@@ -3,57 +3,57 @@ import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
+import './languagesplashpage.dart' show SplashChoice;
 import './mainpage.dart';
 import '../utils/data.dart';
+import '../widgets/footer.dart' show VenueContact;
+import '../widgets/header.dart';
 import '../widgets/space.dart';
 
+/// Erster Start, Schritt 2: Anlage wählen. Danach geht es ins Hauptmenü.
 class LocalitySplashPage extends StatelessWidget {
   const LocalitySplashPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    double sep = 20;
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
-        appBar: null,
-        body: ListView(children: [
-          Space(128),
-          Image.asset(Data.getSoccerPicString(App.of(context).getLocality())),
-          Space(64),
-          Row(children: [
-            Spacer(),
-            Text(AppLocalizations.of(context)!.choose_park,
-                style: GoogleFonts.lato(color: maincolor, fontSize: 18)),
-            Spacer()
-          ]),
-          Space(40),
-          getImageRow(context, Locality.SALZBURG),
-          Space(sep),
-          getImageRow(context, Locality.WAGRAIN),
-          Space(sep),
-          getImageRow(context, Locality.GOLDBERG),
-          Space(sep),
-          Space(40)
-        ]));
-  }
-
-  Widget getImageRow(BuildContext context, Locality loc) {
-    return Row(children: [
-      Expanded(flex: 1, child: Container()),
-      Expanded(flex: 2, child: getImage(context, loc)),
-      Expanded(flex: 1, child: Container()),
-    ]);
-  }
-
-  Widget getImage(BuildContext context, Locality loc) {
-    return GestureDetector(
-        child: Image.asset(
-          Data.getLocalityImageString(loc),
-        ),
-        onTap: () {
-          App.of(context).setLocality(loc);
-          Data.setInitChosen();
-          goToMainPage(context);
-        });
+        backgroundColor: bgcolor,
+        body: SafeArea(
+            top: false,
+            child: ListView(children: [
+              Header(),
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(children: [
+                    Text(l.choose_park,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.lato(
+                            color: maincolor,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold)),
+                    Space(6),
+                    Text(l.choose_park_hint,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.lato(
+                            color: Colors.grey[700], fontSize: 15)),
+                    Space(20),
+                    for (final loc in Locality.values) ...[
+                      SplashChoice(
+                          leading: Image.asset(Data.getLocalityImageString(loc),
+                              fit: BoxFit.contain),
+                          title: Data.getLocalityStringImm(loc),
+                          subtitle: VenueContact.of(context, loc).address,
+                          onTap: () {
+                            App.of(context).setLocality(loc);
+                            Data.setInitChosen();
+                            goToMainPage(context);
+                          }),
+                      Space(10),
+                    ],
+                    Space(14),
+                  ])),
+            ])));
   }
 }
