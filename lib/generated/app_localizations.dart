@@ -1753,6 +1753,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Bitte beachten'**
   String get order_notes;
+
+  /// No description provided for @contact_call.
+  ///
+  /// In de, this message translates to:
+  /// **'Anrufen'**
+  String get contact_call;
+
+  /// No description provided for @contact_route.
+  ///
+  /// In de, this message translates to:
+  /// **'Route'**
+  String get contact_route;
+
+  /// No description provided for @contact_mail.
+  ///
+  /// In de, this message translates to:
+  /// **'E-Mail'**
+  String get contact_mail;
+
+  /// No description provided for @contact_web.
+  ///
+  /// In de, this message translates to:
+  /// **'Website'**
+  String get contact_web;
 }
 
 class _AppLocalizationsDelegate

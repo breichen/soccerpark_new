@@ -5,7 +5,6 @@ import 'package:soccerpark/generated/app_localizations.dart';
 import '../main.dart';
 import '../widgets/appbar.dart';
 import '../widgets/dropdown.dart' show dropdownChipColor;
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 
@@ -64,15 +63,8 @@ class _OrdersPageState extends State<OrdersPage> {
                       Space(8),
                       RuleList(rules),
                     ])),
-            Space(16),
-            Visibility(
-                child: Footer(),
-                visible: false,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true)
-          ]),
-          Column(children: [Spacer(), Footer()])
+            Space(16)
+          ])
         ]));
   }
 }

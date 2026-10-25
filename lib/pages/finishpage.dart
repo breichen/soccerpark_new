@@ -14,7 +14,6 @@ import '../utils/online_highscores.dart';
 import '../dialogs/onlinehighscoredialog.dart';
 import '../widgets/toast.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/space.dart';
 import '../widgets/radio.dart';
 import '../widgets/chart.dart';
@@ -261,15 +260,8 @@ class _FinishPageState extends State<FinishPage> {
                     ]),
                     Space(8),
                     getRadioButtons(),
-                    Space(20),
-                    Visibility(
-                        child: Footer(),
-                        visible: false,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        maintainState: true)
-                  ]))),
-          Column(children: [Spacer(), Footer()])
+                    Space(20)
+                  ])))
         ]));
   }
 

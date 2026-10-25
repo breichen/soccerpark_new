@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/checkbox.dart';
@@ -67,15 +66,8 @@ class _SettingsPageState extends State<SettingsPage> {
             //getCompRow(),
             //getDivider(),
             //getIntermediateRow(),
-            //getDivider(),
-            Visibility(
-                child: Footer(),
-                visible: false,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true)
+            //getDivider()
           ]),
-          Column(children: [Spacer(), Footer()]),
         ]));
   }
 

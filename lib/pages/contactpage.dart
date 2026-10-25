@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
 import '../utils/data.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/text.dart';
@@ -40,15 +39,8 @@ class _ContactPageState extends State<ContactPage> {
           ListView(children: <Widget>[
             Header(),
             Space(0),
-            getBody(loc),
-            Visibility(
-                child: Footer(),
-                visible: false,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true)
-          ]),
-          Column(children: [Spacer(), Footer()])
+            getBody(loc)
+          ])
         ]));
   }
 

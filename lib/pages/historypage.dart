@@ -10,7 +10,6 @@ import '../utils/export.dart';
 import '../pages/roundpage.dart';
 import '../widgets/chart.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/toast.dart';
 import '../widgets/space.dart';
 import '../widgets/dropdown.dart';
@@ -131,15 +130,8 @@ class _HistoryPageState extends State<HistoryPage> {
                     getRoundCard(),
                     Space(24),
                     getDeleteButton(),
-                    Space(10),
-                    Visibility(
-                        child: Footer(),
-                        visible: false,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        maintainState: true)
-                  ]))),
-          Column(children: [Spacer(), Footer()])
+                    Space(10)
+                  ])))
         ]));
   }
 

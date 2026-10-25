@@ -8,7 +8,6 @@ import '../utils/persist_stub.dart'
     if (dart.library.js_interop) '../utils/persist_web.dart';
 import '../widgets/appbar.dart';
 import '../widgets/button.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/toast.dart';
 import '../widgets/space.dart';
@@ -98,15 +97,8 @@ class _NewRoundPageState extends State<NewRoundPage> {
               Expanded(flex: 1, child: getRightColumn()),
               SpaceH(outsep),
             ]),
-            Space(20),
-            Visibility(
-                child: Footer(),
-                visible: false,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true)
-          ]),
-          Column(children: [Spacer(), Footer()])
+            Space(20)
+          ])
         ]));
   }
 

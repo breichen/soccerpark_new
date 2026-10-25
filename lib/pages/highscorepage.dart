@@ -8,7 +8,6 @@ import '../utils/data.dart';
 import '../utils/share.dart';
 import '../utils/online_highscores.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/space.dart';
 import '../widgets/dropdown.dart';
 
@@ -84,15 +83,8 @@ class _HighscorePageState extends State<HighscorePage> {
                     getListDropdown(highscoreTypes, holes),
                     Space(10),
                     getList(),
-                    Space(10),
-                    Visibility(
-                        child: Footer(),
-                        visible: false,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        maintainState: true)
-                  ]))),
-          Column(children: [Spacer(), Footer()])
+                    Space(10)
+                  ])))
         ]));
   }
 

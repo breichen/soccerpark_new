@@ -15,7 +15,6 @@ import '../dialogs/playholedialog.dart';
 import '../dialogs/twobuttondialog.dart';
 import '../dialogs/scoredialog.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/space.dart';
 import './mainpage.dart';
 import './finishpage.dart';
@@ -153,7 +152,7 @@ class _RoundPageState extends State<RoundPage> {
 
   Widget getFooter() {
     return Column(
-        children: [getLastRow(), getButtonRowVisible(), Space(0), Footer()]);
+        children: [getLastRow(), getButtonRowVisible()]);
   }
 
   Widget getTable() {

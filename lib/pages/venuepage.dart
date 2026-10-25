@@ -7,7 +7,6 @@ import '../main.dart';
 import '../utils/data.dart';
 import '../utils/share.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/toast.dart';
@@ -35,8 +34,7 @@ class _VenuePageState extends State<VenuePage> {
         appBar: CustomAppBar(context, AppLocalizations.of(context)!.venue,
             MenuItemE.VENUE, [getShareButton()]),
         body: Stack(children: [
-          ListView(children: <Widget>[Header(), Space(0), getBody(loc)]),
-          Column(children: [Spacer(), Footer()])
+          ListView(children: <Widget>[Header(), Space(0), getBody(loc)])
         ]));
   }
 

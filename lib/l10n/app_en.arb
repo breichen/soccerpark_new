@@ -326,5 +326,9 @@
         }
     },
     "order_important": "Important",
-    "order_notes": "Please note"
+    "order_notes": "Please note",
+    "contact_call": "Call",
+    "contact_route": "Directions",
+    "contact_mail": "Email",
+    "contact_web": "Website"
 }

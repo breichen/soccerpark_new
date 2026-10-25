@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../main.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 
@@ -72,15 +71,8 @@ class _FaqPageState extends State<FaqPage> {
                               borderRadius: BorderRadius.circular(12)),
                           child: Column(children: items)),
                     ])),
-            Space(16),
-            Visibility(
-                child: Footer(),
-                visible: false,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true)
-          ]),
-          Column(children: [Spacer(), Footer()])
+            Space(16)
+          ])
         ]));
   }
 

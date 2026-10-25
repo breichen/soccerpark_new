@@ -299,5 +299,9 @@
     "continue_round": "Runde fortsetzen",
     "round_progress": "{players} Spieler · {holes} von 18 Bahnen gespielt",
     "order_important": "Wichtig",
-    "order_notes": "Bitte beachten"
+    "order_notes": "Bitte beachten",
+    "contact_call": "Anrufen",
+    "contact_route": "Route",
+    "contact_mail": "E-Mail",
+    "contact_web": "Website"
 }

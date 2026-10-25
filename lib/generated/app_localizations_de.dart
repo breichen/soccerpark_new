@@ -903,4 +903,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get order_notes => 'Bitte beachten';
+
+  @override
+  String get contact_call => 'Anrufen';
+
+  @override
+  String get contact_route => 'Route';
+
+  @override
+  String get contact_mail => 'E-Mail';
+
+  @override
+  String get contact_web => 'Website';
 }

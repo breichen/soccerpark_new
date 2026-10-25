@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/text.dart';
@@ -65,15 +64,8 @@ class _InfoPageState extends State<InfoPage> {
             FloatText(AppLocalizations.of(context)!.info10),
             Space(sep),
             FloatText(AppLocalizations.of(context)!.info11),
-            Space(10),
-            Visibility(
-                child: Footer(),
-                visible: false,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true)
-          ]),
-          Column(children: [Spacer(), Footer()])
+            Space(10)
+          ])
         ]));
   }
 }

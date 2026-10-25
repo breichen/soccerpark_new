@@ -117,16 +117,11 @@ class _MainPageState extends State<MainPage> {
                     ),
                   Space(14),
                   getTiles(loc),
+                  Space(14),
+                  ContactCard(),
                 ])),
-            Space(16),
-            Visibility(
-                child: Footer(),
-                visible: false,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true)
-          ]),
-          Column(children: [Spacer(), Footer()])
+            Space(16)
+          ])
         ]));
   }
 

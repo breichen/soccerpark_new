@@ -3,7 +3,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/text.dart';
@@ -39,8 +38,7 @@ class _VersionPageState extends State<VersionPage> {
                 text: AppLocalizations.of(context)!.currversion, indent: 16),
             Space(10),
             FloatText(version)
-          ]),
-          Column(children: [Spacer(), Footer()])
+          ])
         ]));
   }
 }

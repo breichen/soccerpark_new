@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../main.dart';
 import '../utils/data.dart';
 import '../widgets/appbar.dart';
-import '../widgets/footer.dart';
 import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/text.dart';
@@ -54,15 +53,8 @@ class _RulesPageState extends State<RulesPage> {
                   getTitle(),
                   Space(sep),
                   getTextBlock(context),
-                  Space(10),
-                  Visibility(
-                      child: Footer(),
-                      visible: false,
-                      maintainSize: true,
-                      maintainAnimation: true,
-                      maintainState: true)
-                ]),
-                Column(children: [Spacer(), Footer()])
+                  Space(10)
+                ])
               ]));
         });
   }

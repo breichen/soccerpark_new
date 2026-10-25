@@ -894,4 +894,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get order_notes => 'Please note';
+
+  @override
+  String get contact_call => 'Call';
+
+  @override
+  String get contact_route => 'Directions';
+
+  @override
+  String get contact_mail => 'Email';
+
+  @override
+  String get contact_web => 'Website';
 }
