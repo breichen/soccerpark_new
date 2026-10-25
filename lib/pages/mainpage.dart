@@ -13,6 +13,7 @@ import './orderspage.dart';
 import './rulespage.dart';
 import '../widgets/dropdown.dart' show dropdownChipColor;
 import '../widgets/footer.dart';
+import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../widgets/appbar.dart';
 import './roundpage.dart';
@@ -89,8 +90,7 @@ class _MainPageState extends State<MainPage> {
           ListView(children: <Widget>[
             RepaintBoundary(
                 key: _globalKey,
-                child: Container(color: bgcolor, child: getHero())),
-            Space(34),
+                child: Container(color: bgcolor, child: Header())),
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Column(children: [
@@ -128,32 +128,6 @@ class _MainPageState extends State<MainPage> {
           ]),
           Column(children: [Spacer(), Footer()])
         ]));
-  }
-
-  /// Foto der Anlage mit dem Logo als Plakette an der Unterkante.
-  Widget getHero() {
-    final locality = App.of(context).getLocality();
-    return Stack(clipBehavior: Clip.none, children: [
-      SizedBox(
-          height: 150,
-          width: double.infinity,
-          child: Image.asset(Data.getSoccerPicString(locality),
-              fit: BoxFit.cover)),
-      Positioned(
-          left: 0,
-          right: 0,
-          bottom: -24,
-          child: Center(
-              child: Container(
-                  height: 52,
-                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey[300]!)),
-                  child: Image.asset(Data.getLocalityImageString(locality),
-                      fit: BoxFit.contain)))),
-    ]);
   }
 
   Widget getTiles(AppLocalizations loc) {
