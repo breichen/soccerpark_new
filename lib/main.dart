@@ -164,6 +164,14 @@ class _AppState extends State<App> {
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: maincolor),
         textTheme: GoogleFonts.latoTextTheme(),
+        // Einheitliche Aufklapp-Menüs (Menü oben rechts, Export).
+        popupMenuTheme: PopupMenuThemeData(
+          color: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12)),
+        ),
       ),
       home: StartPage(),
       localizationsDelegates: [

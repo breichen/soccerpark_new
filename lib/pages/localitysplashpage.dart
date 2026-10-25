@@ -53,11 +53,7 @@ class LocalitySplashPage extends StatelessWidget {
         onTap: () {
           App.of(context).setLocality(loc);
           Data.setInitChosen();
-          Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MainPage()),
-          );
+          goToMainPage(context);
         });
   }
 }

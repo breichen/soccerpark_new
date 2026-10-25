@@ -97,7 +97,10 @@ class ExportMenuItem extends PopupMenuItem<ExportMenuItemE> {
           child: ListTile(
             leading: getIcon(value),
             title: Text(getText(context, value),
-                style: GoogleFonts.lato(color: mainred)),
+                style: GoogleFonts.lato(
+                    color: Colors.black87,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600)),
           ),
         );
 
@@ -116,10 +119,10 @@ class ExportMenuItem extends PopupMenuItem<ExportMenuItemE> {
   static Widget getIcon(ExportMenuItemE value) {
     switch (value) {
       case ExportMenuItemE.CSV:
-        return Image.asset('assets/pics/csv.png', color: mainred, width: 24);
+        return Image.asset('assets/pics/csv.png', color: maincolor, width: 24);
       case ExportMenuItemE.PDF:
         return Image.asset('assets/pics/pdf_icon_2.png',
-            color: mainred, width: 24);
+            color: maincolor, width: 24);
       case ExportMenuItemE.COUNT:
         assert(false);
         return const SizedBox.shrink();

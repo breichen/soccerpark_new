@@ -284,10 +284,7 @@ class _HistoryPageState extends State<HistoryPage> {
           Data.clear();
           CustomToast.showToastIcon(
               context, AppLocalizations.of(context)!.deleted_data, Icons.check);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MainPage()),
-          );
+          goToMainPage(context);
         });
         showDialog(context: context, builder: (BuildContext context) => dialog);
       },

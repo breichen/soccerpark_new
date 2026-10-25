@@ -20,6 +20,14 @@ import './roundpage.dart';
 import './historypage.dart';
 import './highscorepage.dart';
 
+/// Zum Hauptmenü wechseln und alle Seiten darüber schließen, damit sich
+/// keine Hauptmenüs übereinander stapeln und "Zurück" nicht in eine
+/// abgeschlossene Runde führt.
+void goToMainPage(BuildContext context) {
+  Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => MainPage()), (route) => false);
+}
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 

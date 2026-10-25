@@ -16,8 +16,9 @@ class CustomAppBar extends AppBar {
             title: Text(title),
             actions: addActions + [getPopupMenu(context, ignored)]);
 
-  static PopupMenuButton getPopupMenu(BuildContext context, MenuItemE ignored) {
-    return PopupMenuButton(
+  static PopupMenuButton<int> getPopupMenu(
+      BuildContext context, MenuItemE ignored) {
+    return PopupMenuButton<int>(
         // add icon, by default "3 dot" icon
         // icon: Icon(Icons.book)
         itemBuilder: (context) {
@@ -25,10 +26,7 @@ class CustomAppBar extends AppBar {
     }, onSelected: (value) {
       switch (MenuItemE.values[value]) {
         case MenuItemE.MAIN:
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MainPage()),
-          );
+          goToMainPage(context);
           break;
         case MenuItemE.SETTINGS:
           Navigator.push(
@@ -60,11 +58,17 @@ class CustomAppBar extends AppBar {
     });
   }
 
-  static List<MenuItem> getItems(BuildContext context, MenuItemE ignored) {
-    List<MenuItem> items = [];
+  static List<PopupMenuEntry<int>> getItems(
+      BuildContext context, MenuItemE ignored) {
+    List<PopupMenuEntry<int>> items = [];
     for (var i = 0; i < MenuItemE.COUNT.index; i++) {
-      if (ignored != MenuItemE.values[i])
-        items.add(MenuItem(context, MenuItemE.values[i]));
+      final item = MenuItemE.values[i];
+      if (ignored == item) continue;
+      // "Über die App" ist kein Ort auf der Anlage: abgesetzt darstellen.
+      if (item == MenuItemE.VERSION && items.isNotEmpty) {
+        items.add(const PopupMenuDivider(height: 9));
+      }
+      items.add(MenuItem(context, item));
     }
     return items;
   }
@@ -76,8 +80,32 @@ class MenuItem extends PopupMenuItem<int> {
   MenuItem(BuildContext context, MenuItemE value)
       : super(
             value: value.index,
-            child: Text(getText(context, value),
-                style: GoogleFonts.lato(color: Color(mainredValue))));
+            child: Row(children: [
+              Icon(getIcon(value), color: maincolor, size: 22),
+              SizedBox(width: 14),
+              Text(getText(context, value),
+                  style: GoogleFonts.lato(
+                      color: Colors.black87,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600)),
+            ]));
+
+  static IconData getIcon(MenuItemE value) {
+    switch (value) {
+      case MenuItemE.MAIN:
+        return Icons.home_outlined;
+      case MenuItemE.SETTINGS:
+        return Icons.settings_outlined;
+      case MenuItemE.CONTACT:
+        return Icons.phone_outlined;
+      case MenuItemE.VENUE:
+        return Icons.directions_outlined;
+      case MenuItemE.VERSION:
+        return Icons.info_outline;
+      default:
+        return Icons.circle_outlined;
+    }
+  }
 
   static String getText(BuildContext context, MenuItemE value) {
     switch (value) {

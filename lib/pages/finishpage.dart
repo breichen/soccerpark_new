@@ -222,10 +222,7 @@ class _FinishPageState extends State<FinishPage> {
                   child: ListView(children: <Widget>[
                     Space(20),
                     FullWidthButton(AppLocalizations.of(context)!.menu, () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainPage()),
-                      );
+                      goToMainPage(context);
                     }),
                     Space(20),
                     Container(

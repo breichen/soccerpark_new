@@ -205,10 +205,7 @@ class _RoundPageState extends State<RoundPage> {
       }, () {
         Data.clearCurrent();
         Navigator.of(context).pop();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => MainPage()),
-        );
+        goToMainPage(context);
       });
       showDialog(context: context, builder: (BuildContext context) => dialog);
     }, padding: 10);
