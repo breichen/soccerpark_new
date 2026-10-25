@@ -983,7 +983,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get about => 'About the app';
 
   @override
-  String get whats_new => 'What\'s new';
+  String get whats_new => 'New in this version';
 
   @override
   String get feedback_title => 'Feedback';

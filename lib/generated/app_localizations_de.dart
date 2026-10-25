@@ -992,7 +992,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get about => 'Über die App';
 
   @override
-  String get whats_new => 'Was ist neu';
+  String get whats_new => 'Neu in dieser Version';
 
   @override
   String get feedback_title => 'Feedback';

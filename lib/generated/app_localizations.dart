@@ -1931,7 +1931,7 @@ abstract class AppLocalizations {
   /// No description provided for @whats_new.
   ///
   /// In de, this message translates to:
-  /// **'Was ist neu'**
+  /// **'Neu in dieser Version'**
   String get whats_new;
 
   /// No description provided for @feedback_title.

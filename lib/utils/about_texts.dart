@@ -6,24 +6,30 @@
 /// Neuerungen dieser Version (bei jedem Release anpassen).
 List<String> whatsNew(String lang) => lang == 'de'
     ? [
-        'Monatliche Online-Bestenliste für jede Anlage',
-        'Eigene Seite „Bestenlisten“ mit Platzierungen und Abstand zu Par',
-        'Schläge pro Bahn werden bei Rekorden mitgespeichert',
-        'Diagramme mit Par-Linie und Details beim Antippen',
-        'Bahnen in der Übersicht und zum Durchwischen',
-        'Neues Hauptmenü mit „Runde fortsetzen“',
-        'Kontaktdaten zum Antippen: Anrufen, Route, E-Mail',
-        'Überarbeitete Anleitung, Platzordnung und FAQs',
+        'Spiel um den Monatssieg: Die besten 10 Runden jeder Anlage kommen in die Online-Bestenliste',
+        'Alle Bestenlisten auf einer Seite, mit Platz und Abstand zu Par',
+        'Bei deinen Rekorden siehst du jetzt jede einzelne Bahn',
+        'Neue Runde: Mitspielende antippen und die Reihenfolge per Ziehen festlegen',
+        'Die Scorecard zeigt die aktuelle Bahn, deinen Fortschritt und den Abstand zu Par',
+        'Schneller eintragen: Bahn für Bahn weiterblättern, ohne den Dialog zu schließen',
+        'Laufende Runde direkt im Hauptmenü fortsetzen',
+        'Diagramme mit Par-Linie, Antippen zeigt die Details',
+        'Bahnen zum Durchwischen, mit Par, Länge und Hindernissen',
+        'Anrufen, Route und E-Mail mit einem Tipp',
+        'Etwas funktioniert nicht? Unter „Über die App“ kannst du uns direkt einen Fehler melden',
       ]
     : [
-        'Monthly online leaderboard for each venue',
-        'New "Leaderboards" page with rankings and score to par',
-        'Records now store the strokes for each hole',
-        'Charts with par line and details on tap',
-        'Holes overview with swipeable detail view',
-        'New main menu with "Continue round"',
-        'Tappable contact details: call, directions, email',
-        'Redesigned rules, course regulations and FAQs',
+        'Play for the monthly title: the 10 best rounds at each venue make the online leaderboard',
+        'All leaderboards on one page, with rank and score to par',
+        'Your records now show every single hole',
+        'New round: tap to add players and drag to set the playing order',
+        'The scorecard shows the current hole, your progress and your score to par',
+        'Faster scoring: move from hole to hole without closing the dialog',
+        'Continue a running round straight from the main menu',
+        'Charts with a par line, tap for details',
+        'Swipe through the holes, with par, length and obstacles',
+        'Call, get directions or send an email with one tap',
+        'Something not working? Report a problem directly under "About the app"',
       ];
 
 /// Ein Abschnitt der Datenschutzhinweise.
