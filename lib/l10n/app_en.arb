@@ -350,5 +350,9 @@
     "rules_t14": "After your round",
     "rules_t15": "Drinks and snacks",
     "rules_t16": "Wi-Fi and feedback",
-    "rules_t17": "Vouchers and questions"
+    "rules_t17": "Vouchers and questions",
+    "contact_address_label": "Address",
+    "contact_phone_label": "Phone",
+    "contact_copy_hint": "Tip: Long-press to copy the address, number or link.",
+    "copied": "Copied to clipboard"
 }

@@ -323,5 +323,9 @@
     "rules_t14": "Nach der Runde",
     "rules_t15": "Getränke und Snacks",
     "rules_t16": "WLAN und Feedback",
-    "rules_t17": "Gutscheine und Fragen"
+    "rules_t17": "Gutscheine und Fragen",
+    "contact_address_label": "Adresse",
+    "contact_phone_label": "Telefon",
+    "contact_copy_hint": "Tipp: Lange drücken kopiert Adresse, Nummer oder Link.",
+    "copied": "In die Zwischenablage kopiert"
 }

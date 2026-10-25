@@ -975,4 +975,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get rules_t17 => 'Gutscheine und Fragen';
+
+  @override
+  String get contact_address_label => 'Adresse';
+
+  @override
+  String get contact_phone_label => 'Telefon';
+
+  @override
+  String get contact_copy_hint => 'Tipp: Lange drücken kopiert Adresse, Nummer oder Link.';
+
+  @override
+  String get copied => 'In die Zwischenablage kopiert';
 }

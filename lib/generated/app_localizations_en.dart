@@ -966,4 +966,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get rules_t17 => 'Vouchers and questions';
+
+  @override
+  String get contact_address_label => 'Address';
+
+  @override
+  String get contact_phone_label => 'Phone';
+
+  @override
+  String get contact_copy_hint => 'Tip: Long-press to copy the address, number or link.';
+
+  @override
+  String get copied => 'Copied to clipboard';
 }

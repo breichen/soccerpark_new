@@ -1897,6 +1897,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Gutscheine und Fragen'**
   String get rules_t17;
+
+  /// No description provided for @contact_address_label.
+  ///
+  /// In de, this message translates to:
+  /// **'Adresse'**
+  String get contact_address_label;
+
+  /// No description provided for @contact_phone_label.
+  ///
+  /// In de, this message translates to:
+  /// **'Telefon'**
+  String get contact_phone_label;
+
+  /// No description provided for @contact_copy_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Tipp: Lange drücken kopiert Adresse, Nummer oder Link.'**
+  String get contact_copy_hint;
+
+  /// No description provided for @copied.
+  ///
+  /// In de, this message translates to:
+  /// **'In die Zwischenablage kopiert'**
+  String get copied;
 }
 
 class _AppLocalizationsDelegate
