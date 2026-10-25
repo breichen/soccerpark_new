@@ -1071,4 +1071,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String round_progress_one(int holes) {
     return '1 Person · ${holes} von 18 Bahnen gespielt';
   }
+
+  @override
+  String get hole_done => 'Fertig';
 }

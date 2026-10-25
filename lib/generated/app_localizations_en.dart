@@ -1062,4 +1062,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String round_progress_one(int holes) {
     return '1 player · ${holes} of 18 holes played';
   }
+
+  @override
+  String get hole_done => 'Done';
 }

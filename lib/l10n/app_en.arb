@@ -404,5 +404,6 @@
                 "type": "int"
             }
         }
-    }
+    },
+    "hole_done": "Done"
 }

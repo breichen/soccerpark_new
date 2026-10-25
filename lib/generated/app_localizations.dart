@@ -2077,6 +2077,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'1 Person · {holes} von 18 Bahnen gespielt'**
   String round_progress_one(int holes);
+
+  /// No description provided for @hole_done.
+  ///
+  /// In de, this message translates to:
+  /// **'Fertig'**
+  String get hole_done;
 }
 
 class _AppLocalizationsDelegate

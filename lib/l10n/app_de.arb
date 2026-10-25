@@ -353,5 +353,6 @@
     "players_count": "{count} von {max}",
     "start_round": "Runde starten · {count} Personen",
     "start_round_one": "Runde starten · 1 Person",
-    "round_progress_one": "1 Person · {holes} von 18 Bahnen gespielt"
+    "round_progress_one": "1 Person · {holes} von 18 Bahnen gespielt",
+    "hole_done": "Fertig"
 }
