@@ -1035,4 +1035,35 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get settings_venue => 'Anlage';
+
+  @override
+  String get players_title => 'Mitspieler';
+
+  @override
+  String get add_players => 'Spieler hinzufügen';
+
+  @override
+  String get new_player => 'Neuer Spieler';
+
+  @override
+  String get long_press_hint => 'Lange drücken: bearbeiten oder löschen';
+
+  @override
+  String get select_players_hint => 'Wähle mindestens einen Spieler';
+
+  @override
+  String get players_full_error => 'Es können höchstens 5 Spieler mitspielen.';
+
+  @override
+  String players_count(int count, int max) {
+    return '${count} von ${max}';
+  }
+
+  @override
+  String start_round(int count) {
+    return 'Runde starten · ${count} Spieler';
+  }
+
+  @override
+  String get start_round_one => 'Runde starten · 1 Spieler';
 }

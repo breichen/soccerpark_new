@@ -1026,4 +1026,35 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_venue => 'Venue';
+
+  @override
+  String get players_title => 'Players';
+
+  @override
+  String get add_players => 'Add players';
+
+  @override
+  String get new_player => 'New player';
+
+  @override
+  String get long_press_hint => 'Long-press to edit or delete';
+
+  @override
+  String get select_players_hint => 'Select at least one player';
+
+  @override
+  String get players_full_error => 'A maximum of 5 players can play.';
+
+  @override
+  String players_count(int count, int max) {
+    return '${count} of ${max}';
+  }
+
+  @override
+  String start_round(int count) {
+    return 'Start round · ${count} players';
+  }
+
+  @override
+  String get start_round_one => 'Start round · 1 player';
 }

@@ -343,5 +343,14 @@
     "venue_transit_sub": "Fahrplanauskunft",
     "venue_description": "Wegbeschreibung",
     "venue_description_sub": "Ausführlich auf der Website",
-    "settings_venue": "Anlage"
+    "settings_venue": "Anlage",
+    "players_title": "Mitspieler",
+    "add_players": "Spieler hinzufügen",
+    "new_player": "Neuer Spieler",
+    "long_press_hint": "Lange drücken: bearbeiten oder löschen",
+    "select_players_hint": "Wähle mindestens einen Spieler",
+    "players_full_error": "Es können höchstens 5 Spieler mitspielen.",
+    "players_count": "{count} von {max}",
+    "start_round": "Runde starten · {count} Spieler",
+    "start_round_one": "Runde starten · 1 Spieler"
 }

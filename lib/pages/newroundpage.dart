@@ -7,8 +7,7 @@ import '../utils/data.dart';
 import '../utils/persist_stub.dart'
     if (dart.library.js_interop) '../utils/persist_web.dart';
 import '../widgets/appbar.dart';
-import '../widgets/button.dart';
-import '../widgets/header.dart';
+import '../widgets/dropdown.dart' show dropdownChipColor;
 import '../widgets/toast.dart';
 import '../widgets/space.dart';
 import '../dialogs/addplayerdialog.dart';
@@ -16,6 +15,7 @@ import '../dialogs/editplayerdialog.dart';
 import '../dialogs/singlebuttoncanceldialog.dart';
 import './roundpage.dart';
 
+/// Neue Runde: Mitspieler wählen und ordnen, dann starten.
 class NewRoundPage extends StatefulWidget {
   const NewRoundPage({super.key});
 
@@ -24,48 +24,56 @@ class NewRoundPage extends StatefulWidget {
 }
 
 class _NewRoundPageState extends State<NewRoundPage> {
-  final double outsep = 4;
-  final double insep = 4;
-  final double colsep = 4;
-  final double vsep = 20;
-
-  // ↓ hold tap position, set during onTapDown, using getPosition() method
+  /// Position des letzten Tipps (für das Bearbeiten/Löschen-Menü).
   Offset tapXY = Offset.zero;
-  // ↓ hold screen size, using first line in build() method
-  late RenderBox overlay;
 
+  /// Gespeicherte, noch nicht gewählte Spieler (alphabetisch).
   List<PlayerPair> allPlayers = [];
+
+  /// Mitspieler in Spielreihenfolge.
   List<PlayerPair> selPlayers = [];
+
+  bool get isFull => selPlayers.length >= Data.MAX_PLAYER_CNT;
 
   @override
   void initState() {
     super.initState();
-
-    Data.getAllPlayers().then((players) => {
-          setState(() {
-            selPlayers = [];
-            allPlayers = players;
-            allPlayers.sort((a, b) => a.name.compareTo(b.name));
-            print("players size " + players.length.toString());
-          })
-        });
+    Data.getAllPlayers().then((players) {
+      if (!mounted) return;
+      setState(() {
+        selPlayers = [];
+        allPlayers = players;
+        sortAvailable();
+      });
+    });
   }
 
-  bool existsName(String name) {
-    for (var i = 0; i < allPlayers.length; i++) {
-      if (allPlayers[i].name == name) return true;
-    }
-    for (var i = 0; i < selPlayers.length; i++) {
-      if (selPlayers[i].name == name) return true;
-    }
-    return false;
+  void sortAvailable() =>
+      allPlayers.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+  bool existsName(String name) =>
+      allPlayers.any((p) => p.name == name) ||
+      selPlayers.any((p) => p.name == name);
+
+  void select(PlayerPair p) {
+    if (isFull) return;
+    setState(() {
+      allPlayers.remove(p);
+      selPlayers.add(p);
+    });
+  }
+
+  void deselect(PlayerPair p) {
+    setState(() {
+      selPlayers.remove(p);
+      allPlayers.add(p);
+      sortAvailable();
+    });
   }
 
   void start() {
     for (var i = 0; i < selPlayers.length; i++) {
       Data.storePlayerIndex(0, i + 1, selPlayers[i].id);
-      //for (var hole = 1; hole <= 18; hole++)
-      //  Data.storeScore(0, i + 1, hole, (i + hole) % 6 + 6); // TODO: Remove
     }
     Data.storeCurrentDate();
 
@@ -75,291 +83,331 @@ class _NewRoundPageState extends State<NewRoundPage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => RoundPage(0)),
-    ).whenComplete(() => Navigator.of(context).pop());
+    ).whenComplete(() {
+      if (mounted) Navigator.of(context).pop();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    final l = AppLocalizations.of(context)!;
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: CustomAppBar(context, AppLocalizations.of(context)!.newRound,
-            MenuItemE.COUNT, []),
-        body: Stack(children: [
-          ListView(children: <Widget>[
-            Header(),
-            Space(0),
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SpaceH(outsep),
-              Expanded(flex: 1, child: getLeftColumn()),
-              SpaceH(colsep),
-              Expanded(flex: 1, child: getRightColumn()),
-              SpaceH(outsep),
-            ]),
-            Space(20)
-          ])
+        appBar: CustomAppBar(context, l.newRound, MenuItemE.COUNT, []),
+        bottomNavigationBar: getStartBar(l),
+        body: ListView(padding: EdgeInsets.all(16), children: <Widget>[
+          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Expanded(child: sectionTitle(l.players_title)),
+            Text(l.players_count(selPlayers.length, Data.MAX_PLAYER_CNT),
+                style: GoogleFonts.lato(color: Colors.grey[600], fontSize: 13)),
+          ]),
+          Space(8),
+          getSelectedList(l),
+          Space(20),
+          sectionTitle(l.add_players),
+          Space(8),
+          getAvailableChips(l),
+          Space(8),
+          Text(l.long_press_hint,
+              style: GoogleFonts.lato(color: Colors.grey[500], fontSize: 12)),
+          Space(16),
         ]));
   }
 
-  Widget getLeftColumn() {
-    return Column(
-        children: [Card(color: Colors.grey[200], child: getLeftList())]);
-  }
+  Widget sectionTitle(String text) => Text(text,
+      style: GoogleFonts.lato(
+          color: maincolor, fontSize: 17, fontWeight: FontWeight.bold));
 
-  Widget getLeftList() {
-    return allPlayers.isEmpty ? getLeftEmpty() : getLeftListFilled();
-  }
+  /// Mitspieler: nummeriert, per Griff verschiebbar, mit Kreuz entfernbar.
+  Widget getSelectedList(AppLocalizations l) {
+    final decoration = BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(12));
 
-  Widget getLeftListFilled() {
-    var indices = [];
-    for (var i = 0; i < allPlayers.length; i++) indices.add(i);
-
-    return ListView(
-        padding: EdgeInsets.all(insep),
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        children: indices
-            .map((idx) => InkWell(
-                  child: Card(
-                      color: Colors.grey[400],
-                      child: Container(
-                          padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-                          child: Row(children: [
-                            Text(allPlayers[idx].name,
-                                style: GoogleFonts.lato(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    height: 1.3)),
-                          ]))),
-                  onTap: () {
-                    if (selPlayers.length < Data.MAX_PLAYER_CNT)
-                      setState(() {
-                        selPlayers.add(allPlayers[idx]);
-                        allPlayers.remove(allPlayers[idx]);
-                      });
-                  },
-                  onTapDown: getPosition,
-                  onLongPress: () {
-                    getMenu(allPlayers, idx);
-                  },
-                ))
-            .toList());
-  }
-
-  // ↓ create the RelativeRect from size of screen and where you tapped
-  RelativeRect get relRectSize =>
-      RelativeRect.fromSize(tapXY & const Size(40, 40), overlay.size);
-
-  // ↓ get the tap position Offset
-  void getPosition(TapDownDetails detail) {
-    tapXY = detail.globalPosition;
-  }
-
-  Widget getLeftEmpty() {
-    return ListView(
-        padding: EdgeInsets.all(insep),
-        shrinkWrap: true,
-        children: [
-          Container(
-              padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-              child: Text(AppLocalizations.of(context)!.noPlayerAvailable,
-                  style: GoogleFonts.lato(
-                      color: Colors.black, fontSize: 16, height: 1.3)))
-        ]);
-  }
-
-  Widget getRightColumn() {
-    return Column(children: [
-      Card(color: Colors.grey[200], child: getRightList()),
-      Space(15),
-      getAddButton(),
-      Space(15),
-      getStartButton(),
-    ]);
-  }
-
-  Widget getRightList() {
-    var indices = [];
-    for (var i = 0; i < Data.MAX_PLAYER_CNT; i++) indices.add(i);
+    if (selPlayers.isEmpty) {
+      return Container(
+          width: double.infinity,
+          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          decoration: decoration,
+          child: Text(l.select_players_hint,
+              style: GoogleFonts.lato(color: Colors.grey[600], fontSize: 15)));
+    }
 
     return Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(insep),
-        child: Column(
-            children: indices.map((index) => getRightElement(index)).toList()));
+        clipBehavior: Clip.antiAlias,
+        decoration: decoration,
+        child: ReorderableListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            buildDefaultDragHandles: false,
+            itemCount: selPlayers.length,
+            onReorder: (oldIndex, newIndex) {
+              setState(() {
+                if (newIndex > oldIndex) newIndex -= 1;
+                final p = selPlayers.removeAt(oldIndex);
+                selPlayers.insert(newIndex, p);
+              });
+            },
+            proxyDecorator: (child, index, animation) => Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(8),
+                child: child),
+            itemBuilder: (context, i) {
+              final p = selPlayers[i];
+              return Material(
+                  key: ValueKey(p.id),
+                  color: Colors.white,
+                  child: InkWell(
+                      onTapDown: (d) => tapXY = d.globalPosition,
+                      onLongPress: () => showPlayerMenu(selPlayers, p),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              border: i == 0
+                                  ? null
+                                  : Border(
+                                      top: BorderSide(
+                                          color: Colors.grey[200]!))),
+                          padding: EdgeInsets.fromLTRB(4, 4, 4, 4),
+                          child: Row(children: [
+                            ReorderableDragStartListener(
+                                index: i,
+                                child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Icon(Icons.drag_indicator,
+                                        color: Colors.grey[400]))),
+                            Container(
+                                width: 26,
+                                height: 26,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: maincolor, shape: BoxShape.circle),
+                                child: Text((i + 1).toString(),
+                                    style: GoogleFonts.lato(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold))),
+                            SpaceH(12),
+                            Expanded(
+                                child: Text(p.name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.lato(
+                                        color: Colors.black87,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold))),
+                            IconButton(
+                                icon: Icon(Icons.close,
+                                    color: Colors.grey[500], size: 20),
+                                onPressed: () => deselect(p)),
+                          ]))));
+            }));
   }
 
-  Widget getRightElement(int idx) {
-    return idx < selPlayers.length
-        ? getRightElementName(idx)
-        : getRightElementEmpty();
+  /// Gespeicherte Spieler als Chips plus "Neuer Spieler".
+  Widget getAvailableChips(AppLocalizations l) {
+    final chips = <Widget>[
+      for (final p in allPlayers)
+        GestureDetector(
+            onTapDown: (d) => tapXY = d.globalPosition,
+            onLongPress: () => showPlayerMenu(allPlayers, p),
+            child: Material(
+                color: isFull ? Colors.grey[200] : dropdownChipColor,
+                borderRadius: BorderRadius.circular(18),
+                child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    onTap: isFull
+                        ? () => CustomToast.showToast(
+                            context, l.players_full_error)
+                        : () => select(p),
+                    child: Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        child: Row(mainAxisSize: MainAxisSize.min, children: [
+                          Icon(Icons.add,
+                              size: 16,
+                              color: isFull ? Colors.grey[500] : maincolor),
+                          SpaceH(4),
+                          Text(p.name,
+                              style: GoogleFonts.lato(
+                                  color: isFull ? Colors.grey[600] : maincolor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold)),
+                        ]))))),
+      // Neuer Spieler (gestrichelter Rahmen gibt es in Flutter nicht direkt;
+      // ein heller Rand mit Icon unterscheidet ihn von den anderen Chips)
+      Material(
+          color: Colors.white,
+          shape: StadiumBorder(side: BorderSide(color: maincolor)),
+          child: InkWell(
+              customBorder: StadiumBorder(),
+              onTap: addPlayer,
+              child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    Icon(Icons.person_add_alt_1_outlined,
+                        size: 18, color: maincolor),
+                    SpaceH(6),
+                    Text(l.new_player,
+                        style: GoogleFonts.lato(
+                            color: maincolor,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)),
+                  ])))),
+    ];
+    return Wrap(spacing: 8, runSpacing: 8, children: chips);
   }
 
-  Widget getRightElementName(int idx) {
-    return InkWell(
-      child: Card(
-          color: maincolor,
-          child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-              child: Text(selPlayers[idx].name,
-                  style: GoogleFonts.lato(
-                      color: Colors.white, fontSize: 16, height: 1.3)))),
-      onTap: () {
+  /// Neuen Spieler anlegen; ist noch Platz, spielt er gleich mit.
+  void addPlayer() {
+    AddPlayerDialog dialog = AddPlayerDialog((String text) {
+      text = text.trim();
+      if (text.isEmpty || existsName(text)) return false;
+      Data.getCurrPlayerIndex().then((id) {
+        Data.addPlayer(text);
+        if (!mounted) return;
         setState(() {
-          allPlayers.add(selPlayers[idx]);
-          allPlayers.sort((a, b) => a.name.compareTo(b.name));
-          selPlayers.remove(selPlayers[idx]);
+          final p = PlayerPair(id, text);
+          if (isFull) {
+            allPlayers.add(p);
+            sortAvailable();
+          } else {
+            selPlayers.add(p);
+          }
         });
-      },
-      onTapDown: getPosition,
-      onLongPress: () {
-        getMenu(selPlayers, idx);
-      },
-    );
+      });
+      return true;
+    });
+    showDialog(context: context, builder: (BuildContext context) => dialog);
   }
 
-  Widget getRightElementEmpty() {
-    return Card(
-        color: Colors.grey[300],
+  /// Fester Startknopf am unteren Rand.
+  Widget getStartBar(AppLocalizations l) {
+    final enabled = selPlayers.isNotEmpty;
+    return SafeArea(
         child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.fromLTRB(10, 4, 10, 4),
-            child: Text("",
-                style: GoogleFonts.lato(
-                    color: Colors.white, fontSize: 16, height: 1.3))));
+            padding: EdgeInsets.fromLTRB(16, 10, 16, 12),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Colors.grey[300]!))),
+            child: Material(
+                color: enabled ? maincolor : Colors.grey[300],
+                borderRadius: BorderRadius.circular(14),
+                child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: enabled
+                        ? onStart
+                        : () => CustomToast.showToast(
+                            context, l.none_selected_error),
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 13),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.play_arrow_rounded,
+                                  color: enabled
+                                      ? Colors.white
+                                      : Colors.grey[600]),
+                              SpaceH(6),
+                              Text(
+                                  enabled
+                                      ? (selPlayers.length == 1
+                                          ? l.start_round_one
+                                          : l.start_round(selPlayers.length))
+                                      : l.select_players_hint,
+                                  style: GoogleFonts.lato(
+                                      color: enabled
+                                          ? Colors.white
+                                          : Colors.grey[600],
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ]))))));
   }
 
-  Widget getAddButton() {
-    return Visibility(
-        child: FlActionButton(
-            AppLocalizations.of(context)!.addPlayer, Icons.add_circle, () {
-          AddPlayerDialog dialog = AddPlayerDialog((String text) {
-            text = text.trim();
-            bool stored = false;
-            setState(() {
-              if (!existsName(text)) {
-                Data.getCurrPlayerIndex().then((id) => {
-                      selPlayers.add(PlayerPair(id, text)),
-                      Data.addPlayer(text)
-                    });
-                stored = true;
-              }
-            });
-            return stored;
-          });
-          showDialog(
-              context: context, builder: (BuildContext context) => dialog);
-        }),
-        visible: selPlayers.length < 5,
-        maintainSize: true,
-        maintainAnimation: true,
-        maintainState: true);
-  }
-
-  Widget getStartButton() {
-    return FullWidthButton(AppLocalizations.of(context)!.start, () {
-      if (selPlayers.isEmpty) {
-        CustomToast.showToast(
-          context,
-          AppLocalizations.of(context)!.none_selected_error,
-        );
+  /// Start; fragt nach, wenn bereits eine Runde mit Schlägen läuft.
+  void onStart() {
+    final l = AppLocalizations.of(context)!;
+    Data.isStarted().then((started) {
+      if (!started) {
+        start();
         return;
       }
-
-      SingleButtonCancelDialog dialog;
-      Data.isStarted().then((started) => {
-            if (started)
-              {
-                Data.isPlayStarted().then((playStarted) => {
-                      if (playStarted)
-                        {
-                          dialog = SingleButtonCancelDialog(
-                              context,
-                              AppLocalizations.of(context)!.existing_round,
-                              AppLocalizations.of(context)!.start_started,
-                              AppLocalizations.of(context)!.start_new, () {
-                            Data.clearCurrent();
-
-                            Navigator.of(context).pop();
-                            start();
-                          }),
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) => dialog)
-                        }
-                      else
-                        {Data.clearCurrent(), start()}
-                    }),
-              }
-            else
-              {start()}
-          });
+      Data.isPlayStarted().then((playStarted) {
+        if (!mounted) return;
+        if (!playStarted) {
+          Data.clearCurrent();
+          start();
+          return;
+        }
+        final dialog = SingleButtonCancelDialog(
+            context, l.existing_round, l.start_started, l.start_new, () {
+          Data.clearCurrent();
+          Navigator.of(context).pop();
+          start();
+        });
+        showDialog(context: context, builder: (BuildContext context) => dialog);
+      });
     });
   }
 
-  getMenu(List<PlayerPair> players, int idx) {
-    return showMenu(
+  /// Menü zum Bearbeiten oder Löschen (langes Drücken).
+  void showPlayerMenu(List<PlayerPair> list, PlayerPair player) {
+    final l = AppLocalizations.of(context)!;
+    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+    showMenu<int>(
       context: context,
-      position: relRectSize,
-      items: <PopupMenuEntry>[
+      position: RelativeRect.fromSize(tapXY & const Size(40, 40), overlay.size),
+      items: [
         PopupMenuItem(
             value: 0,
-            child: Text(AppLocalizations.of(context)!.edit,
-                style: GoogleFonts.lato(color: Color(mainredValue))),
-            onTap: () {
-              EditPlayerDialog dialog =
-                  EditPlayerDialog(players[idx].name, (String text) {
-                text = text.trim();
-                bool stored = false;
-                setState(() {
-                  if (text == players[idx].name || (!existsName(text))) {
-                    players[idx].name = text;
-                    Data.setPlayerName(players[idx].id, text);
-                    allPlayers.sort((a, b) => a.name.compareTo(b.name));
-                    stored = true;
-                  }
-                });
-                //Navigator.of(context).pop();
-                return stored;
-              });
-              Future.delayed(
-                  const Duration(seconds: 0),
-                  () => {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => dialog)
-                      });
-            }),
+            child: Row(children: [
+              Icon(Icons.edit_outlined, color: maincolor, size: 20),
+              SpaceH(12),
+              Text(l.edit,
+                  style: GoogleFonts.lato(
+                      color: Colors.black87,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600)),
+            ])),
         PopupMenuItem(
             value: 1,
-            child: Text(AppLocalizations.of(context)!.delete,
-                style: GoogleFonts.lato(color: Color(mainredValue))),
-            onTap: () {
-              SingleButtonCancelDialog dialog = SingleButtonCancelDialog(
-                  context,
-                  AppLocalizations.of(context)!.delete,
-                  AppLocalizations.of(context)!.ask_delete_player,
-                  AppLocalizations.of(context)!.delete, () {
-                setState(() {
-                  int id = players[idx].id;
-                  players.remove(players[idx]);
-                  Data.deletePlayer(id);
-                });
-                Navigator.of(context).pop();
-                CustomToast.showToastIcon(context,
-                    AppLocalizations.of(context)!.deleted_player, Icons.check);
-              });
-              Future.delayed(
-                  const Duration(seconds: 0),
-                  () => {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) => dialog)
-                      });
-            }),
+            child: Row(children: [
+              Icon(Icons.delete_outline, color: mainred, size: 20),
+              SpaceH(12),
+              Text(l.delete,
+                  style: GoogleFonts.lato(
+                      color: mainred,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600)),
+            ])),
       ],
-    );
+    ).then((value) {
+      if (!mounted || value == null) return;
+      if (value == 0) {
+        final dialog = EditPlayerDialog(player.name, (String text) {
+          text = text.trim();
+          if (text.isEmpty) return false;
+          if (text != player.name && existsName(text)) return false;
+          setState(() {
+            player.name = text;
+            Data.setPlayerName(player.id, text);
+            sortAvailable();
+          });
+          return true;
+        });
+        showDialog(context: context, builder: (BuildContext context) => dialog);
+      } else {
+        final dialog = SingleButtonCancelDialog(
+            context, l.delete, l.ask_delete_player, l.delete, () {
+          setState(() {
+            list.remove(player);
+            Data.deletePlayer(player.id);
+          });
+          Navigator.of(context).pop();
+          CustomToast.showToastIcon(context, l.deleted_player, Icons.check);
+        });
+        showDialog(context: context, builder: (BuildContext context) => dialog);
+      }
+    });
   }
 }

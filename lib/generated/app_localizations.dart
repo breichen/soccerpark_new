@@ -2017,6 +2017,60 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Anlage'**
   String get settings_venue;
+
+  /// No description provided for @players_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Mitspieler'**
+  String get players_title;
+
+  /// No description provided for @add_players.
+  ///
+  /// In de, this message translates to:
+  /// **'Spieler hinzufügen'**
+  String get add_players;
+
+  /// No description provided for @new_player.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuer Spieler'**
+  String get new_player;
+
+  /// No description provided for @long_press_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Lange drücken: bearbeiten oder löschen'**
+  String get long_press_hint;
+
+  /// No description provided for @select_players_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Wähle mindestens einen Spieler'**
+  String get select_players_hint;
+
+  /// No description provided for @players_full_error.
+  ///
+  /// In de, this message translates to:
+  /// **'Es können höchstens 5 Spieler mitspielen.'**
+  String get players_full_error;
+
+  /// No description provided for @players_count.
+  ///
+  /// In de, this message translates to:
+  /// **'{count} von {max}'**
+  String players_count(int count, int max);
+
+  /// No description provided for @start_round.
+  ///
+  /// In de, this message translates to:
+  /// **'Runde starten · {count} Spieler'**
+  String start_round(int count);
+
+  /// No description provided for @start_round_one.
+  ///
+  /// In de, this message translates to:
+  /// **'Runde starten · 1 Spieler'**
+  String get start_round_one;
 }
 
 class _AppLocalizationsDelegate

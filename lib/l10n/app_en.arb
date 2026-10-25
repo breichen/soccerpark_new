@@ -370,5 +370,31 @@
     "venue_transit_sub": "Timetable information",
     "venue_description": "Directions",
     "venue_description_sub": "Details on the website",
-    "settings_venue": "Venue"
+    "settings_venue": "Venue",
+    "players_title": "Players",
+    "add_players": "Add players",
+    "new_player": "New player",
+    "long_press_hint": "Long-press to edit or delete",
+    "select_players_hint": "Select at least one player",
+    "players_full_error": "A maximum of 5 players can play.",
+    "players_count": "{count} of {max}",
+    "@players_count": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            },
+            "max": {
+                "type": "int"
+            }
+        }
+    },
+    "start_round": "Start round · {count} players",
+    "@start_round": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "start_round_one": "Start round · 1 player"
 }
