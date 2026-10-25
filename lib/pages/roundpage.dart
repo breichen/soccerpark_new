@@ -225,15 +225,22 @@ class _RoundPageState extends State<RoundPage> {
                   SizedBox(
                       width: holeWidth - 4,
                       child: Padding(
-                          padding: EdgeInsets.only(left: 8),
-                          child: Text(
-                              (current ? "▶ " : "") + hole.toString(),
-                              style: GoogleFonts.lato(
-                                  color: current ? maincolor : Colors.black87,
-                                  fontSize: 16,
-                                  fontWeight: current
-                                      ? FontWeight.bold
-                                      : FontWeight.normal)))),
+                          padding: EdgeInsets.only(left: current ? 2 : 8),
+                          child: Row(children: [
+                            // Aktuelle Bahn: grüner Pfeil (Icon statt
+                            // Zeichen, das sonst als Emoji erscheint).
+                            if (current)
+                              Icon(Icons.play_arrow_rounded,
+                                  color: maincolor, size: 18),
+                            Text(hole.toString(),
+                                style: GoogleFonts.lato(
+                                    color:
+                                        current ? maincolor : Colors.black87,
+                                    fontSize: 16,
+                                    fontWeight: current
+                                        ? FontWeight.bold
+                                        : FontWeight.normal)),
+                          ]))),
                   SizedBox(
                       width: parWidth,
                       child: Text(pars[hole - 1].toString(),
