@@ -11,6 +11,7 @@ import '../utils/export.dart';
 import '../dialogs/roundtimelinedialog.dart';
 import '../dialogs/holedialog.dart';
 import '../dialogs/playholedialog.dart';
+import '../dialogs/scoredialog.dart';
 import '../dialogs/twobuttondialog.dart';
 import '../widgets/appbar.dart';
 import '../widgets/space.dart';
@@ -240,9 +241,19 @@ class _RoundPageState extends State<RoundPage> {
                           style: GoogleFonts.lato(
                               color: Colors.grey[600], fontSize: 15))),
                   for (var pl = 0; pl < names.length; pl++)
-                    Expanded(child: scoreText(scores[pl][hole - 1], hole)),
+                    Expanded(child: scoreCell(pl, hole)),
                   SizedBox(width: 6),
                 ]))));
+  }
+
+  /// Zelle eines Spielers: in der laufenden Runde öffnet Antippen die
+  /// Auswahl der Schlagzahl für genau diesen Spieler; sonst wie die Zeile.
+  Widget scoreCell(int pl, int hole) {
+    final text = scoreText(scores[pl][hole - 1], hole);
+    if (!playing) return text;
+    return InkWell(
+        onTap: () => openScore(pl, hole),
+        child: SizedBox(height: 24, child: Center(child: text)));
   }
 
   Widget scoreText(int score, int hole) {
@@ -385,6 +396,16 @@ class _RoundPageState extends State<RoundPage> {
         context: context,
         builder: (BuildContext context) =>
             PlayHoleDialog(loc, hole, names, scores, setScore)).then((_) {
+      if (mounted) scrollToCurrent();
+    });
+  }
+
+  void openScore(int pl, int hole) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => ScoreDialog(
+            loc, hole, names[pl], (int score) => setScore(pl, hole, score),
+            current: scores[pl][hole - 1])).then((_) {
       if (mounted) scrollToCurrent();
     });
   }
