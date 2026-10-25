@@ -120,7 +120,12 @@ class _RoundTimelineDialogState extends State<RoundTimelineDialog> {
                           //color: ColorScheme.of(context).surfaceContainerHigh,
                           height: 200,
                           child: LineChartWidget(getData(),
-                              addDummy: true, legendEntries: widget.names)))),
+                              addDummy: true,
+                              legendEntries: widget.names,
+                              parLine: getParLine(),
+                              tooltipTitle: (x) =>
+                                  AppLocalizations.of(context)!.hole +
+                                  " $x")))),
               SpaceH(16),
             ]),
             Space(8),
@@ -180,6 +185,14 @@ class _RoundTimelineDialogState extends State<RoundTimelineDialog> {
     );
 
     return Column(children: children);
+  }
+
+  /// Par-Linie zur aktuellen Ansicht (nicht beim Vergleich mit Par).
+  List<double>? getParLine() {
+    if (generalType != GeneralType.CURRENT) return null;
+    return detailType == DetailType.SINGLE
+        ? LineChartWidget.holeParLine(widget.pars)
+        : LineChartWidget.cumulativeParLine(widget.pars);
   }
 
   List<List<PointPair>> getData() {

@@ -250,7 +250,11 @@ class _FinishPageState extends State<FinishPage> {
                             child: ConstrainedBox(
                               constraints: BoxConstraints(maxWidth: 700),
                               child: LineChartWidget(getData(),
-                                  legendEntries: widget.data.names),
+                                  legendEntries: widget.data.names,
+                                  parLine: getParLine(widget.pars),
+                                  tooltipTitle: (x) =>
+                                      AppLocalizations.of(context)!.hole +
+                                      " $x"),
                             ),
                           )),
                       SpaceH(32),
@@ -323,6 +327,14 @@ class _FinishPageState extends State<FinishPage> {
     );
 
     return Column(children: children);
+  }
+
+  /// Par-Linie zur aktuellen Ansicht (nicht beim Vergleich mit Par).
+  List<double>? getParLine(List<int> pars) {
+    if (generalType != GeneralType.CURRENT) return null;
+    return detailType == DetailType.SINGLE
+        ? LineChartWidget.holeParLine(pars)
+        : LineChartWidget.cumulativeParLine(pars);
   }
 
   List<List<PointPair>> getData() {

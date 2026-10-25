@@ -155,9 +155,24 @@ class _HistoryPageState extends State<HistoryPage> {
                 chartData,
                 xtitles: type == 0 || type == 2 ? [] : datesForChart,
                 legendEntries: chartLegendData,
+                parLine: chartParLine(),
+                tooltipTitle: type == 1
+                    ? null
+                    : (x) => AppLocalizations.of(context)!.hole + " $x",
+                tightY: type == 1,
               ))),
       SpaceH(32),
     ]);
+  }
+
+  /// Par-Linie passend zur Diagrammart.
+  List<double> chartParLine() {
+    final pars = Data.getPars(App.of(context).getLocality());
+    if (type == 1) {
+      final par = detail == 0 ? pars.reduce((a, b) => a + b) : pars[detail - 1];
+      return LineChartWidget.constantParLine(par, datesForChart.length);
+    }
+    return LineChartWidget.holeParLine(pars);
   }
 
   Widget getChartDropdown(List<String> types, List<String> holes) {
