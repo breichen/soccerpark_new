@@ -80,12 +80,14 @@ class _NewRoundPageState extends State<NewRoundPage> {
     // Web only: ask the browser to keep this data (no-op on Android/iOS).
     requestPersistentStorage();
 
-    Navigator.push(
+    // Diese Seite durch die Runde ersetzen: "Zurück" aus der Runde führt
+    // dann nicht mehr hierher. (Früher wurde sie nach Ende der Runde
+    // nachträglich geschlossen; das schloss nach "Zum Menü" versehentlich
+    // das neue Hauptmenü und hinterließ eine leere App.)
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => RoundPage(0)),
-    ).whenComplete(() {
-      if (mounted) Navigator.of(context).pop();
-    });
+    );
   }
 
   @override
