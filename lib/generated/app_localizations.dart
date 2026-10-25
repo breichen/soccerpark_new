@@ -1969,6 +1969,48 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Open-Source-Lizenzen'**
   String get licenses;
+
+  /// No description provided for @venue_route.
+  ///
+  /// In de, this message translates to:
+  /// **'Route starten'**
+  String get venue_route;
+
+  /// No description provided for @venue_route_sub.
+  ///
+  /// In de, this message translates to:
+  /// **'Navigation zur Anlage öffnen'**
+  String get venue_route_sub;
+
+  /// No description provided for @venue_map_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Anfahrtsplan'**
+  String get venue_map_title;
+
+  /// No description provided for @venue_transit.
+  ///
+  /// In de, this message translates to:
+  /// **'Mit Bus und Bahn'**
+  String get venue_transit;
+
+  /// No description provided for @venue_transit_sub.
+  ///
+  /// In de, this message translates to:
+  /// **'Fahrplanauskunft'**
+  String get venue_transit_sub;
+
+  /// No description provided for @venue_description.
+  ///
+  /// In de, this message translates to:
+  /// **'Wegbeschreibung'**
+  String get venue_description;
+
+  /// No description provided for @venue_description_sub.
+  ///
+  /// In de, this message translates to:
+  /// **'Ausführlich auf der Website'**
+  String get venue_description_sub;
 }
 
 class _AppLocalizationsDelegate

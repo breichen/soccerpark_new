@@ -1002,4 +1002,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get licenses => 'Open-source licences';
+
+  @override
+  String get venue_route => 'Get directions';
+
+  @override
+  String get venue_route_sub => 'Open navigation to the venue';
+
+  @override
+  String get venue_map_title => 'Map';
+
+  @override
+  String get venue_transit => 'By public transport';
+
+  @override
+  String get venue_transit_sub => 'Timetable information';
+
+  @override
+  String get venue_description => 'Directions';
+
+  @override
+  String get venue_description_sub => 'Details on the website';
 }

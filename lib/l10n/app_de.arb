@@ -335,5 +335,12 @@
     "report_bug": "Fehler melden",
     "legal_title": "Rechtliches",
     "privacy": "Datenschutz",
-    "licenses": "Open-Source-Lizenzen"
+    "licenses": "Open-Source-Lizenzen",
+    "venue_route": "Route starten",
+    "venue_route_sub": "Navigation zur Anlage öffnen",
+    "venue_map_title": "Anfahrtsplan",
+    "venue_transit": "Mit Bus und Bahn",
+    "venue_transit_sub": "Fahrplanauskunft",
+    "venue_description": "Wegbeschreibung",
+    "venue_description_sub": "Ausführlich auf der Website"
 }

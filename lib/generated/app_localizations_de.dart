@@ -1011,4 +1011,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get licenses => 'Open-Source-Lizenzen';
+
+  @override
+  String get venue_route => 'Route starten';
+
+  @override
+  String get venue_route_sub => 'Navigation zur Anlage öffnen';
+
+  @override
+  String get venue_map_title => 'Anfahrtsplan';
+
+  @override
+  String get venue_transit => 'Mit Bus und Bahn';
+
+  @override
+  String get venue_transit_sub => 'Fahrplanauskunft';
+
+  @override
+  String get venue_description => 'Wegbeschreibung';
+
+  @override
+  String get venue_description_sub => 'Ausführlich auf der Website';
 }

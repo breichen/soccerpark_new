@@ -362,5 +362,12 @@
     "report_bug": "Report a problem",
     "legal_title": "Legal",
     "privacy": "Privacy",
-    "licenses": "Open-source licences"
+    "licenses": "Open-source licences",
+    "venue_route": "Get directions",
+    "venue_route_sub": "Open navigation to the venue",
+    "venue_map_title": "Map",
+    "venue_transit": "By public transport",
+    "venue_transit_sub": "Timetable information",
+    "venue_description": "Directions",
+    "venue_description_sub": "Details on the website"
 }
