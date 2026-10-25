@@ -21,11 +21,19 @@ class _OrdersPageState extends State<OrdersPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
 
-    // Wichtige Hinweise (Haftung, Zutritt) – Wortlaut unverändert.
-    final important = [loc.orderA1, loc.orderA2, loc.orderA3, loc.orderA4];
+    // Wichtige Hinweise (Haftung, Zutritt, Sicherheit) – Wortlaut unverändert.
+    final important = [
+      loc.orderA1,
+      loc.orderA2,
+      loc.orderA3,
+      loc.orderA4,
+      loc.order7,
+    ];
 
     // Weitere Regeln mit passendem Icon.
     final rules = <MapEntry<IconData, String>>[
+      MapEntry(Icons.no_food_outlined, loc.order1),
+      MapEntry(Icons.do_not_step, loc.order2),
       MapEntry(Icons.groups_outlined, loc.order3),
       MapEntry(Icons.directions_run, loc.order4),
       MapEntry(Icons.delete_outline, loc.order5),
