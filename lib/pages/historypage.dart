@@ -58,6 +58,7 @@ class _HistoryPageState extends State<HistoryPage> {
   bool onlineLoading = false;
   bool onlineError = false;
   int? expandedOnlineId;
+  int? expandedLocalIdx;
 
   List<String> dates = [];
   List<String> datesForChart = [];
@@ -114,6 +115,7 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void setListData() {
+    expandedLocalIdx = null;
     if (highscoreType == onlineType) {
       loadOnlineHighscores();
       return;
@@ -358,35 +360,56 @@ class _HistoryPageState extends State<HistoryPage> {
   TextStyle styleHist = GoogleFonts.lato(color: Colors.black, fontSize: 14);
 
   Widget getHighscoreList() {
-    return Column(
-        children: highscores
-            .map((entry) => Card(
-                color: Colors.grey[300],
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: Column(children: [
-                  Space(4),
-                  Row(children: [
-                    SpaceH(10),
-                    Text(entry.name, style: styleBoldHist),
-                    Spacer(),
-                    Icon(Icons.sports_soccer, size: 16, color: Colors.black),
-                    SpaceH(4),
-                    Text(
-                      entry.score.toString(),
-                      style: styleBoldHist,
-                    ),
-                    SpaceH(10),
-                  ]),
-                  Space(4),
-                  Row(children: [
-                    SpaceH(10),
-                    Icon(Icons.date_range, size: 16, color: Colors.black),
-                    SpaceH(4),
-                    Text(entry.date, style: styleHist)
-                  ]),
-                  Space(4),
-                ])))
-            .toList());
+    final pars = Data.getPars(App.of(context).getLocality());
+    final List<Widget> cards = [];
+    for (var i = 0; i < highscores.length; i++) {
+      final entry = highscores[i];
+      // Lochdetails gibt es nur beim Gesamt-Highscore und nur für Runden,
+      // die nach der Erweiterung gespeichert wurden.
+      final holes = highscoreDetail == 0 ? entry.holes : null;
+      final expanded = holes != null && expandedLocalIdx == i;
+      cards.add(Card(
+          color: Colors.grey[300],
+          margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: InkWell(
+              onTap: holes == null
+                  ? null
+                  : () => setState(() {
+                        expandedLocalIdx = expanded ? null : i;
+                      }),
+              child: Column(children: [
+                Space(4),
+                Row(children: [
+                  SpaceH(10),
+                  Expanded(
+                      child: Text(entry.name,
+                          style: styleBoldHist,
+                          overflow: TextOverflow.ellipsis)),
+                  Icon(Icons.sports_soccer, size: 16, color: Colors.black),
+                  SpaceH(4),
+                  Text(
+                    entry.score.toString(),
+                    style: styleBoldHist,
+                  ),
+                  SpaceH(10),
+                ]),
+                Space(4),
+                Row(children: [
+                  SpaceH(10),
+                  Icon(Icons.date_range, size: 16, color: Colors.black),
+                  SpaceH(4),
+                  Text(entry.date, style: styleHist),
+                  Spacer(),
+                  if (holes != null)
+                    Icon(expanded ? Icons.expand_less : Icons.expand_more,
+                        size: 20, color: Colors.black),
+                  SpaceH(8),
+                ]),
+                if (expanded && holes != null) getHoleTable(holes, pars),
+                Space(4),
+              ]))));
+    }
+    return Column(children: cards);
   }
 
   Widget getOnlineList() {
@@ -447,7 +470,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       size: 20, color: Colors.black),
                   SpaceH(8),
                 ]),
-                if (expanded) getOnlineHoleTable(entry.holes, pars),
+                if (expanded) getHoleTable(entry.holes, pars),
                 Space(4),
               ]))));
     }
@@ -456,7 +479,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   /// Schläge pro Loch in zwei Zeilen à 9 Löcher; unter Par grün,
   /// über Par rot.
-  Widget getOnlineHoleTable(List<int> holes, List<int> pars) {
+  Widget getHoleTable(List<int> holes, List<int> pars) {
     final styleHole = GoogleFonts.lato(color: Colors.grey[700], fontSize: 11);
     TextStyle styleScore(int hole) {
       final diff = holes[hole] - pars[hole];

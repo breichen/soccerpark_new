@@ -5,27 +5,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class Highscore {
-  Highscore(this.playerIndex, this.score, this.date);
+  Highscore(this.playerIndex, this.score, this.date, {this.holes});
   int playerIndex;
   int score;
   String date;
+
+  /// Schläge pro Loch (18 Werte), nur bei Gesamt-Highscores.
+  /// Fehlt bei Einträgen, die vor dieser Erweiterung gespeichert wurden.
+  List<int>? holes;
 
   Map<String, dynamic> toJson() => {
         'playerIndex': playerIndex,
         'score': score,
         'date': date,
+        if (holes != null) 'holes': holes,
       };
 
   static Highscore fromJson(Map<String, dynamic> json) {
-    return Highscore(json['playerIndex'], json['score'], json['date']);
+    List<int>? holes;
+    final h = json['holes'];
+    if (h is List && h.length == 18) {
+      holes = h.map((e) => (e as num).toInt()).toList();
+    }
+    return Highscore(json['playerIndex'], json['score'], json['date'],
+        holes: holes);
   }
 }
 
 class NamedHighscore {
-  NamedHighscore(this.name, this.score, this.date);
+  NamedHighscore(this.name, this.score, this.date, {this.holes});
   String name;
   int score;
   String date;
+  List<int>? holes;
 }
 
 enum Locality { SALZBURG, WAGRAIN, GOLDBERG }
@@ -1139,7 +1151,7 @@ class Data {
         scores.add(score);
         checkStoreScore(prefs, id, hole, score);
       }
-      checkStoreScore(prefs, id, 0, total);
+      checkStoreScore(prefs, id, 0, total, holes: List<int>.of(scores));
       storeToSum(prefs, id, scores);
     }
 
@@ -1285,10 +1297,12 @@ class Data {
         dateStr;
   }
 
+  /// [holes]: Schläge pro Loch, nur für den Gesamt-Highscore (hole == 0).
   static void checkStoreScore(
-      SharedPreferences prefs, int playerIndex, int hole, int score) {
-    checkStoreScorePersonal(prefs, playerIndex, hole, score);
-    checkStoreScoreOverall(prefs, playerIndex, hole, score);
+      SharedPreferences prefs, int playerIndex, int hole, int score,
+      {List<int>? holes}) {
+    checkStoreScorePersonal(prefs, playerIndex, hole, score, holes: holes);
+    checkStoreScoreOverall(prefs, playerIndex, hole, score, holes: holes);
   }
 
   static String encodeHighscoreList(List<Highscore> list) => json.encode(
@@ -1305,7 +1319,8 @@ class Data {
   }
 
   static void checkStoreScorePersonal(
-      SharedPreferences prefs, int playerIndex, int hole, int score) {
+      SharedPreferences prefs, int playerIndex, int hole, int score,
+      {List<int>? holes}) {
     var list = getPersonalHighscoresImm(prefs, hole);
     DateTime date = DateTime.now();
     String formattedDate = DateFormat('dd.MM.yyyy hh:mm').format(date);
@@ -1318,6 +1333,7 @@ class Data {
         if (score < list[i].score) {
           list[i].score = score;
           list[i].date = formattedDate;
+          list[i].holes = holes;
           modified = true;
         }
         break;
@@ -1325,7 +1341,7 @@ class Data {
     }
 
     if (!found) {
-      list.add(Highscore(playerIndex, score, formattedDate));
+      list.add(Highscore(playerIndex, score, formattedDate, holes: holes));
       modified = true;
     }
 
@@ -1348,7 +1364,8 @@ class Data {
     List<NamedHighscore> out = [];
     for (var i = 0; i < list.length; i++)
       out.add(NamedHighscore(getPlayerNameImm(prefs, list[i].playerIndex),
-          list[i].score, list[i].date));
+          list[i].score, list[i].date,
+          holes: list[i].holes));
     out.sort((a, b) => a.score.compareTo(b.score));
     return out;
   }
@@ -1372,7 +1389,8 @@ class Data {
     List<NamedHighscore> out = [];
     for (var i = 0; i < list.length; i++)
       out.add(NamedHighscore(getPlayerNameImm(prefs, list[i].playerIndex),
-          list[i].score, list[i].date));
+          list[i].score, list[i].date,
+          holes: list[i].holes));
     out.sort((a, b) => a.score.compareTo(b.score));
     return out;
   }
@@ -1385,7 +1403,8 @@ class Data {
   }
 
   static void checkStoreScoreOverall(
-      SharedPreferences prefs, int playerIndex, int hole, int score) {
+      SharedPreferences prefs, int playerIndex, int hole, int score,
+      {List<int>? holes}) {
     var list = getOverallHighscoresImm(prefs, hole);
     DateTime date = DateTime.now();
     String formattedDate = DateFormat('dd.MM.yyyy hh:mm').format(date);
@@ -1393,7 +1412,8 @@ class Data {
     bool stored = false;
     for (var i = 0; i < list.length; i++) {
       if (score < list[i].score) {
-        list.insert(i, Highscore(playerIndex, score, formattedDate));
+        list.insert(
+            i, Highscore(playerIndex, score, formattedDate, holes: holes));
         stored = true;
         break;
       }
@@ -1402,7 +1422,7 @@ class Data {
     if (stored && list.length > STORED_HIGHSCORES)
       list.removeLast();
     else if (!stored && list.length < STORED_HIGHSCORES) {
-      list.add(Highscore(playerIndex, score, formattedDate));
+      list.add(Highscore(playerIndex, score, formattedDate, holes: holes));
       stored = true;
     }
 
