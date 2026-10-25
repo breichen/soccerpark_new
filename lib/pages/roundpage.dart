@@ -443,7 +443,7 @@ class _RoundPageState extends State<RoundPage> {
       Data.clearCurrent();
       Navigator.of(context).pop();
       goToMainPage(context);
-    });
+    }, destructive: true);
     showDialog(context: context, builder: (BuildContext context) => dialog);
   }
 

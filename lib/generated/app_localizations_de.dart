@@ -72,7 +72,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noPlayerAvailable => 'Kein(e) SpielerIn verfügbar';
 
   @override
-  String get addPlayerTitle => 'Neue(r) SpielerIn';
+  String get addPlayerTitle => 'Neue Person';
 
   @override
   String get clear_hole_score => 'Entfernen';

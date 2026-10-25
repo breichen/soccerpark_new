@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:soccerpark/widgets/button.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 
 import '../main.dart';
 import '../utils/data.dart';
-import '../widgets/space.dart';
-import '../widgets/text.dart';
-import '../widgets/radio.dart';
+import '../widgets/appdialog.dart';
 import '../widgets/chart.dart';
 
 class RoundTimelineDialog extends StatefulWidget {
@@ -82,109 +79,47 @@ class _RoundTimelineDialogState extends State<RoundTimelineDialog> {
 
   @override
   Widget build(BuildContext context) {
-    print("w");
-    print(Theme.of(context).dialogTheme.backgroundColor);
-    return Dialog(
-      clipBehavior: Clip.antiAlias,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-                color: mainred,
-                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Row(children: [
-                  TitleText(
-                      text: AppLocalizations.of(context)!.timeline,
-                      indent: 8,
-                      color: Colors.white),
-                  Spacer(),
-                  /*DialogShareButton(
-                      _globalKey,
-                      AppLocalizations.of(context)!.share_text +
-                          " " +
-                          Data.getLocalityStringImm(
-                              App.of(context).getLocality()) +
-                          AppLocalizations.of(context)!.share_text2 +
-                          Data.getWebsiteStringImm(
-                              context, App.of(context).getLocality()))*/
-                ])),
-            Space(32),
-            Row(children: [
-              SpaceH(8),
-              Expanded(
-                  flex: 1,
-                  child: RepaintBoundary(
-                      key: _globalKey,
-                      child: Container(
-                          //color: ColorScheme.of(context).surfaceContainerHigh,
-                          height: 200,
-                          child: LineChartWidget(getData(),
-                              addDummy: true,
-                              legendEntries: widget.names,
-                              parLine: getParLine(),
-                              tooltipTitle: (x) =>
-                                  AppLocalizations.of(context)!.hole +
-                                  " $x")))),
-              SpaceH(16),
-            ]),
-            Space(8),
-            getRadioButtons(),
-            Space(20),
-            Row(children: [
-              Spacer(),
-              DialogButton(AppLocalizations.of(context)!.back, () {
-                Navigator.of(context).pop();
-              }),
-              SpaceH(20)
-            ]),
-            Space(10),
-          ],
-        ),
-      ),
-    );
-  }
+    final l = AppLocalizations.of(context)!;
+    String cap(String t) => t.isEmpty ? t : t[0].toUpperCase() + t.substring(1);
 
-  Widget getRadioButtons() {
-    List<Widget> children = [];
-    // Comparison to par, unused.
-/*
-    children.add(Row(children: [
-      SpaceH(20),
-      RadioButton(0, AppLocalizations.of(context)!.current_round, () {
-        setState(() {
-          generalType = GeneralType.CURRENT;
-        });
-      }, generalType != GeneralType.CURRENT, small: true),
-      //SpaceH(4),
-      RadioButton(2, AppLocalizations.of(context)!.comp, () {
-        setState(() {
-          generalType = GeneralType.COMPARE;
-        });
-      }, generalType != GeneralType.COMPARE, small: true),
-      Spacer()
-    ]));
-    children.add(Space(8));*/
-
-    children.add(
-      Row(children: [
-        SpaceH(20),
-        RadioButton(0, AppLocalizations.of(context)!.single, () {
-          setState(() {
-            detailType = DetailType.SINGLE;
-          });
-        }, detailType != DetailType.SINGLE, small: true),
-        //SpaceH(4),
-        RadioButton(2, AppLocalizations.of(context)!.cumulated, () {
-          setState(() {
-            detailType = DetailType.CUMULATED;
-          });
-        }, detailType != DetailType.CUMULATED, small: true),
-        Spacer()
-      ]),
-    );
-
-    return Column(children: children);
+    return AppDialog(
+        title: l.timeline,
+        child: Column(children: [
+          RepaintBoundary(
+              key: _globalKey,
+              child: Container(
+                  color: bgcolor,
+                  height: 240,
+                  child: LineChartWidget(getData(),
+                      addDummy: true,
+                      legendEntries: widget.names,
+                      parLine: getParLine(),
+                      tooltipTitle: (x) => l.hole + " $x"))),
+          SizedBox(height: 12),
+          SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<DetailType>(
+                showSelectedIcon: false,
+                style: SegmentedButton.styleFrom(
+                  foregroundColor: maincolor,
+                  selectedForegroundColor: Colors.white,
+                  selectedBackgroundColor: maincolor,
+                  side: BorderSide(color: maincolor),
+                  textStyle:
+                      GoogleFonts.lato(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                segments: [
+                  ButtonSegment(
+                      value: DetailType.SINGLE, label: Text(cap(l.single))),
+                  ButtonSegment(
+                      value: DetailType.CUMULATED,
+                      label: Text(cap(l.cumulated))),
+                ],
+                selected: {detailType},
+                onSelectionChanged: (sel) =>
+                    setState(() => detailType = sel.first),
+              )),
+        ]));
   }
 
   /// Par-Linie zur aktuellen Ansicht (nicht beim Vergleich mit Par).

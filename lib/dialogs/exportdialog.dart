@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:soccerpark/widgets/button.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,9 +6,7 @@ import '../main.dart';
 import '../utils/data.dart';
 import '../utils/csv.dart';
 import '../utils/pdf.dart';
-import '../widgets/space.dart';
-import '../widgets/text.dart';
-import '../widgets/checkbox.dart';
+import '../widgets/appdialog.dart';
 
 class ExportDialog extends StatefulWidget {
   ExportDialog();
@@ -48,103 +45,40 @@ class _ExportDialogState extends State<ExportDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      clipBehavior: Clip.antiAlias,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-                color: mainred,
-                padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
-                child: Row(children: [
-                  TitleText(
-                      text: AppLocalizations.of(context)!.export_rounds,
-                      indent: 16,
-                      color: Colors.white),
-                  Spacer(),
-                ])),
-            Space(10),
-            getRows(),
-            Space(10),
-            Visibility(
-                child: Text(AppLocalizations.of(context)!.none_chosen_error,
-                    style: GoogleFonts.lato(
-                      color: mainred,
-                      fontSize: 14,
-                    )),
-                visible: error,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true),
-            Space(5),
-            csvButtonRow(),
-            pdfButtonRow(),
-            Row(children: [
-              Spacer(),
-              DialogButton(AppLocalizations.of(context)!.cancel, () {
-                Navigator.of(context).pop();
-              }),
-              SpaceH(20)
-            ]),
-            Space(10),
+    final l = AppLocalizations.of(context)!;
+    return AppDialog(
+        title: l.export_rounds,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey[300]!),
+                  borderRadius: BorderRadius.circular(12)),
+              child: getRows()),
+          if (error) ...[
+            SizedBox(height: 8),
+            Text(l.none_chosen_error,
+                style: GoogleFonts.lato(color: mainred, fontSize: 14)),
           ],
-        ),
-      ),
-    );
+        ]),
+        actions: [
+          dialogSecondaryButton(l.export_csv, () => run(exportCsv),
+              icon: Icons.table_chart_outlined),
+          dialogPrimaryButton(l.export_pdf, () => run(exportPdf),
+              icon: Icons.picture_as_pdf_outlined),
+        ]);
   }
 
-  Widget csvButtonRow() {
-    return Row(children: [
-      Spacer(),
-      DialogButtonWithIcon(
-          AppLocalizations.of(context)!.export_csv, 'assets/pics/csv.png',
-          () async {
-        List<int> indices = getChosenIndices();
-        if (indices.isEmpty) {
-          setState(() {
-            error = true;
-          });
-          Future.delayed(
-              const Duration(seconds: 2),
-              () => {
-                    setState(() {
-                      error = false;
-                    })
-                  });
-        } else {
-          await exportCsv(indices);
-          Navigator.of(context).pop();
-        }
-      }),
-      SpaceH(20),
-    ]);
-  }
-
-  Widget pdfButtonRow() {
-    return Row(children: [
-      Spacer(),
-      DialogButtonWithIcon(AppLocalizations.of(context)!.export_pdf,
-          'assets/pics/pdf_icon_2.png', () async {
-        List<int> indices = getChosenIndices();
-        if (indices.isEmpty) {
-          setState(() {
-            error = true;
-          });
-          Future.delayed(
-              const Duration(seconds: 2),
-              () => {
-                    setState(() {
-                      error = false;
-                    })
-                  });
-        } else {
-          await exportPdf(indices);
-          Navigator.of(context).pop();
-        }
-      }),
-      SpaceH(20)
-    ]);
+  /// Export starten, wenn mindestens eine Runde gewählt ist.
+  Future<void> run(Future<bool> Function(List<int>) export) async {
+    final indices = getChosenIndices();
+    if (indices.isEmpty) {
+      setState(() => error = true);
+      return;
+    }
+    await export(indices);
+    if (mounted) Navigator.of(context).pop();
   }
 
   List<int> getChosenIndices() {
@@ -158,32 +92,34 @@ class _ExportDialogState extends State<ExportDialog> {
   Widget getRows() {
     List<Widget> rows = [];
     for (var i = 0; i < dates.length; i++) {
+      if (i > 0) {
+        rows.add(Divider(height: 1, thickness: 1, color: Colors.grey[200]));
+      }
       rows.add(getRow(i));
-      rows.add(Space(5));
     }
     return Column(children: rows);
   }
 
   Widget getRow(int i) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SpaceH(20),
-        getCheckBox(i),
-        SpaceH(4),
-        Expanded(child: getTextColumn(i)),
-        SpaceH(20),
-      ],
-      mainAxisAlignment: MainAxisAlignment.start,
-    );
-  }
-
-  Widget getCheckBox(int i) {
-    return CustomCheckbox(checked[i], (bool? ch) {
-      setState(() {
-        checked[i] = ch!;
-      });
-    });
+    return Material(
+        color: checked[i] ? Color(0xFFF1F7F1) : Colors.white,
+        child: InkWell(
+            onTap: () => setState(() {
+                  checked[i] = !checked[i];
+                  error = false;
+                }),
+            child: Padding(
+                padding: EdgeInsets.fromLTRB(4, 6, 12, 6),
+                child: Row(children: [
+                  Checkbox(
+                      value: checked[i],
+                      activeColor: maincolor,
+                      onChanged: (ch) => setState(() {
+                            checked[i] = ch ?? false;
+                            error = false;
+                          })),
+                  Expanded(child: getTextColumn(i)),
+                ]))));
   }
 
   Widget getTextColumn(int i) {
@@ -196,7 +132,7 @@ class _ExportDialogState extends State<ExportDialog> {
   Widget getDateText(int i) {
     return Text(dates[i],
         style: GoogleFonts.lato(
-            color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold));
+            color: Colors.black87, fontSize: 15, fontWeight: FontWeight.bold));
   }
 
   Widget getNamesText(int i) {
@@ -219,7 +155,7 @@ class _ExportDialogState extends State<ExportDialog> {
         alignment: Alignment.topLeft,
         child: Text(
           str,
-          style: GoogleFonts.lato(color: Colors.black, fontSize: 14),
+          style: GoogleFonts.lato(color: Colors.grey[700], fontSize: 13),
           textAlign: TextAlign.start,
           overflow: TextOverflow.ellipsis,
         ),

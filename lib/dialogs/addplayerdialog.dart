@@ -1,131 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:soccerpark/widgets/button.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../main.dart';
-import '../widgets/space.dart';
-import '../widgets/text.dart';
+import '../widgets/appdialog.dart';
 
-class AddPlayerDialog extends StatefulWidget {
-  AddPlayerDialog(this.func);
+/// Neue Person anlegen. [func] liefert false, wenn der Name schon existiert.
+class AddPlayerDialog extends StatelessWidget {
+  const AddPlayerDialog(this.func, {super.key});
 
   final bool Function(String text) func;
 
   @override
-  State<AddPlayerDialog> createState() => _AddPlayerDialogState();
-}
-
-class _AddPlayerDialogState extends State<AddPlayerDialog> {
-  final TextEditingController textController = new TextEditingController();
-
-  bool emptyError = false;
-  bool duplError = false;
-
-  @override
   Widget build(BuildContext context) {
-    return Dialog(
-      clipBehavior: Clip.antiAlias,
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-                color: mainred,
-                padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
-                child: Row(children: [
-                  TitleText(
-                      text: AppLocalizations.of(context)!.addPlayer,
-                      indent: 16,
-                      color: Colors.white),
-                  Spacer(),
-                ])),
-            Space(30),
-            Row(
-              children: [
-                Spacer(),
-                NewPlayerTextField(textController),
-                Spacer(),
-              ],
-            ),
-            Space(10),
-            Visibility(
-                child: Text(
-                    duplError
-                        ? AppLocalizations.of(context)!.duplicate_name_error
-                        : AppLocalizations.of(context)!.empty_name_error,
-                    style: GoogleFonts.lato(
-                      color: mainred,
-                      fontSize: 14,
-                    )),
-                visible: emptyError || duplError,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true),
-            Space(5),
-            Row(children: [
-              Spacer(),
-              DialogButton(AppLocalizations.of(context)!.cancel, () {
-                Navigator.of(context).pop();
-              }),
-              SpaceH(20),
-              DialogButton(AppLocalizations.of(context)!.ok, () {
-                if (textController.text == "") {
-                  setState(() {
-                    emptyError = true;
-                  });
-                  Future.delayed(
-                      const Duration(seconds: 2),
-                      () => {
-                            setState(() {
-                              emptyError = false;
-                            })
-                          });
-                } else if (widget.func(textController.text)) {
-                  Navigator.of(context).pop();
-                } else {
-                  setState(() {
-                    duplError = true;
-                  });
-                  Future.delayed(
-                      const Duration(seconds: 2),
-                      () => {
-                            setState(() {
-                              duplError = false;
-                            })
-                          });
-                }
-              }),
-              SpaceH(20)
-            ]),
-            Space(10),
-          ],
-        ),
-      ),
-    );
+    return PlayerNameDialog(
+        title: AppLocalizations.of(context)!.addPlayerTitle,
+        initial: "",
+        func: func);
   }
 }
 
-class NewPlayerTextField extends StatelessWidget {
-  NewPlayerTextField(this.textController);
+/// Gemeinsamer Dialog für Anlegen und Umbenennen.
+class PlayerNameDialog extends StatefulWidget {
+  const PlayerNameDialog(
+      {required this.title,
+      required this.initial,
+      required this.func,
+      super.key});
 
-  final TextEditingController textController;
+  final String title;
+  final String initial;
+  final bool Function(String text) func;
+
+  @override
+  State<PlayerNameDialog> createState() => _PlayerNameDialogState();
+}
+
+class _PlayerNameDialogState extends State<PlayerNameDialog> {
+  late final TextEditingController controller =
+      TextEditingController(text: widget.initial);
+  String? error;
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void submit() {
+    final l = AppLocalizations.of(context)!;
+    final text = controller.text.trim();
+    if (text.isEmpty) {
+      setState(() => error = l.empty_name_error);
+    } else if (widget.func(text)) {
+      Navigator.of(context).pop();
+    } else {
+      setState(() => error = l.duplicate_name_error);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: 250,
-        height: 45,
+    final l = AppLocalizations.of(context)!;
+    return AppDialog(
+        title: widget.title,
         child: TextField(
-            controller: textController,
-            scrollPadding: EdgeInsets.all(40),
+            controller: controller,
+            autofocus: true,
             maxLines: 1,
-            textAlignVertical: TextAlignVertical.center,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.done,
+            style: GoogleFonts.lato(fontSize: 16),
             decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(10.0),
+                labelText: 'Name',
+                errorText: error,
                 filled: true,
-                focusColor: maincolor,
-                border: OutlineInputBorder(),
-                hintText: 'Name')));
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10))),
+            onChanged: (_) {
+              if (error != null) setState(() => error = null);
+            },
+            onSubmitted: (_) => submit()),
+        actions: [
+          dialogSecondaryButton(l.cancel, () => Navigator.of(context).pop()),
+          dialogPrimaryButton(l.ok, submit),
+        ]);
   }
 }

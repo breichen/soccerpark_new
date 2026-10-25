@@ -285,7 +285,7 @@ class _HistoryPageState extends State<HistoryPage> {
           CustomToast.showToastIcon(
               context, AppLocalizations.of(context)!.deleted_data, Icons.check);
           goToMainPage(context);
-        });
+        }, destructive: true);
         showDialog(context: context, builder: (BuildContext context) => dialog);
       },
     ));

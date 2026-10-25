@@ -346,7 +346,7 @@ class _NewRoundPageState extends State<NewRoundPage> {
           Data.clearCurrent();
           Navigator.of(context).pop();
           start();
-        });
+        }, destructive: true);
         showDialog(context: context, builder: (BuildContext context) => dialog);
       });
     });
@@ -407,7 +407,7 @@ class _NewRoundPageState extends State<NewRoundPage> {
           });
           Navigator.of(context).pop();
           CustomToast.showToastIcon(context, l.deleted_player, Icons.check);
-        });
+        }, destructive: true);
         showDialog(context: context, builder: (BuildContext context) => dialog);
       }
     });
