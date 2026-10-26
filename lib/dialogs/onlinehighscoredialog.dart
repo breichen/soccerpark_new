@@ -6,19 +6,15 @@ import '../main.dart';
 import '../utils/online_highscores.dart';
 import '../widgets/appdialog.dart';
 
-/// Fragt nach einer Runde in den Top 50, ob und unter welchem Namen sie in die
-/// monatliche Online-Bestenliste eingetragen werden soll.
+/// Fragt nach einer Runde, die in die Tages- oder Monatswertung kommt, ob
+/// und unter welchem Namen sie eingetragen werden soll.
 ///
 /// Liefert über Navigator.pop den gewählten Anzeigenamen oder null.
 class OnlineHighscoreDialog extends StatefulWidget {
-  const OnlineHighscoreDialog(this.playerName, this.score, this.rank,
-      this.localityName, this.suggestedName,
-      {super.key});
+  const OnlineHighscoreDialog(this.message, this.suggestedName, {super.key});
 
-  final String playerName;
-  final int score;
-  final int rank;
-  final String localityName;
+  /// Glückwunschtext mit Platz(en), siehe FinishPage.
+  final String message;
   final String suggestedName;
 
   @override
@@ -55,8 +51,7 @@ class _OnlineHighscoreDialogState extends State<OnlineHighscoreDialog> {
             Icon(Icons.emoji_events, color: mainyellow, size: 36),
             SizedBox(width: 10),
             Expanded(
-                child: dialogText(loc.online_hs_text(widget.playerName,
-                    widget.score, widget.rank, widget.localityName))),
+                child: dialogText(widget.message)),
           ]),
           SizedBox(height: 16),
           TextField(

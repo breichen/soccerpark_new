@@ -1090,4 +1090,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get local_top10 => 'Your top 10';
+
+  @override
+  String get online_day => 'Today';
+
+  @override
+  String get online_hs_day_empty => 'No entries yet today. Play the first round!';
+
+  @override
+  String online_hs_text_day(String name, int score, int rank, String locality) {
+    return '${name} reaches place ${rank} on today\'s ${locality} leaderboard with ${score} strokes. Which name should be shown publicly?';
+  }
+
+  @override
+  String online_hs_text_both(String name, int score, int dayRank, int monthRank, String month, String locality) {
+    return '${name} reaches place ${dayRank} today and place ${monthRank} in ${month} in ${locality} with ${score} strokes. Which name should be shown publicly?';
+  }
 }

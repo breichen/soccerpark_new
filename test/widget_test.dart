@@ -58,6 +58,26 @@ void main() {
     });
   });
 
+  group('Tageswertung (size)', () {
+    test('eigene Listengröße wird beachtet', () {
+      final day = list([
+        for (var i = 0; i < OnlineHighscores.daySize; i++) 60 + i
+      ]);
+      final last = 60 + OnlineHighscores.daySize - 1;
+      expect(
+          OnlineHighscores.prospectiveRank(day, last,
+              size: OnlineHighscores.daySize),
+          isNull);
+      expect(
+          OnlineHighscores.prospectiveRank(day, last - 1,
+              size: OnlineHighscores.daySize),
+          OnlineHighscores.daySize - 1);
+      // Ohne size gilt die (größere) Monatsgröße: dann reicht es noch.
+      expect(OnlineHighscores.prospectiveRank(day, last + 5),
+          OnlineHighscores.daySize + 1);
+    });
+  });
+
   group('displayRanks', () {
     test('ohne Gleichstand fortlaufend', () {
       expect(OnlineHighscores.displayRanks(list([50, 52, 55])), [1, 2, 3]);

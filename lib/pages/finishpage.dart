@@ -72,14 +72,23 @@ class _FinishPageState extends State<FinishPage> {
   /// Online-Bestenliste kommen, und bietet das Eintragen an.
   /// Ohne Internet oder ohne Supabase-Konfiguration passiert nichts.
   Future<void> checkOnlineHighscores() async {
-    print("checkOnlineHighscores");
     if (!OnlineHighscores.isConfigured) return;
-    print("still here");
 
     final loc = widget.data.loc;
-    List<OnlineHighscore> list;
+    // In load() gesetzt (auch für Closures erlaubt dank late).
+    late List<OnlineHighscore> monthList;
+    late List<OnlineHighscore> dayList;
+    Future<void> load() async {
+      final results = await Future.wait([
+        OnlineHighscores.fetch(loc, OnlineHighscores.currentMonth()),
+        OnlineHighscores.fetchDay(loc, OnlineHighscores.currentDay()),
+      ]);
+      monthList = results[0];
+      dayList = results[1];
+    }
+
     try {
-      list = await OnlineHighscores.fetch(loc, OnlineHighscores.currentMonth());
+      await load();
     } catch (e) {
       debugPrint('Online highscores not available: $e');
       return;
@@ -92,18 +101,31 @@ class _FinishPageState extends State<FinishPage> {
     for (final pl in order) {
       if (!mounted) return;
       final total = totalScores[pl];
-      final rank = OnlineHighscores.prospectiveRank(list, total);
-      if (rank == null) break;
+      final monthRank = OnlineHighscores.prospectiveRank(monthList, total);
+      final dayRank = OnlineHighscores.prospectiveRank(dayList, total,
+          size: OnlineHighscores.daySize);
+      if (monthRank == null && dayRank == null) break;
 
       final playerName = widget.data.names[pl];
       final suggested = await OnlineHighscores.suggestedName(playerName);
       if (!mounted) return;
 
+      final l = AppLocalizations.of(context)!;
+      final venue = Data.getLocalityStringImm(loc);
+      final monthName = OnlineHighscores.monthLabel(
+          OnlineHighscores.currentMonth(),
+          Localizations.localeOf(context).languageCode);
+      final message = monthRank != null && dayRank != null
+          ? l.online_hs_text_both(
+              playerName, total, dayRank, monthRank, monthName, venue)
+          : (dayRank != null
+              ? l.online_hs_text_day(playerName, total, dayRank, venue)
+              : l.online_hs_text(playerName, total, monthRank!, venue));
+
       final chosen = await showDialog<String>(
           context: context,
           barrierDismissible: false,
-          builder: (_) => OnlineHighscoreDialog(playerName, total, rank,
-              Data.getLocalityStringImm(loc), suggested));
+          builder: (_) => OnlineHighscoreDialog(message, suggested));
       if (chosen == null || !mounted) continue;
 
       await OnlineHighscores.saveName(playerName, chosen);
@@ -111,11 +133,9 @@ class _FinishPageState extends State<FinishPage> {
         final placed =
             await OnlineHighscores.submit(loc, chosen, widget.data.scores[pl]);
         if (!mounted) return;
-        if (placed != null) {
-          CustomToast.showToastIcon(
-              context,
-              AppLocalizations.of(context)!.online_hs_saved,
-              Icons.emoji_events);
+        if (placed.month != null || placed.day != null) {
+          CustomToast.showToastIcon(context,
+              AppLocalizations.of(context)!.online_hs_saved, Icons.emoji_events);
         } else {
           CustomToast.showToast(
               context, AppLocalizations.of(context)!.online_hs_too_late);
@@ -128,10 +148,9 @@ class _FinishPageState extends State<FinishPage> {
         continue;
       }
 
-      // Liste für die weiteren Spieler aktualisieren.
+      // Listen für die weiteren Spieler aktualisieren.
       try {
-        list =
-            await OnlineHighscores.fetch(loc, OnlineHighscores.currentMonth());
+        await load();
       } catch (e) {
         return;
       }

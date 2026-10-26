@@ -45,6 +45,9 @@ class OnlineHighscoreException implements Exception {
 class OnlineHighscores {
   static const int listSize = 50;
 
+  /// Gespeicherte Einträge der Tageswertung (nur der aktuelle Tag).
+  static const int daySize = 20;
+
   /// So viele Einträge zeigt die Bestenliste, bevor man "Alle" antippt.
   static const int previewSize = 10;
   static const int minNameLength = 2;
@@ -64,6 +67,9 @@ class OnlineHighscores {
   /// Aktueller Monat im Format yyyy-MM.
   static String currentMonth() => DateFormat('yyyy-MM').format(DateTime.now());
 
+  /// Heutiger Tag im Format yyyy-MM-dd.
+  static String currentDay() => DateFormat('yyyy-MM-dd').format(DateTime.now());
+
   /// Monatsname zur Anzeige, z. B. "Oktober 2026".
   static String monthLabel(String month, String languageCode) {
     try {
@@ -82,9 +88,10 @@ class OnlineHighscores {
   /// Platz), oder null, wenn die Runde nicht in die Top [listSize] kommt.
   /// Bei Gleichstand liegt der frühere Eintrag vorne, daher reicht eine
   /// Schlagzahl, die schon auf Platz 10 steht, nicht.
-  static int? prospectiveRank(List<OnlineHighscore> list, int total) {
+  static int? prospectiveRank(List<OnlineHighscore> list, int total,
+      {int size = listSize}) {
     final atLeastAsGood = list.where((e) => e.total <= total).length;
-    if (atLeastAsGood >= listSize) return null;
+    if (atLeastAsGood >= size) return null;
     return list.where((e) => e.total < total).length + 1;
   }
 
@@ -153,6 +160,25 @@ class OnlineHighscores {
         .toList();
   }
 
+  /// Tageswertung einer Anlage für [day] (yyyy-MM-dd), beste zuerst.
+  static Future<List<OnlineHighscore>> fetchDay(Locality loc, String day) async {
+    final res = await http
+        .get(
+            _uri('/rest/v1/online_highscores', {
+              'select': 'id,name,total,holes,created_at',
+              'locality': 'eq.${localityKey(loc)}',
+              'day': 'eq.$day',
+              'order': 'total.asc,created_at.asc,id.asc',
+              'limit': '$daySize',
+            }),
+            headers: _headers())
+        .timeout(_timeout);
+    final list = _decode(res) as List<dynamic>;
+    return list
+        .map((e) => OnlineHighscore.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
   /// Alle Monate mit Einträgen für eine Anlage, neueste zuerst.
   /// Der aktuelle Monat ist immer enthalten.
   static Future<List<String>> fetchMonths(Locality loc) async {
@@ -174,9 +200,9 @@ class OnlineHighscores {
     return sorted;
   }
 
-  /// Trägt eine volle Runde (18 Löcher) ein. Liefert den Listenplatz
-  /// (1-10) oder null, wenn die Runde inzwischen nicht mehr reicht.
-  static Future<int?> submit(
+  /// Trägt eine volle Runde (18 Löcher) ein. Liefert die erreichten Plätze
+  /// in Monats- und Tageswertung (null = nicht bzw. nicht mehr drin).
+  static Future<({int? month, int? day})> submit(
       Locality loc, String name, List<int> holes) async {
     final res = await http
         .post(_uri('/rest/v1/rpc/submit_highscore'),
@@ -188,7 +214,14 @@ class OnlineHighscores {
             }))
         .timeout(_timeout);
     final result = _decode(res);
-    return result == null ? null : (result as num).toInt();
+    if (result is Map<String, dynamic>) {
+      int? read(String key) =>
+          result[key] == null ? null : (result[key] as num).toInt();
+      return (month: read('month_rank'), day: read('day_rank'));
+    }
+    // Ältere Server-Funktion (nur Monatsplatz als Zahl).
+    if (result is num) return (month: result.toInt(), day: null);
+    return (month: null, day: null);
   }
 
   // ------------------------------------------------------------------

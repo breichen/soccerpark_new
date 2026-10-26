@@ -2125,6 +2125,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Eure Top 10'**
   String get local_top10;
+
+  /// No description provided for @online_day.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute'**
+  String get online_day;
+
+  /// No description provided for @online_hs_day_empty.
+  ///
+  /// In de, this message translates to:
+  /// **'Heute noch keine Einträge. Spiel die erste Runde!'**
+  String get online_hs_day_empty;
+
+  /// No description provided for @online_hs_text_day.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} schafft mit {score} Schlägen Platz {rank} der heutigen Tageswertung {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?'**
+  String online_hs_text_day(String name, int score, int rank, String locality);
+
+  /// No description provided for @online_hs_text_both.
+  ///
+  /// In de, this message translates to:
+  /// **'{name} schafft mit {score} Schlägen Platz {dayRank} heute und Platz {monthRank} im {month} in {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?'**
+  String online_hs_text_both(String name, int score, int dayRank, int monthRank, String month, String locality);
 }
 
 class _AppLocalizationsDelegate

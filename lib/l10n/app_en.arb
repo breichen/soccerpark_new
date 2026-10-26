@@ -426,5 +426,47 @@
             }
         }
     },
-    "local_top10": "Your top 10"
+    "local_top10": "Your top 10",
+    "online_day": "Today",
+    "online_hs_day_empty": "No entries yet today. Play the first round!",
+    "online_hs_text_day": "{name} reaches place {rank} on today's {locality} leaderboard with {score} strokes. Which name should be shown publicly?",
+    "@online_hs_text_day": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "score": {
+                "type": "int"
+            },
+            "rank": {
+                "type": "int"
+            },
+            "locality": {
+                "type": "String"
+            }
+        }
+    },
+    "online_hs_text_both": "{name} reaches place {dayRank} today and place {monthRank} in {month} in {locality} with {score} strokes. Which name should be shown publicly?",
+    "@online_hs_text_both": {
+        "placeholders": {
+            "name": {
+                "type": "String"
+            },
+            "score": {
+                "type": "int"
+            },
+            "dayRank": {
+                "type": "int"
+            },
+            "monthRank": {
+                "type": "int"
+            },
+            "month": {
+                "type": "String"
+            },
+            "locality": {
+                "type": "String"
+            }
+        }
+    }
 }

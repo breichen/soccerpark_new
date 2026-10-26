@@ -28,16 +28,21 @@ class _HighscorePageState extends State<HighscorePage> {
 
   /// Gewählte Liste (interne Nummer, siehe [typeOrder]).
   /// Start mit der Monatswertung, falls eingerichtet.
-  int highscoreType = OnlineHighscores.isConfigured ? onlineType : 0;
+  int highscoreType = OnlineHighscores.isConfigured ? dayType : 0;
   int highscoreDetail = 0;
 
-  /// Reihenfolge im Auswahl-Chip: Monatswertung zuerst, dann Eure Top 10
+  /// Reihenfolge im Auswahl-Chip: Heute, Monatswertung, dann Eure Top 10
   /// (0), Persönliche Rekorde (1), Durchschnitt (2).
-  List<int> get typeOrder =>
-      OnlineHighscores.isConfigured ? [onlineType, 0, 1, 2] : [0, 1, 2];
+  List<int> get typeOrder => OnlineHighscores.isConfigured
+      ? [dayType, onlineType, 0, 1, 2]
+      : [0, 1, 2];
+
+  /// Tages- oder Monatswertung (vom Server).
+  bool get isOnlineType => highscoreType == onlineType || highscoreType == dayType;
 
   // Online-Bestenliste (highscoreType == onlineType)
   static const int onlineType = 3;
+  static const int dayType = 4;
   List<OnlineHighscore> onlineHighscores = [];
   List<String> onlineMonths = [];
   int onlineMonthIdx = 0;
@@ -60,6 +65,7 @@ class _HighscorePageState extends State<HighscorePage> {
     for (var i = 1; i <= 18; i++)
       holes.add(AppLocalizations.of(context)!.hole + " " + i.toString());
     final typeNames = {
+      dayType: AppLocalizations.of(context)!.online_day,
       onlineType: AppLocalizations.of(context)!.online_highscores,
       0: AppLocalizations.of(context)!.local_top10,
       1: AppLocalizations.of(context)!.personal_records,
@@ -98,7 +104,8 @@ class _HighscorePageState extends State<HighscorePage> {
 
   void setListData() {
     expandedKey = null;
-    if (highscoreType == onlineType) {
+    onlineShowAll = false;
+    if (isOnlineType) {
       loadOnlineHighscores();
       return;
     }
@@ -128,12 +135,16 @@ class _HighscorePageState extends State<HighscorePage> {
       expandedKey = null;
     });
     try {
-      if (onlineMonths.isEmpty) {
-        onlineMonths = await OnlineHighscores.fetchMonths(loc);
-        onlineMonthIdx = 0;
+      final List<OnlineHighscore> list;
+      if (highscoreType == dayType) {
+        list = await OnlineHighscores.fetchDay(loc, OnlineHighscores.currentDay());
+      } else {
+        if (onlineMonths.isEmpty) {
+          onlineMonths = await OnlineHighscores.fetchMonths(loc);
+          onlineMonthIdx = 0;
+        }
+        list = await OnlineHighscores.fetch(loc, onlineMonths[onlineMonthIdx]);
       }
-      final month = onlineMonths[onlineMonthIdx];
-      final list = await OnlineHighscores.fetch(loc, month);
       if (!mounted) return;
       setState(() {
         onlineHighscores = list;
@@ -170,9 +181,10 @@ class _HighscorePageState extends State<HighscorePage> {
           setListData();
         });
       }, icon: Icons.emoji_events),
-      highscoreType == onlineType
-          ? getOnlineMonthDropdown()
-          : CustomDropdownButton(holes, highscoreDetail, (int v) {
+      if (highscoreType == onlineType)
+        getOnlineMonthDropdown()
+      else if (highscoreType != dayType)
+        CustomDropdownButton(holes, highscoreDetail, (int v) {
               setState(
                 () {
                   highscoreDetail = v;
@@ -200,7 +212,7 @@ class _HighscorePageState extends State<HighscorePage> {
   }
 
   Widget getList() {
-    if (highscoreType == onlineType) return getOnlineList();
+    if (isOnlineType) return getOnlineList();
     final empty = highscoreType == 2 ? averages.isEmpty : highscores.isEmpty;
     if (empty) {
       return Padding(
@@ -247,7 +259,9 @@ class _HighscorePageState extends State<HighscorePage> {
           child: Text(
               onlineError
                   ? AppLocalizations.of(context)!.online_hs_load_error
-                  : AppLocalizations.of(context)!.online_hs_empty,
+                  : (highscoreType == dayType
+                      ? AppLocalizations.of(context)!.online_hs_day_empty
+                      : AppLocalizations.of(context)!.online_hs_empty),
               style: styleHist));
     }
 
@@ -264,7 +278,10 @@ class _HighscorePageState extends State<HighscorePage> {
               key: 'online-${entry.id}',
               value: entry.total.toDouble(),
               name: entry.name,
-              subtitle: dateFormat.format(entry.createdAt),
+              // Tageswertung ohne Datum/Uhrzeit (es ist ja heute).
+              subtitle: highscoreType == dayType
+                  ? ""
+                  : dateFormat.format(entry.createdAt),
               scoreText: entry.total.toString(),
               diffToPar: (entry.total - par).toDouble(),
               holes: entry.holes,
@@ -422,9 +439,10 @@ class _HighscorePageState extends State<HighscorePage> {
                                   color: Colors.black87,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold)),
-                          Text(row.subtitle,
-                              style: GoogleFonts.lato(
-                                  color: Colors.grey[600], fontSize: 12)),
+                          if (row.subtitle.isNotEmpty)
+                            Text(row.subtitle,
+                                style: GoogleFonts.lato(
+                                    color: Colors.grey[600], fontSize: 12)),
                         ])),
                     Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
                       Text(row.scoreText,
