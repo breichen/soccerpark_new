@@ -832,7 +832,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get holeAddSbg_18_2 => '1 vulcano';
 
   @override
-  String get online_highscores => 'Online (month)';
+  String get online_highscores => 'Monthly ranking';
 
   @override
   String get online_hs_title => 'Monthly highscore!';
@@ -1087,4 +1087,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String online_hs_show_all(int count) {
     return 'Show all ${count}';
   }
+
+  @override
+  String get local_top10 => 'Your top 10';
 }

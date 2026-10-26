@@ -280,7 +280,7 @@
     "holeAddSbg_17_5": "1 sand bunker ca. 25x2m",
     "holeAddSbg_18_1": "1 sand bunker ca. 12x6m",
     "holeAddSbg_18_2": "1 vulcano",
-    "online_highscores": "Online (month)",
+    "online_highscores": "Monthly ranking",
     "online_hs_title": "Monthly highscore!",
     "online_hs_text": "{name} reaches place {rank} on this month's {locality} leaderboard with {score} strokes. Which name should be shown publicly?",
     "@online_hs_text": {
@@ -425,5 +425,6 @@
                 "type": "int"
             }
         }
-    }
+    },
+    "local_top10": "Your top 10"
 }

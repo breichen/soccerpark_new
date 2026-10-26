@@ -280,7 +280,7 @@
     "holeAddSbg_17_5": "1 Sandbunker ca. 25x2m",
     "holeAddSbg_18_1": "1 Sandbunker ca. 12x6m",
     "holeAddSbg_18_2": "1 Vulkan",
-    "online_highscores": "Online (Monat)",
+    "online_highscores": "Monatswertung",
     "online_hs_title": "Monats-Highscore!",
     "online_hs_text": "{name} schafft mit {score} Schlägen Platz {rank} der Monatsbestenliste {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?",
     "online_hs_name_label": "Anzeigename",
@@ -360,5 +360,6 @@
     "choose_park_hint": "Du kannst sie später in den Einstellungen ändern.",
     "range_recent": "Letzte 20 Runden",
     "range_all": "Alle {count} Runden",
-    "online_hs_show_all": "Alle {count} anzeigen"
+    "online_hs_show_all": "Alle {count} anzeigen",
+    "local_top10": "Eure Top 10"
 }

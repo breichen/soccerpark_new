@@ -1637,7 +1637,7 @@ abstract class AppLocalizations {
   /// No description provided for @online_highscores.
   ///
   /// In de, this message translates to:
-  /// **'Online (Monat)'**
+  /// **'Monatswertung'**
   String get online_highscores;
 
   /// No description provided for @online_hs_title.
@@ -2119,6 +2119,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Alle {count} anzeigen'**
   String online_hs_show_all(int count);
+
+  /// No description provided for @local_top10.
+  ///
+  /// In de, this message translates to:
+  /// **'Eure Top 10'**
+  String get local_top10;
 }
 
 class _AppLocalizationsDelegate

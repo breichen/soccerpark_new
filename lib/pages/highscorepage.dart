@@ -52,7 +52,7 @@ class _HighscorePageState extends State<HighscorePage> {
     for (var i = 1; i <= 18; i++)
       holes.add(AppLocalizations.of(context)!.hole + " " + i.toString());
     List<String> highscoreTypes = [
-      "Highscores",
+      AppLocalizations.of(context)!.local_top10,
       AppLocalizations.of(context)!.personal_records,
       AppLocalizations.of(context)!.average
     ];
