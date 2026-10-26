@@ -2197,6 +2197,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Aktivieren hat nicht geklappt. Bitte später erneut versuchen.'**
   String get notif_failed;
+
+  /// No description provided for @notif_disable.
+  ///
+  /// In de, this message translates to:
+  /// **'Deaktivieren'**
+  String get notif_disable;
 }
 
 class _AppLocalizationsDelegate

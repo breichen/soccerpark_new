@@ -28,17 +28,20 @@ class _SettingsPageState extends State<SettingsPage> {
   // Web-Mitteilungen (Android/iOS fragen beim Start, siehe main.dart).
   bool pushSupported = false;
   String pushPermission = 'unsupported';
+  bool pushEnabled = false; // erlaubt und nicht in der App abgeschaltet
   bool pushBusy = false;
 
   @override
   void initState() {
     super.initState();
     if (kIsWeb) {
-      webPushSupported().then((ok) {
+      webPushSupported().then((ok) async {
+        final enabled = await webPushEnabled();
         if (!mounted) return;
         setState(() {
           pushSupported = ok;
           pushPermission = webPushPermission();
+          pushEnabled = enabled;
         });
       });
     }
@@ -47,12 +50,29 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> enablePush() async {
     setState(() => pushBusy = true);
     final token = await enableWebPush();
+    final enabled = await webPushEnabled();
     if (!mounted) return;
     setState(() {
       pushBusy = false;
       pushPermission = webPushPermission();
+      pushEnabled = enabled;
     });
     if (token.isEmpty && pushPermission == 'granted') {
+      CustomToast.showToast(
+          context, AppLocalizations.of(context)!.notif_failed);
+    }
+  }
+
+  Future<void> disablePush() async {
+    setState(() => pushBusy = true);
+    final ok = await disableWebPush();
+    final enabled = await webPushEnabled();
+    if (!mounted) return;
+    setState(() {
+      pushBusy = false;
+      pushEnabled = enabled;
+    });
+    if (!ok) {
       CustomToast.showToast(
           context, AppLocalizations.of(context)!.notif_failed);
     }
@@ -147,10 +167,19 @@ class _SettingsPageState extends State<SettingsPage> {
     if (!pushSupported) {
       icon = Icons.notifications_off_outlined;
       subtitle = ios ? l.notif_ios_hint : l.notif_unsupported;
-    } else if (pushPermission == 'granted') {
+    } else if (pushPermission == 'granted' && pushEnabled) {
       icon = Icons.notifications_active_outlined;
       subtitle = l.notif_info;
-      trailing = Icon(Icons.check_circle, color: maincolor, size: 24);
+      trailing = pushBusy
+          ? SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2))
+          : TextButton(
+              style: TextButton.styleFrom(foregroundColor: Colors.grey[800]),
+              onPressed: disablePush,
+              child: Text(l.notif_disable,
+                  style: GoogleFonts.lato(fontWeight: FontWeight.bold)));
     } else if (pushPermission == 'denied') {
       icon = Icons.notifications_off_outlined;
       subtitle = l.notif_denied;
@@ -176,7 +205,7 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Colors.white,
         child: InkWell(
             // Versteckt zum Testen: langes Drücken kopiert den Token.
-            onLongPress: pushPermission == 'granted' ? copyPushToken : null,
+            onLongPress: pushEnabled ? copyPushToken : null,
             child: Padding(
                 padding: EdgeInsets.fromLTRB(10, 10, 12, 10),
                 child: Row(children: [
@@ -193,7 +222,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                         Text(
-                            pushPermission == 'granted' && pushSupported
+                            pushEnabled && pushSupported
                                 ? l.notif_on
                                 : l.settings_notifications,
                             style: GoogleFonts.lato(

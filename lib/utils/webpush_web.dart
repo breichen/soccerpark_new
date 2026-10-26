@@ -31,6 +31,41 @@ const _tokenKey = 'webPushToken';
 /// Zuletzt erfolgreich angemeldet: "<token>|<thema>".
 const _subscribedKey = 'webPushSubscribed';
 
+/// In der App abgeschaltet (Browser-Erlaubnis bleibt bestehen).
+const _disabledKey = 'webPushDisabled';
+
+/// Mitteilungen aktiv: Browser erlaubt sie und sie sind nicht in der App
+/// abgeschaltet.
+Future<bool> webPushEnabled() async {
+  if (webPushPermission() != 'granted') return false;
+  final prefs = await SharedPreferences.getInstance();
+  return !(prefs.getBool(_disabledKey) ?? false);
+}
+
+Future<bool> _isDisabled() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool(_disabledKey) ?? false;
+}
+
+/// In der App abschalten: bei allen Themen abmelden. Die Erlaubnis im
+/// Browser bleibt (eine Website kann sie nicht zurückgeben); "Aktivieren"
+/// meldet ohne erneute Nachfrage wieder an.
+Future<bool> disableWebPush() async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = await storedWebPushToken();
+  final prefix = kDebugMode ? 'dev_' : '';
+  final ok = token.isEmpty ||
+      await _callTopics({
+        'token': token,
+        'remove': ['${prefix}lang_de', '${prefix}lang_en'],
+      });
+  if (ok) {
+    await prefs.setBool(_disabledKey, true);
+    await prefs.remove(_subscribedKey);
+  }
+  return ok;
+}
+
 /// Kann dieser Browser Push? (iPhone: nur als installierte App.)
 Future<bool> webPushSupported() async {
   try {
@@ -57,6 +92,8 @@ Future<String> enableWebPush() async {
     final token = (await _enable().toDart).toDart;
     await _storeToken(token);
     if (token.isNotEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_disabledKey);
       await _subscribe(token, await Data.isEnglish());
     }
     return token;
@@ -73,7 +110,7 @@ Future<void> initWebPush() async {
     _onForeground = ((JSString title, JSString body) {
       showInAppNotification(title.toDart, body.toDart);
     }).toJS;
-    if (webPushPermission() == 'granted') {
+    if (webPushPermission() == 'granted' && !await _isDisabled()) {
       final token = (await _token().toDart).toDart;
       await _storeToken(token);
       if (token.isNotEmpty) {
@@ -103,7 +140,7 @@ Future<void> _storeToken(String token) async {
 
 /// Nach einem Sprachwechsel: Token beim passenden Thema anmelden.
 Future<void> webPushSetLanguage(bool english) async {
-  if (webPushPermission() != 'granted') return;
+  if (webPushPermission() != 'granted' || await _isDisabled()) return;
   final token = await storedWebPushToken();
   if (token.isNotEmpty) await _subscribe(token, english);
 }
@@ -121,6 +158,21 @@ Future<void> _subscribe(String token, bool english) async {
   final marker = '$token|$topic';
   if (prefs.getString(_subscribedKey) == marker) return; // schon erledigt
 
+  if (await _callTopics({
+    'token': token,
+    'topic': topic,
+    'remove': [other],
+  })) {
+    await prefs.setString(_subscribedKey, marker);
+    debugPrint('Web push subscribed to $topic');
+  }
+}
+
+/// Ruft die Supabase-Funktion "push-topics" auf; true bei Erfolg.
+Future<bool> _callTopics(Map<String, Object> body) async {
+  if (supabaseUrl.trim().isEmpty || supabaseAnonKey.trim().isEmpty) {
+    return false;
+  }
   var base = supabaseUrl.trim();
   while (base.endsWith('/')) {
     base = base.substring(0, base.length - 1);
@@ -135,20 +187,14 @@ Future<void> _subscribe(String token, bool english) async {
               if (!key.startsWith('sb_')) 'Authorization': 'Bearer $key',
               'Content-Type': 'application/json',
             },
-            body: jsonEncode({
-              'token': token,
-              'topic': topic,
-              'remove': [other],
-            }))
+            body: jsonEncode(body))
         .timeout(const Duration(seconds: 15));
-    if (res.statusCode >= 200 && res.statusCode < 300) {
-      await prefs.setString(_subscribedKey, marker);
-      debugPrint('Web push subscribed to $topic');
-    } else {
-      debugPrint('Web push topic failed (${res.statusCode}): ${res.body}');
-    }
+    if (res.statusCode >= 200 && res.statusCode < 300) return true;
+    debugPrint('Web push topics failed (${res.statusCode}): ${res.body}');
+    return false;
   } catch (e) {
     // Offline o. Ä.: beim nächsten Start erneut versuchen.
-    debugPrint('Web push topic failed: $e');
+    debugPrint('Web push topics failed: $e');
+    return false;
   }
 }

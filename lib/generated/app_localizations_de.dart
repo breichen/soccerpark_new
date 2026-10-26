@@ -1139,4 +1139,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notif_failed => 'Aktivieren hat nicht geklappt. Bitte später erneut versuchen.';
+
+  @override
+  String get notif_disable => 'Deaktivieren';
 }

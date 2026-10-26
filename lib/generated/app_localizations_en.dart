@@ -1130,4 +1130,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notif_failed => 'Enabling didn\'t work. Please try again later.';
+
+  @override
+  String get notif_disable => 'Turn off';
 }

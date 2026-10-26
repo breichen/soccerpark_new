@@ -476,5 +476,6 @@
     "notif_denied": "Blocked in the browser – allow it in the site settings",
     "notif_ios_hint": "On iPhone, first install via Share → Add to Home Screen",
     "notif_unsupported": "This browser doesn't support notifications",
-    "notif_failed": "Enabling didn't work. Please try again later."
+    "notif_failed": "Enabling didn't work. Please try again later.",
+    "notif_disable": "Turn off"
 }

@@ -373,5 +373,6 @@
     "notif_denied": "Im Browser blockiert – in den Website-Einstellungen erlauben",
     "notif_ios_hint": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren",
     "notif_unsupported": "Dieser Browser unterstützt keine Mitteilungen",
-    "notif_failed": "Aktivieren hat nicht geklappt. Bitte später erneut versuchen."
+    "notif_failed": "Aktivieren hat nicht geklappt. Bitte später erneut versuchen.",
+    "notif_disable": "Deaktivieren"
 }

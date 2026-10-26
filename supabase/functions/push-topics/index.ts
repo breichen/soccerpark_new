@@ -6,6 +6,8 @@
 //
 // Aufruf (POST, JSON):
 //   { "token": "<FCM-Token>", "topic": "lang_de", "remove": ["lang_en"] }
+// Nur abmelden (Mitteilungen in der App deaktiviert):
+//   { "token": "<FCM-Token>", "remove": ["lang_de", "lang_en"] }
 //
 // Benötigt das Secret FIREBASE_SERVICE_ACCOUNT = kompletter Inhalt der
 // JSON-Datei eines Firebase-Dienstkontos (Projekteinstellungen →
@@ -132,19 +134,23 @@ Deno.serve(async (req) => {
   if (typeof token !== "string" || token.length < 20 || token.length > 4096) {
     return json({ error: "invalid token" }, 400);
   }
-  if (typeof topic !== "string" || !ALLOWED_TOPICS.has(topic)) {
+  const hasTopic = topic !== undefined && topic !== null;
+  if (hasTopic && (typeof topic !== "string" || !ALLOWED_TOPICS.has(topic))) {
     return json({ error: "invalid topic" }, 400);
   }
   if (!remove.every((t) => typeof t === "string" && ALLOWED_TOPICS.has(t))) {
     return json({ error: "invalid remove" }, 400);
+  }
+  if (!hasTopic && remove.length === 0) {
+    return json({ error: "nothing to do" }, 400);
   }
 
   try {
     for (const t of remove as string[]) {
       if (t !== topic) await topicChange("batchRemove", t, token);
     }
-    await topicChange("batchAdd", topic, token);
-    return json({ ok: true, topic });
+    if (hasTopic) await topicChange("batchAdd", topic as string, token);
+    return json({ ok: true, topic: hasTopic ? topic : null });
   } catch (e) {
     console.error(e);
     return json({ error: String(e) }, 502);

@@ -12,3 +12,7 @@ Future<void> initWebPush() async {}
 Future<String> storedWebPushToken() async => '';
 
 Future<void> webPushSetLanguage(bool english) async {}
+
+Future<bool> webPushEnabled() async => false;
+
+Future<bool> disableWebPush() async => false;
