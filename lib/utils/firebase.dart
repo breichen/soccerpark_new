@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'webpush_stub.dart' if (dart.library.js_interop) 'webpush_web.dart';
+
 /// Attach this to MaterialApp(scaffoldMessengerKey: ...) so notifications
 /// received while the app is open can be shown without a BuildContext.
 final GlobalKey<ScaffoldMessengerState> messengerKey =
@@ -58,7 +60,11 @@ Future<void> requestNotificationPermission() async {
 }
 
 Future<void> updateNotificationLanguage(bool english) async {
-  if (kIsWeb) return; // topics are not supported by firebase_messaging on web
+  if (kIsWeb) {
+    // Browser können keine Themen abonnieren: läuft über den Server.
+    await webPushSetLanguage(english);
+    return;
+  }
   // Debug builds use separate topics, so tests never reach real users.
   final prefix = kDebugMode ? 'dev_' : '';
   final lang = english ? 'en' : 'de';
