@@ -365,5 +365,13 @@
     "online_day": "Heute",
     "online_hs_day_empty": "Heute noch keine Einträge. Spiel die erste Runde!",
     "online_hs_text_day": "{name} schafft mit {score} Schlägen Platz {rank} der heutigen Tageswertung {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?",
-    "online_hs_text_both": "{name} schafft mit {score} Schlägen Platz {dayRank} heute und Platz {monthRank} im {month} in {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?"
+    "online_hs_text_both": "{name} schafft mit {score} Schlägen Platz {dayRank} heute und Platz {monthRank} im {month} in {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?",
+    "settings_notifications": "Mitteilungen",
+    "notif_enable": "Aktivieren",
+    "notif_on": "Mitteilungen aktiviert",
+    "notif_info": "Neuigkeiten und Hinweise der Anlage erhalten",
+    "notif_denied": "Im Browser blockiert – in den Website-Einstellungen erlauben",
+    "notif_ios_hint": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren",
+    "notif_unsupported": "Dieser Browser unterstützt keine Mitteilungen",
+    "notif_failed": "Aktivieren hat nicht geklappt. Bitte später erneut versuchen."
 }

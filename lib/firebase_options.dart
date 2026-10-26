@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -63,5 +60,14 @@ class DefaultFirebaseOptions {
     projectId: 'soccerpark-aa64d',
     storageBucket: 'soccerpark-aa64d.firebasestorage.app',
     iosBundleId: 'com.soccerpark.austria',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyB6nfVIu8KSUdAXrke-GJoCtW_0Zkg7-Mc',
+    appId: '1:1018336090361:web:b79051b9e59e84158eea28',
+    messagingSenderId: '1018336090361',
+    projectId: 'soccerpark-aa64d',
+    authDomain: 'soccerpark-aa64d.firebaseapp.com',
+    storageBucket: 'soccerpark-aa64d.firebasestorage.app',
   );
 }

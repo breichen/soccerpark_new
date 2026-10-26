@@ -7,6 +7,8 @@ import 'package:soccerpark/firebase_options.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:soccerpark/utils/firebase.dart';
+import 'package:soccerpark/utils/webpush_stub.dart'
+    if (dart.library.js_interop) 'package:soccerpark/utils/webpush_web.dart';
 
 import 'utils/data.dart';
 import 'pages/mainpage.dart';
@@ -44,6 +46,9 @@ Future<void> main() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     listenForForegroundNotifications();
+  } else {
+    // Web: eigener Weg über web/push.js (funktioniert auch im Unterordner).
+    initWebPush();
   }
   runApp(App());
 }

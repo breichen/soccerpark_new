@@ -1106,4 +1106,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String online_hs_text_both(String name, int score, int dayRank, int monthRank, String month, String locality) {
     return '${name} reaches place ${dayRank} today and place ${monthRank} in ${month} in ${locality} with ${score} strokes. Which name should be shown publicly?';
   }
+
+  @override
+  String get settings_notifications => 'Notifications';
+
+  @override
+  String get notif_enable => 'Enable';
+
+  @override
+  String get notif_on => 'Notifications on';
+
+  @override
+  String get notif_info => 'Get news and updates from the venue';
+
+  @override
+  String get notif_denied => 'Blocked in the browser – allow it in the site settings';
+
+  @override
+  String get notif_ios_hint => 'On iPhone, first install via Share → Add to Home Screen';
+
+  @override
+  String get notif_unsupported => 'This browser doesn\'t support notifications';
+
+  @override
+  String get notif_failed => 'Enabling didn\'t work. Please try again later.';
 }

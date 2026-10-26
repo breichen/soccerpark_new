@@ -1115,4 +1115,28 @@ class AppLocalizationsDe extends AppLocalizations {
   String online_hs_text_both(String name, int score, int dayRank, int monthRank, String month, String locality) {
     return '${name} schafft mit ${score} Schlägen Platz ${dayRank} heute und Platz ${monthRank} im ${month} in ${locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?';
   }
+
+  @override
+  String get settings_notifications => 'Mitteilungen';
+
+  @override
+  String get notif_enable => 'Aktivieren';
+
+  @override
+  String get notif_on => 'Mitteilungen aktiviert';
+
+  @override
+  String get notif_info => 'Neuigkeiten und Hinweise der Anlage erhalten';
+
+  @override
+  String get notif_denied => 'Im Browser blockiert – in den Website-Einstellungen erlauben';
+
+  @override
+  String get notif_ios_hint => 'Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren';
+
+  @override
+  String get notif_unsupported => 'Dieser Browser unterstützt keine Mitteilungen';
+
+  @override
+  String get notif_failed => 'Aktivieren hat nicht geklappt. Bitte später erneut versuchen.';
 }

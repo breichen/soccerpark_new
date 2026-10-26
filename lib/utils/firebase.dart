@@ -20,26 +20,32 @@ void listenForForegroundNotifications() {
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     final n = message.notification;
     if (n == null) return; // data-only message, nothing to display
-
-    final messenger = messengerKey.currentState;
-    if (messenger == null) return;
-
-    messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(SnackBar(
-      duration: const Duration(seconds: 8),
-      behavior: SnackBarBehavior.floating,
-      showCloseIcon: true,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (n.title != null && n.title!.isNotEmpty)
-            Text(n.title!, style: const TextStyle(fontWeight: FontWeight.bold)),
-          if (n.body != null && n.body!.isNotEmpty) Text(n.body!),
-        ],
-      ),
-    ));
+    showInAppNotification(n.title ?? '', n.body ?? '');
   });
+}
+
+/// Zeigt eine Mitteilung als Banner in der App (wenn sie gerade offen ist).
+/// Wird von Android/iOS (oben) und vom Web (utils/webpush_web.dart) genutzt.
+void showInAppNotification(String title, String body) {
+  if (title.isEmpty && body.isEmpty) return;
+  final messenger = messengerKey.currentState;
+  if (messenger == null) return;
+
+  messenger.hideCurrentSnackBar();
+  messenger.showSnackBar(SnackBar(
+    duration: const Duration(seconds: 8),
+    behavior: SnackBarBehavior.floating,
+    showCloseIcon: true,
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (title.isNotEmpty)
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        if (body.isNotEmpty) Text(body),
+      ],
+    ),
+  ));
 }
 
 Future<void> requestNotificationPermission() async {

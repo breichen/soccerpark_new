@@ -2149,6 +2149,54 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'{name} schafft mit {score} Schlägen Platz {dayRank} heute und Platz {monthRank} im {month} in {locality}. Unter welchem Namen soll der Eintrag öffentlich angezeigt werden?'**
   String online_hs_text_both(String name, int score, int dayRank, int monthRank, String month, String locality);
+
+  /// No description provided for @settings_notifications.
+  ///
+  /// In de, this message translates to:
+  /// **'Mitteilungen'**
+  String get settings_notifications;
+
+  /// No description provided for @notif_enable.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivieren'**
+  String get notif_enable;
+
+  /// No description provided for @notif_on.
+  ///
+  /// In de, this message translates to:
+  /// **'Mitteilungen aktiviert'**
+  String get notif_on;
+
+  /// No description provided for @notif_info.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuigkeiten und Hinweise der Anlage erhalten'**
+  String get notif_info;
+
+  /// No description provided for @notif_denied.
+  ///
+  /// In de, this message translates to:
+  /// **'Im Browser blockiert – in den Website-Einstellungen erlauben'**
+  String get notif_denied;
+
+  /// No description provided for @notif_ios_hint.
+  ///
+  /// In de, this message translates to:
+  /// **'Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren'**
+  String get notif_ios_hint;
+
+  /// No description provided for @notif_unsupported.
+  ///
+  /// In de, this message translates to:
+  /// **'Dieser Browser unterstützt keine Mitteilungen'**
+  String get notif_unsupported;
+
+  /// No description provided for @notif_failed.
+  ///
+  /// In de, this message translates to:
+  /// **'Aktivieren hat nicht geklappt. Bitte später erneut versuchen.'**
+  String get notif_failed;
 }
 
 class _AppLocalizationsDelegate

@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -9,8 +11,12 @@ import '../widgets/header.dart';
 import '../widgets/space.dart';
 import '../utils/data.dart';
 import '../utils/flags.dart';
+import '../utils/webpush_stub.dart'
+    if (dart.library.js_interop) '../utils/webpush_web.dart';
+import '../widgets/dropdown.dart' show dropdownChipColor;
+import '../widgets/toast.dart';
 
-/// Einstellungen: Anlage und Sprache.
+/// Einstellungen: Anlage, Sprache und (im Web) Mitteilungen.
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -19,6 +25,49 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  // Web-Mitteilungen (Android/iOS fragen beim Start, siehe main.dart).
+  bool pushSupported = false;
+  String pushPermission = 'unsupported';
+  bool pushBusy = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (kIsWeb) {
+      webPushSupported().then((ok) {
+        if (!mounted) return;
+        setState(() {
+          pushSupported = ok;
+          pushPermission = webPushPermission();
+        });
+      });
+    }
+  }
+
+  Future<void> enablePush() async {
+    setState(() => pushBusy = true);
+    final token = await enableWebPush();
+    if (!mounted) return;
+    setState(() {
+      pushBusy = false;
+      pushPermission = webPushPermission();
+    });
+    if (token.isEmpty && pushPermission == 'granted') {
+      CustomToast.showToast(
+          context, AppLocalizations.of(context)!.notif_failed);
+    }
+  }
+
+  /// Zum Testen: Token kopieren (für "Testnachricht senden" in Firebase).
+  Future<void> copyPushToken() async {
+    final token = await storedWebPushToken();
+    if (token.isEmpty || !mounted) return;
+    await Clipboard.setData(ClipboardData(text: token));
+    if (!mounted) return;
+    CustomToast.showToastIcon(
+        context, AppLocalizations.of(context)!.copied, Icons.copy);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
@@ -77,9 +126,86 @@ class _SettingsPageState extends State<SettingsPage> {
                         },
                       ),
                     ]),
+                    if (kIsWeb) ...[
+                      Space(20),
+                      sectionTitle(l.settings_notifications),
+                      Space(8),
+                      card([getPushRow(l)]),
+                    ],
                   ])),
           Space(24),
         ]));
+  }
+
+  /// Mitteilungen im Web: Status und ggf. "Aktivieren".
+  Widget getPushRow(AppLocalizations l) {
+    final ios = defaultTargetPlatform == TargetPlatform.iOS;
+    final String subtitle;
+    Widget? trailing;
+    IconData icon = Icons.notifications_outlined;
+
+    if (!pushSupported) {
+      icon = Icons.notifications_off_outlined;
+      subtitle = ios ? l.notif_ios_hint : l.notif_unsupported;
+    } else if (pushPermission == 'granted') {
+      icon = Icons.notifications_active_outlined;
+      subtitle = l.notif_info;
+      trailing = Icon(Icons.check_circle, color: maincolor, size: 24);
+    } else if (pushPermission == 'denied') {
+      icon = Icons.notifications_off_outlined;
+      subtitle = l.notif_denied;
+    } else {
+      subtitle = l.notif_info;
+      trailing = pushBusy
+          ? SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(strokeWidth: 2))
+          : FilledButton(
+              style: FilledButton.styleFrom(
+                  backgroundColor: maincolor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10))),
+              onPressed: enablePush,
+              child: Text(l.notif_enable,
+                  style: GoogleFonts.lato(
+                      color: Colors.white, fontWeight: FontWeight.bold)));
+    }
+
+    return Material(
+        color: Colors.white,
+        child: InkWell(
+            // Versteckt zum Testen: langes Drücken kopiert den Token.
+            onLongPress: pushPermission == 'granted' ? copyPushToken : null,
+            child: Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 12, 10),
+                child: Row(children: [
+                  Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                          color: dropdownChipColor,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Icon(icon, color: maincolor, size: 20)),
+                  SpaceH(12),
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        Text(
+                            pushPermission == 'granted' && pushSupported
+                                ? l.notif_on
+                                : l.settings_notifications,
+                            style: GoogleFonts.lato(
+                                color: Colors.black87,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
+                        Text(subtitle,
+                            style: GoogleFonts.lato(
+                                color: Colors.grey[600], fontSize: 12)),
+                      ])),
+                  if (trailing != null) ...[SpaceH(8), trailing],
+                ]))));
   }
 
   Widget flagBox(Widget flag) => SizedBox(
