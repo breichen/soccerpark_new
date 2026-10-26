@@ -26,8 +26,15 @@ class _HighscorePageState extends State<HighscorePage> {
   List<NamedHighscore> highscores = [];
   List<Average> averages = [];
 
-  int highscoreType = 0;
+  /// Gewählte Liste (interne Nummer, siehe [typeOrder]).
+  /// Start mit der Monatswertung, falls eingerichtet.
+  int highscoreType = OnlineHighscores.isConfigured ? onlineType : 0;
   int highscoreDetail = 0;
+
+  /// Reihenfolge im Auswahl-Chip: Monatswertung zuerst, dann Eure Top 10
+  /// (0), Persönliche Rekorde (1), Durchschnitt (2).
+  List<int> get typeOrder =>
+      OnlineHighscores.isConfigured ? [onlineType, 0, 1, 2] : [0, 1, 2];
 
   // Online-Bestenliste (highscoreType == onlineType)
   static const int onlineType = 3;
@@ -43,7 +50,8 @@ class _HighscorePageState extends State<HighscorePage> {
   @override
   void initState() {
     super.initState();
-    setListData();
+    // Nach dem ersten Aufbau laden (die Monatswertung braucht die Anlage).
+    WidgetsBinding.instance.addPostFrameCallback((_) => setListData());
   }
 
   @override
@@ -51,14 +59,13 @@ class _HighscorePageState extends State<HighscorePage> {
     List<String> holes = [AppLocalizations.of(context)!.total];
     for (var i = 1; i <= 18; i++)
       holes.add(AppLocalizations.of(context)!.hole + " " + i.toString());
-    List<String> highscoreTypes = [
-      AppLocalizations.of(context)!.local_top10,
-      AppLocalizations.of(context)!.personal_records,
-      AppLocalizations.of(context)!.average
-    ];
-    if (OnlineHighscores.isConfigured) {
-      highscoreTypes.add(AppLocalizations.of(context)!.online_highscores);
-    }
+    final typeNames = {
+      onlineType: AppLocalizations.of(context)!.online_highscores,
+      0: AppLocalizations.of(context)!.local_top10,
+      1: AppLocalizations.of(context)!.personal_records,
+      2: AppLocalizations.of(context)!.average,
+    };
+    List<String> highscoreTypes = [for (final t in typeOrder) typeNames[t]!];
     final loc = App.of(context).getLocality();
 
     return Scaffold(
@@ -156,9 +163,10 @@ class _HighscorePageState extends State<HighscorePage> {
 
   Widget getListDropdown(List<String> highscoreTypes, List<String> holes) {
     return dropdownRow([
-      CustomDropdownButton(highscoreTypes, highscoreType, (int v) {
+      CustomDropdownButton(highscoreTypes, typeOrder.indexOf(highscoreType),
+          (int v) {
         setState(() {
-          highscoreType = v;
+          highscoreType = typeOrder[v];
           setListData();
         });
       }, icon: Icons.emoji_events),
