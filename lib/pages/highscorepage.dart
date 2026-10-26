@@ -36,6 +36,7 @@ class _HighscorePageState extends State<HighscorePage> {
   int onlineMonthIdx = 0;
   bool onlineLoading = false;
   bool onlineError = false;
+  bool onlineShowAll = false;
   /// Aufgeklappter Eintrag ("local-<i>" oder "online-<id>").
   String? expandedKey;
 
@@ -184,6 +185,7 @@ class _HighscorePageState extends State<HighscorePage> {
       if (onlineMonths.isEmpty) return;
       setState(() {
         onlineMonthIdx = v;
+        onlineShowAll = false;
       });
       loadOnlineHighscores();
     }, icon: Icons.calendar_month);
@@ -244,7 +246,12 @@ class _HighscorePageState extends State<HighscorePage> {
     final pars = Data.getPars(App.of(context).getLocality());
     final par = pars.reduce((a, b) => a + b);
     final dateFormat = DateFormat('dd.MM.yyyy');
-    final rows = onlineHighscores
+    // Erst die besten 10, der Rest auf Wunsch.
+    final shown = onlineShowAll
+        ? onlineHighscores
+        : onlineHighscores.take(OnlineHighscores.previewSize).toList();
+    final hidden = onlineHighscores.length - shown.length;
+    final rows = shown
         .map((entry) => RankRow(
               key: 'online-${entry.id}',
               value: entry.total.toDouble(),
@@ -255,7 +262,19 @@ class _HighscorePageState extends State<HighscorePage> {
               holes: entry.holes,
             ))
         .toList();
-    return buildRankedList(rows, pars);
+    return Column(children: [
+      buildRankedList(rows, pars),
+      if (hidden > 0)
+        TextButton.icon(
+            style: TextButton.styleFrom(foregroundColor: maincolor),
+            onPressed: () => setState(() => onlineShowAll = true),
+            icon: Icon(Icons.expand_more),
+            label: Text(
+                AppLocalizations.of(context)!
+                    .online_hs_show_all(onlineHighscores.length),
+                style: GoogleFonts.lato(
+                    fontSize: 15, fontWeight: FontWeight.bold))),
+    ]);
   }
 
   Widget getHoleTable(List<int> holes, List<int> pars) {

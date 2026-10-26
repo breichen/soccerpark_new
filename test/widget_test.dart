@@ -14,6 +14,12 @@ OnlineHighscore entry(int id, int total) => OnlineHighscore(
 List<OnlineHighscore> list(List<int> totals) =>
     [for (var i = 0; i < totals.length; i++) entry(i + 1, totals[i])];
 
+/// Volle Liste mit Schlagzahlen 50, 51, 52, … (Länge = listSize).
+List<OnlineHighscore> fullList() => list(
+    [for (var i = 0; i < OnlineHighscores.listSize; i++) 50 + i]);
+
+int get lastTotal => 50 + OnlineHighscores.listSize - 1;
+
 void main() {
   group('prospectiveRank', () {
     test('leere Liste: Platz 1', () {
@@ -36,20 +42,19 @@ void main() {
       expect(OnlineHighscores.prospectiveRank(list([50, 52, 55]), 90), 4);
     });
 
-    test('volle Liste: schlechter als Platz 10 reicht nicht', () {
-      final full = list([50, 51, 52, 53, 54, 55, 56, 57, 58, 59]);
-      expect(OnlineHighscores.prospectiveRank(full, 60), isNull);
+    test('volle Liste: schlechter als der letzte Platz reicht nicht', () {
+      expect(OnlineHighscores.prospectiveRank(fullList(), lastTotal + 1),
+          isNull);
     });
 
-    test('volle Liste: gleich wie Platz 10 reicht nicht (früherer gewinnt)',
-        () {
-      final full = list([50, 51, 52, 53, 54, 55, 56, 57, 58, 59]);
-      expect(OnlineHighscores.prospectiveRank(full, 59), isNull);
+    test('volle Liste: gleich wie der letzte Platz reicht nicht '
+        '(früherer gewinnt)', () {
+      expect(OnlineHighscores.prospectiveRank(fullList(), lastTotal), isNull);
     });
 
-    test('volle Liste: besser als Platz 10 reicht', () {
-      final full = list([50, 51, 52, 53, 54, 55, 56, 57, 58, 59]);
-      expect(OnlineHighscores.prospectiveRank(full, 58), 9);
+    test('volle Liste: besser als der letzte Platz reicht', () {
+      expect(OnlineHighscores.prospectiveRank(fullList(), lastTotal - 1),
+          OnlineHighscores.listSize - 1);
     });
   });
 

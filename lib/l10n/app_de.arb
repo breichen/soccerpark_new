@@ -288,7 +288,7 @@
     "online_hs_submit": "Eintragen",
     "online_hs_skip": "Nicht eintragen",
     "online_hs_saved": "In die Monatsbestenliste eingetragen!",
-    "online_hs_too_late": "Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 10.",
+    "online_hs_too_late": "Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 50.",
     "online_hs_error": "Eintragen fehlgeschlagen. Bitte Internetverbindung prüfen.",
     "online_hs_load_error": "Bestenliste konnte nicht geladen werden. Bitte Internetverbindung prüfen.",
     "online_hs_empty": "In diesem Monat gibt es noch keine Einträge.",
@@ -359,5 +359,6 @@
     "chart_title": "Verlauf",
     "choose_park_hint": "Du kannst sie später in den Einstellungen ändern.",
     "range_recent": "Letzte 20 Runden",
-    "range_all": "Alle {count} Runden"
+    "range_all": "Alle {count} Runden",
+    "online_hs_show_all": "Alle {count} anzeigen"
 }

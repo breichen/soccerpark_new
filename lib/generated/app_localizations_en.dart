@@ -858,7 +858,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get online_hs_saved => 'Added to the monthly leaderboard!';
 
   @override
-  String get online_hs_too_late => 'Someone was faster: the round no longer makes the top 10.';
+  String get online_hs_too_late => 'Someone was faster: the round no longer makes the top 50.';
 
   @override
   String get online_hs_error => 'Submitting failed. Please check your internet connection.';
@@ -1081,5 +1081,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String range_all(int count) {
     return 'All ${count} rounds';
+  }
+
+  @override
+  String online_hs_show_all(int count) {
+    return 'Show all ${count}';
   }
 }

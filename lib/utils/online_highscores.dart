@@ -43,7 +43,10 @@ class OnlineHighscoreException implements Exception {
 /// Es werden pro Anlage und Monat nur die Top [listSize] gespeichert;
 /// das Aufräumen erledigt die Datenbankfunktion submit_highscore().
 class OnlineHighscores {
-  static const int listSize = 10;
+  static const int listSize = 50;
+
+  /// So viele Einträge zeigt die Bestenliste, bevor man "Alle" antippt.
+  static const int previewSize = 10;
   static const int minNameLength = 2;
   static const int maxNameLength = 20;
   static const Duration _timeout = Duration(seconds: 10);
@@ -76,7 +79,7 @@ class OnlineHighscores {
   // ------------------------------------------------------------------
 
   /// Angezeigter Platz für [total] Schläge (gleiche Schlagzahl = gleicher
-  /// Platz), oder null, wenn die Runde nicht in die Top 10 kommt.
+  /// Platz), oder null, wenn die Runde nicht in die Top [listSize] kommt.
   /// Bei Gleichstand liegt der frühere Eintrag vorne, daher reicht eine
   /// Schlagzahl, die schon auf Platz 10 steht, nicht.
   static int? prospectiveRank(List<OnlineHighscore> list, int total) {
@@ -131,7 +134,7 @@ class OnlineHighscores {
     return jsonDecode(utf8.decode(res.bodyBytes));
   }
 
-  /// Top 10 einer Anlage für [month] (yyyy-MM), beste zuerst.
+  /// Top [listSize] einer Anlage für [month] (yyyy-MM), beste zuerst.
   static Future<List<OnlineHighscore>> fetch(Locality loc, String month) async {
     final res = await http
         .get(

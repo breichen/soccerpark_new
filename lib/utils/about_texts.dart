@@ -6,7 +6,7 @@
 /// Neuerungen dieser Version (bei jedem Release anpassen).
 List<String> whatsNew(String lang) => lang == 'de'
     ? [
-        'Spiel um den Monatssieg: Die besten 10 Runden jeder Anlage kommen in die Online-Bestenliste',
+        'Spiel um den Monatssieg: Die besten 50 Runden jeder Anlage kommen in die Online-Bestenliste',
         'Alle Bestenlisten auf einer Seite, mit Platz und Abstand zu Par',
         'Bei deinen Rekorden siehst du jetzt jede einzelne Bahn',
         'Neue Runde: Mitspielende antippen und die Reihenfolge per Ziehen festlegen',
@@ -19,7 +19,7 @@ List<String> whatsNew(String lang) => lang == 'de'
         'Etwas funktioniert nicht? Unter „Über die App“ kannst du uns direkt einen Fehler melden',
       ]
     : [
-        'Play for the monthly title: the 10 best rounds at each venue make the online leaderboard',
+        'Play for the monthly title: the 50 best rounds at each venue make the online leaderboard',
         'All leaderboards on one page, with rank and score to par',
         'Your records now show every single hole',
         'New round: tap to add players and drag to set the playing order',
@@ -52,7 +52,7 @@ const List<PrivacySection> _privacyDe = [
   PrivacySection('Daten auf deinem Gerät',
       'Spielernamen, Runden, Ergebnisse, Rekorde und Einstellungen werden nur auf deinem Gerät gespeichert und nicht übertragen. Du kannst sie jederzeit über „Historie löschen“ entfernen oder indem du die App deinstallierst. Ein Benutzerkonto gibt es nicht.'),
   PrivacySection('Online-Bestenliste',
-      'Nur wenn du nach einer Runde ausdrücklich „Eintragen“ wählst, werden folgende Daten übertragen: der von dir gewählte Anzeigename, die Schläge je Bahn und gesamt, die Anlage und der Zeitpunkt. Der Eintrag ist für alle Nutzerinnen und Nutzer der App sichtbar. Es werden keine Gerätekennung und kein Konto gespeichert.\n\nDie Daten werden beim Dienstleister Supabase auf Servern in der EU gespeichert. Technisch bedingt verarbeitet der Server dabei kurzzeitig deine IP-Adresse. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die du jederzeit widerrufen kannst. Pro Monat und Anlage werden nur die zehn besten Runden aufbewahrt; ältere Monate bleiben als Archiv sichtbar. Auf Wunsch löschen wir deinen Eintrag – schreib uns einfach eine E-Mail.'),
+      'Nur wenn du nach einer Runde ausdrücklich „Eintragen“ wählst, werden folgende Daten übertragen: der von dir gewählte Anzeigename, die Schläge je Bahn und gesamt, die Anlage und der Zeitpunkt. Der Eintrag ist für alle Nutzerinnen und Nutzer der App sichtbar. Es werden keine Gerätekennung und kein Konto gespeichert.\n\nDie Daten werden beim Dienstleister Supabase auf Servern in der EU gespeichert. Technisch bedingt verarbeitet der Server dabei kurzzeitig deine IP-Adresse. Rechtsgrundlage ist deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die du jederzeit widerrufen kannst. Pro Monat und Anlage werden nur die 50 besten Runden aufbewahrt; ältere Monate bleiben als Archiv sichtbar. Auf Wunsch löschen wir deinen Eintrag – schreib uns einfach eine E-Mail.'),
   PrivacySection('Push-Mitteilungen',
       'In der Android- und iOS-App nutzen wir Firebase Cloud Messaging von Google, um Mitteilungen der Anlage zu senden. Dafür wird eine zufällige Gerätekennung (Token) verarbeitet, zusammen mit der gewählten Sprache. Google kann Daten auch in den USA verarbeiten; die Übermittlung stützt sich auf das EU-US Data Privacy Framework. Mitteilungen kannst du in den Einstellungen deines Geräts jederzeit abschalten.'),
   PrivacySection('Video in der Anleitung',
@@ -69,7 +69,7 @@ const List<PrivacySection> _privacyEn = [
   PrivacySection('Data on your device',
       'Player names, rounds, scores, records and settings are stored only on your device and are not transmitted. You can remove them at any time via "Delete history" or by uninstalling the app. There is no user account.'),
   PrivacySection('Online leaderboard',
-      'Only if you explicitly choose "Submit" after a round, the following data is transmitted: the display name you choose, the strokes per hole and in total, the venue and the time. The entry is visible to all users of the app. No device ID and no account is stored.\n\nThe data is stored by the service provider Supabase on servers in the EU. For technical reasons the server briefly processes your IP address. The legal basis is your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time. Only the ten best rounds per month and venue are kept; previous months remain visible as an archive. We will delete your entry on request – just send us an email.'),
+      'Only if you explicitly choose "Submit" after a round, the following data is transmitted: the display name you choose, the strokes per hole and in total, the venue and the time. The entry is visible to all users of the app. No device ID and no account is stored.\n\nThe data is stored by the service provider Supabase on servers in the EU. For technical reasons the server briefly processes your IP address. The legal basis is your consent (Art. 6(1)(a) GDPR), which you can withdraw at any time. Only the 50 best rounds per month and venue are kept; previous months remain visible as an archive. We will delete your entry on request – just send us an email.'),
   PrivacySection('Push notifications',
       'In the Android and iOS app we use Firebase Cloud Messaging by Google to send notifications from the venue. This processes a random device identifier (token) together with the selected language. Google may also process data in the USA; the transfer is based on the EU-US Data Privacy Framework. You can turn off notifications in your device settings at any time.'),
   PrivacySection('Video in the rules',

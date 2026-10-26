@@ -6,7 +6,7 @@ import '../main.dart';
 import '../utils/online_highscores.dart';
 import '../widgets/appdialog.dart';
 
-/// Fragt nach einer Top-10-Runde, ob und unter welchem Namen sie in die
+/// Fragt nach einer Runde in den Top 50, ob und unter welchem Namen sie in die
 /// monatliche Online-Bestenliste eingetragen werden soll.
 ///
 /// Liefert über Navigator.pop den gewählten Anzeigenamen oder null.

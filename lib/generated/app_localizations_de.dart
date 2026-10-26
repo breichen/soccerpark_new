@@ -867,7 +867,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get online_hs_saved => 'In die Monatsbestenliste eingetragen!';
 
   @override
-  String get online_hs_too_late => 'Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 10.';
+  String get online_hs_too_late => 'Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 50.';
 
   @override
   String get online_hs_error => 'Eintragen fehlgeschlagen. Bitte Internetverbindung prüfen.';
@@ -1090,5 +1090,10 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String range_all(int count) {
     return 'Alle ${count} Runden';
+  }
+
+  @override
+  String online_hs_show_all(int count) {
+    return 'Alle ${count} anzeigen';
   }
 }

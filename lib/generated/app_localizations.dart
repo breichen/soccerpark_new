@@ -1685,7 +1685,7 @@ abstract class AppLocalizations {
   /// No description provided for @online_hs_too_late.
   ///
   /// In de, this message translates to:
-  /// **'Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 10.'**
+  /// **'Leider war jemand schneller: Die Runde reicht nicht mehr für die Top 50.'**
   String get online_hs_too_late;
 
   /// No description provided for @online_hs_error.
@@ -2113,6 +2113,12 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Alle {count} Runden'**
   String range_all(int count);
+
+  /// No description provided for @online_hs_show_all.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle {count} anzeigen'**
+  String online_hs_show_all(int count);
 }
 
 class _AppLocalizationsDelegate

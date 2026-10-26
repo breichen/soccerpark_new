@@ -1,5 +1,5 @@
 -- =====================================================================
--- Soccerpark: monatliche Online-Highscores (Top 10 pro Anlage und Monat)
+-- Soccerpark: monatliche Online-Highscores (Top 50 pro Anlage und Monat)
 --
 -- Einmalig im Supabase-Dashboard ausführen: SQL Editor -> New query ->
 -- diesen Inhalt einfügen -> Run. Das Skript kann gefahrlos erneut
@@ -33,8 +33,8 @@ revoke insert, update, delete on public.online_highscores from anon, authenticat
 grant select on public.online_highscores to anon, authenticated;
 
 -- ---------------------------------------------------------------------
--- Trägt eine volle Runde ein und behält danach nur die Top 10 des
--- Monats für diese Anlage. Gibt den erreichten Platz zurück (1-10),
+-- Trägt eine volle Runde ein und behält danach nur die Top 50 des
+-- Monats für diese Anlage. Gibt den erreichten Platz zurück (1-50),
 -- oder NULL, wenn die Runde inzwischen nicht mehr gereicht hat.
 -- Monat wird am Server bestimmt (Zeitzone Europe/Vienna).
 -- Bei gleicher Schlagzahl liegt der frühere Eintrag vorne.
@@ -77,13 +77,13 @@ begin
   values (p_locality, v_month, v_name, v_total, p_holes::smallint[])
   returning id into v_id;
 
-  -- Alles ab Platz 11 entfernen.
+  -- Alles ab Platz 51 entfernen.
   delete from online_highscores
   where id in (
     select id from online_highscores
     where locality = p_locality and month = v_month
     order by total, created_at, id
-    offset 10
+    offset 50
   );
 
   select r.rank into v_rank
@@ -94,7 +94,7 @@ begin
   ) r
   where r.id = v_id;
 
-  return v_rank;  -- NULL, falls nicht (mehr) in den Top 10
+  return v_rank;  -- NULL, falls nicht (mehr) in den Top 50
 end;
 $$;
 
