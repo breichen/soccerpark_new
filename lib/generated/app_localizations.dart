@@ -2227,6 +2227,42 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Auf dem iPhone kannst du Mitteilungen erhalten, wenn du die App über „Teilen → Zum Home-Bildschirm“ installierst.'**
   String get notif_prompt_ios;
+
+  /// No description provided for @news_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuigkeiten'**
+  String get news_title;
+
+  /// No description provided for @news_empty.
+  ///
+  /// In de, this message translates to:
+  /// **'Zurzeit gibt es keine Neuigkeiten.'**
+  String get news_empty;
+
+  /// No description provided for @news_load_error.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuigkeiten konnten nicht geladen werden. Bitte Internetverbindung prüfen.'**
+  String get news_load_error;
+
+  /// No description provided for @news_outdated.
+  ///
+  /// In de, this message translates to:
+  /// **'Dieser Beitrag ist nicht mehr aktuell.'**
+  String get news_outdated;
+
+  /// No description provided for @news_more.
+  ///
+  /// In de, this message translates to:
+  /// **'Mehr erfahren'**
+  String get news_more;
+
+  /// No description provided for @news_view.
+  ///
+  /// In de, this message translates to:
+  /// **'Ansehen'**
+  String get news_view;
 }
 
 class _AppLocalizationsDelegate

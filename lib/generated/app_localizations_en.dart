@@ -1145,4 +1145,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notif_prompt_ios => 'On iPhone you can get notifications after installing the app via Share → Add to Home Screen.';
+
+  @override
+  String get news_title => 'News';
+
+  @override
+  String get news_empty => 'There\'s no news at the moment.';
+
+  @override
+  String get news_load_error => 'Couldn\'t load the news. Please check your internet connection.';
+
+  @override
+  String get news_outdated => 'This post is no longer available.';
+
+  @override
+  String get news_more => 'Learn more';
+
+  @override
+  String get news_view => 'View';
 }

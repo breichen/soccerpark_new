@@ -1154,4 +1154,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notif_prompt_ios => 'Auf dem iPhone kannst du Mitteilungen erhalten, wenn du die App über „Teilen → Zum Home-Bildschirm“ installierst.';
+
+  @override
+  String get news_title => 'Neuigkeiten';
+
+  @override
+  String get news_empty => 'Zurzeit gibt es keine Neuigkeiten.';
+
+  @override
+  String get news_load_error => 'Neuigkeiten konnten nicht geladen werden. Bitte Internetverbindung prüfen.';
+
+  @override
+  String get news_outdated => 'Dieser Beitrag ist nicht mehr aktuell.';
+
+  @override
+  String get news_more => 'Mehr erfahren';
+
+  @override
+  String get news_view => 'Ansehen';
 }

@@ -112,6 +112,12 @@ class OnlineHighscores {
   // Server
   // ------------------------------------------------------------------
 
+  // Öffentliche Zugriffe für andere Supabase-Abfragen (z. B. Neuigkeiten).
+  static Map<String, String> restHeaders() => _headers();
+  static Uri restUri(String path, [Map<String, String>? query]) =>
+      _uri(path, query);
+  static dynamic restDecode(http.Response res) => _decode(res);
+
   static Map<String, String> _headers({bool jsonBody = false}) {
     final key = supabaseAnonKey.trim();
     final headers = <String, String>{

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data.dart';
-import 'firebase.dart' show showInAppNotification;
+import 'firebase.dart' show showInAppNotification, openNewsFromNotification;
 import 'supabase_config.dart';
 
 // Brücke zu window.soccerparkPush (web/push.js).
@@ -25,6 +25,9 @@ external JSPromise<JSString> _token();
 
 @JS('soccerparkPush.onForeground')
 external set _onForeground(JSFunction callback);
+
+@JS('soccerparkPush.onOpenNews')
+external set _onOpenNews(JSFunction callback);
 
 const _tokenKey = 'webPushToken';
 
@@ -107,9 +110,18 @@ Future<String> enableWebPush() async {
 /// die Erlaubnis schon besteht, den (ggf. erneuerten) Token holen.
 Future<void> initWebPush() async {
   try {
-    _onForeground = ((JSString title, JSString body) {
-      showInAppNotification(title.toDart, body.toDart);
+    _onForeground = ((JSString title, JSString body, JSString news) {
+      showInAppNotification(title.toDart, body.toDart,
+          newsId: int.tryParse(news.toDart));
     }).toJS;
+    // Mitteilung angetippt, während die App schon offen war.
+    _onOpenNews = ((JSString news) {
+      final id = int.tryParse(news.toDart);
+      if (id != null) openNewsFromNotification(id);
+    }).toJS;
+    // App wurde durch Antippen einer Mitteilung geöffnet (…/app/?news=7).
+    final startNews = int.tryParse(Uri.base.queryParameters['news'] ?? '');
+    if (startNews != null) openNewsFromNotification(startNews);
     if (webPushPermission() == 'granted' && !await _isDisabled()) {
       final token = (await _token().toDart).toDart;
       await _storeToken(token);

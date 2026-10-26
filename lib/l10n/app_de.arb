@@ -378,5 +378,11 @@
     "notif_prompt_title": "Neuigkeiten vom Soccerpark erhalten?",
     "notif_prompt_text": "Kurze Hinweise der Anlage, z. B. zu Öffnungszeiten oder Aktionen. Du kannst sie in den Einstellungen jederzeit wieder abschalten.",
     "notif_prompt_no": "Nein danke",
-    "notif_prompt_ios": "Auf dem iPhone kannst du Mitteilungen erhalten, wenn du die App über „Teilen → Zum Home-Bildschirm“ installierst."
+    "notif_prompt_ios": "Auf dem iPhone kannst du Mitteilungen erhalten, wenn du die App über „Teilen → Zum Home-Bildschirm“ installierst.",
+    "news_title": "Neuigkeiten",
+    "news_empty": "Zurzeit gibt es keine Neuigkeiten.",
+    "news_load_error": "Neuigkeiten konnten nicht geladen werden. Bitte Internetverbindung prüfen.",
+    "news_outdated": "Dieser Beitrag ist nicht mehr aktuell.",
+    "news_more": "Mehr erfahren",
+    "news_view": "Ansehen"
 }

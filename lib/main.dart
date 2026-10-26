@@ -46,6 +46,7 @@ Future<void> main() async {
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     listenForForegroundNotifications();
+    listenForNotificationTaps();
   } else {
     // Web: eigener Weg über web/push.js (funktioniert auch im Unterordner).
     initWebPush();
@@ -165,6 +166,7 @@ class _AppState extends State<App> {
         child: MaterialApp(
       title: 'Soccerpark',
       scaffoldMessengerKey: messengerKey,
+      navigatorKey: appNavigatorKey,
       locale: _locale,
       theme: ThemeData(
         primarySwatch: generateMaterialColor(color: maincolor),

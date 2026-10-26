@@ -19,6 +19,8 @@ import '../widgets/appbar.dart';
 import './roundpage.dart';
 import './historypage.dart';
 import './highscorepage.dart';
+import './newspage.dart';
+import '../utils/news.dart';
 
 /// Zum Hauptmenü wechseln und alle Seiten darüber schließen, damit sich
 /// keine Hauptmenüs übereinander stapeln und "Zurück" nicht in eine
@@ -43,6 +45,11 @@ class _MainPageState extends State<MainPage> {
   int currPlayers = 0;
   int currHolesDone = 0;
 
+  /// Aktuelle Neuigkeiten (leer = keine Karte) und schon gelesene.
+  List<NewsItem> news = [];
+  Set<int> newsSeen = {};
+  Locality? newsLocality; // für welche Anlage [news] geladen ist
+
   GlobalKey _globalKey = new GlobalKey();
 
   @override
@@ -60,6 +67,24 @@ class _MainPageState extends State<MainPage> {
     Data.isHistory().then((hist) {
       if (mounted) setState(() => isHist = hist);
     });
+    loadNews();
+  }
+
+  Future<void> loadNews() async {
+    try {
+      final locality = App.of(context).getLocality();
+      final list = await News.fetch(locality);
+      final seen = await News.seenIds();
+      if (!mounted) return;
+      setState(() {
+        news = list;
+        newsSeen = seen;
+        newsLocality = locality;
+      });
+    } catch (e) {
+      // Offline o. Ä.: Karte einfach nicht zeigen.
+      debugPrint('Loading news failed: $e');
+    }
   }
 
   void loadProgress() {
@@ -91,7 +116,12 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
     // Neu aufbauen, wenn in den Einstellungen die Anlage gewechselt wird.
-    App.localityOf(context);
+    final locality = App.localityOf(context);
+    if (newsLocality != null && newsLocality != locality) {
+      newsLocality = locality;
+      news = [];
+      WidgetsBinding.instance.addPostFrameCallback((_) => loadNews());
+    }
 
     return Scaffold(
         appBar: CustomAppBar(
@@ -127,6 +157,10 @@ class _MainPageState extends State<MainPage> {
                       title: loc.newRound,
                       onTap: () => open(NewRoundPage(), refresh: true),
                     ),
+                  if (news.isNotEmpty) ...[
+                    Space(14),
+                    getNewsCard(loc),
+                  ],
                   Space(14),
                   getTiles(loc),
                   Space(14),
@@ -135,6 +169,58 @@ class _MainPageState extends State<MainPage> {
             Space(16)
           ])
         ]));
+  }
+
+  /// Karte "Neuigkeiten" mit dem neuesten Beitrag; Punkt = ungelesen.
+  Widget getNewsCard(AppLocalizations loc) {
+    final latest = news.first;
+    final unread = news.any((n) => !newsSeen.contains(n.id));
+    return Material(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: unread ? maincolor : Colors.grey[300]!)),
+        child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => NewsPage()))
+                .whenComplete(loadNews),
+            child: Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 8, 10),
+                child: Row(children: [
+                  Container(
+                      width: 34,
+                      height: 34,
+                      decoration: BoxDecoration(
+                          color: dropdownChipColor,
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Icon(Icons.campaign_outlined,
+                          color: maincolor, size: 20)),
+                  SpaceH(10),
+                  Expanded(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        Text(loc.news_title,
+                            style: GoogleFonts.lato(
+                                color: Colors.black87,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold)),
+                        Text(latest.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.lato(
+                                color: Colors.grey[700], fontSize: 13)),
+                      ])),
+                  if (unread)
+                    Container(
+                        width: 10,
+                        height: 10,
+                        margin: EdgeInsets.only(left: 6),
+                        decoration: BoxDecoration(
+                            color: maincolor, shape: BoxShape.circle)),
+                  Icon(Icons.chevron_right, color: maincolor),
+                ]))));
   }
 
   Widget getTiles(AppLocalizations loc) {

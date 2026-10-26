@@ -12,25 +12,33 @@
 // man auf eine Mitteilung tippt und die Mitteilung keinen eigenen Link hat.
 const APP_URL = new URL('./', self.location.href).href;
 
-// Antippen einer Mitteilung: offenes App-Fenster nach vorne holen, sonst
-// die App (bzw. den Link aus der Mitteilung) öffnen. Muss vor dem Laden
-// des Firebase-SDKs registriert werden, damit es Vorrang hat.
+// Antippen einer Mitteilung:
+//  * mit Beitragsnummer (Daten "news"): Beitrag in der App öffnen – in einem
+//    offenen Fenster per Nachricht, sonst über …/app/?news=<nr>
+//  * mit Link (Daten "link"): diesen öffnen
+//  * sonst: offenes App-Fenster nach vorne holen bzw. die App öffnen
+// Muss vor dem Laden des Firebase-SDKs registriert werden (Vorrang).
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.stopImmediatePropagation();
 
   const fcm = (event.notification.data && event.notification.data.FCM_MSG) || {};
-  const link =
-    (fcm.fcmOptions && fcm.fcmOptions.link) ||
-    (fcm.data && fcm.data.link) ||
-    APP_URL;
+  const data = fcm.data || {};
+  const news = data.news ? String(data.news).trim() : '';
+  const link = (fcm.fcmOptions && fcm.fcmOptions.link) || data.link || '';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) => {
-      for (const w of windows) {
-        if (w.url.startsWith(APP_URL) && 'focus' in w) return w.focus();
+      const app = windows.find((w) => w.url.startsWith(APP_URL) && 'focus' in w);
+      if (news) {
+        if (app) {
+          app.postMessage({ type: 'soccerpark-news', id: news });
+          return app.focus();
+        }
+        return clients.openWindow(APP_URL + '?news=' + encodeURIComponent(news));
       }
-      return clients.openWindow(link);
+      if (link) return clients.openWindow(link);
+      return app ? app.focus() : clients.openWindow(APP_URL);
     })
   );
 });

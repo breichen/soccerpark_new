@@ -43,8 +43,9 @@
         // Mitteilung, während die App offen ist: an Dart weitergeben.
         m.onMessage(messaging, function (payload) {
           var n = payload.notification || {};
+          var d = payload.data || {};
           var cb = window.soccerparkPush.onForeground;
-          if (typeof cb === 'function') cb(n.title || '', n.body || '');
+          if (typeof cb === 'function') cb(n.title || '', n.body || '', String(d.news || ''));
         });
         return { m: m, messaging: messaging };
       });
@@ -78,8 +79,21 @@
       });
   }
 
+  // Mitteilung angetippt, während die App offen ist: der Service Worker
+  // schickt die Beitragsnummer hierher.
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.addEventListener('message', function (event) {
+      var msg = event.data || {};
+      var cb = window.soccerparkPush && window.soccerparkPush.onOpenNews;
+      if (msg.type === 'soccerpark-news' && typeof cb === 'function') {
+        cb(String(msg.id));
+      }
+    });
+  }
+
   window.soccerparkPush = {
     onForeground: null,
+    onOpenNews: null,
 
     // true, wenn dieser Browser Push kann. Auf dem iPhone erst, wenn die App
     // über „Zum Home-Bildschirm“ installiert ist.
