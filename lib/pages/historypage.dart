@@ -42,8 +42,22 @@ class _HistoryPageState extends State<HistoryPage> {
   int detail = 0;
   int? bestScore;
 
+  /// Alle Rundendaten, neueste zuerst.
   List<String> dates = [];
+
+  /// Kurzform "dd.MM." für die Diagrammachse, älteste zuerst.
   List<String> datesForChart = [];
+
+  /// Standardmäßig nur die letzten [recentCount] Runden anzeigen.
+  static const int recentCount = 20;
+  bool showAll = false;
+
+  List<String> get visibleDates => showAll || dates.length <= recentCount
+      ? dates
+      : dates.sublist(0, recentCount);
+
+  List<String> get visibleChartDates =>
+      datesForChart.sublist(datesForChart.length - visibleDates.length);
 
   @override
   void initState() {
@@ -51,7 +65,7 @@ class _HistoryPageState extends State<HistoryPage> {
     setState(() {
       Data.getValidDates().then((list) => setState(() {
             dates = list;
-            print("dates " + list.length.toString());
+            datesForChart = [];
 
             for (var i = dates.length - 1; i >= 0; i--) {
               String s = dates[i];
@@ -73,9 +87,11 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   void setChartData() {
-    setState(() {
-      loadChartData().then((d) => chartData = d);
-      loadChartLegendData().then((d) => chartLegendData = d);
+    loadChartData().then((d) {
+      if (mounted) setState(() => chartData = d);
+    });
+    loadChartLegendData().then((d) {
+      if (mounted) setState(() => chartLegendData = d);
     });
   }
 
@@ -85,7 +101,8 @@ class _HistoryPageState extends State<HistoryPage> {
       return Data.getScorePointsInRound(round);
     } else if (type == 1) {
       int hole = detail;
-      return Data.getScoresAllRounds(hole);
+      return Data.getScoresAllRounds(hole,
+          limit: showAll ? null : recentCount);
     }
     return Data.getPersonalAverageScores();
   }
@@ -145,7 +162,7 @@ class _HistoryPageState extends State<HistoryPage> {
               width: double.infinity,
               child: LineChartWidget(
                 chartData,
-                xtitles: type == 0 || type == 2 ? [] : datesForChart,
+                xtitles: type == 1 ? visibleChartDates : [],
                 legendEntries: chartLegendData,
                 parLine: chartParLine(),
                 tooltipTitle: type == 1
@@ -172,12 +189,27 @@ class _HistoryPageState extends State<HistoryPage> {
       CustomDropdownButton(types, type, (int v) {
         setState(() {
           type = v;
+          // Runde bzw. Bahn passen nicht zur anderen Ansicht.
+          detail = 0;
           setChartData();
         });
       }, icon: Icons.show_chart),
+      // Zeitraum, sobald es mehr als die letzten 20 Runden gibt.
+      if (type != 2 && dates.length > recentCount)
+        CustomDropdownButton([
+          AppLocalizations.of(context)!.range_recent,
+          AppLocalizations.of(context)!.range_all(dates.length),
+        ], showAll ? 1 : 0, (int v) {
+          setState(() {
+            showAll = v == 1;
+            if (type == 0 && detail >= visibleDates.length) detail = 0;
+            setChartData();
+          });
+        }, icon: Icons.date_range),
       Visibility(
           child: CustomDropdownButton(
-              type == 0 ? (dates.isEmpty ? [""] : dates) : holes, detail,
+              type == 0 ? (dates.isEmpty ? [""] : visibleDates) : holes,
+              detail,
               (int v) {
             setState(
               () {

@@ -1074,4 +1074,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get choose_park_hint => 'You can change it later in the settings.';
+
+  @override
+  String get range_recent => 'Last 20 rounds';
+
+  @override
+  String range_all(int count) {
+    return 'All ${count} rounds';
+  }
 }

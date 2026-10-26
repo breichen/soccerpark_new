@@ -102,8 +102,31 @@ class RoundData {
   List<List<int>> scores;
 }
 
+/// Abgeschlossene Runde im Speicherformat ab Version 1.7: eine Runde =
+/// ein kompakter JSON-Eintrag (statt ~100 einzelner Einträge).
+class StoredRound {
+  StoredRound(this.date, this.players, this.scores);
+
+  /// "dd.MM.yyyy HH:mm"
+  final String date;
+
+  /// Spieler-IDs in Spielreihenfolge.
+  final List<int> players;
+
+  /// Schläge [Spieler][Bahn-1].
+  final List<List<int>> scores;
+
+  Map<String, dynamic> toJson() => {'d': date, 'p': players, 's': scores};
+
+  static StoredRound fromJson(Map<String, dynamic> j) => StoredRound(
+      (j['d'] as String?) ?? '',
+      (j['p'] as List).map((e) => (e as num).toInt()).toList(),
+      (j['s'] as List)
+          .map((r) => (r as List).map((e) => (e as num).toInt()).toList())
+          .toList());
+}
+
 class Data {
-  static int STORED_ROUNDS = 10;
   static int MAX_PLAYER_CNT = 5;
   static int STORED_HIGHSCORES = 10;
 
@@ -272,6 +295,110 @@ class Data {
   static final String wagStr = "wag";
   static final String goldStr = "gold";
   static final String sumsStr = "sums";
+
+  /// Abgeschlossene Runden (neues Format), pro Anlage.
+  static const String roundsV2Str = "rounds_v2";
+
+  /// Alte Anzahl gespeicherter Runden (nur noch für die Übernahme).
+  static const int _oldStoredRounds = 10;
+
+  /// Entschlüsselte Runden je Anlagen-Präfix (spart wiederholtes Parsen).
+  static final Map<String, List<StoredRound>> _roundsCache = {};
+
+  @visibleForTesting
+  static void resetRoundsCache() => _roundsCache.clear();
+
+  // ------------------------------------------------------------------
+  // Abgeschlossene Runden
+  //
+  // Die laufende Runde (round 0) bleibt im bisherigen Format mit einem
+  // Eintrag pro Schlag, weil sie laufend geändert wird. Abgeschlossene
+  // Runden liegen als Liste von JSON-Einträgen unter <Präfix>rounds_v2,
+  // älteste zuerst. Nach außen gilt weiterhin: round 1 = neueste Runde,
+  // round 2 = die davor usw.
+  // ------------------------------------------------------------------
+
+  /// Alle abgeschlossenen Runden der aktuellen Anlage, älteste zuerst.
+  /// Übernimmt beim ersten Aufruf die bis zu 10 Runden im alten Format.
+  static List<StoredRound> pastRoundsImm(SharedPreferences prefs) {
+    final prefix = getLocPrefixImm(prefs);
+    final cached = _roundsCache[prefix];
+    if (cached != null) return cached;
+
+    final raw = prefs.getStringList(prefix + roundsV2Str);
+    List<StoredRound> list;
+    if (raw == null) {
+      list = _readOldRounds(prefs, prefix);
+      _saveRounds(prefs, prefix, list);
+      _removeOldRounds(prefs, prefix);
+    } else {
+      list = [];
+      for (final entry in raw) {
+        try {
+          list.add(StoredRound.fromJson(
+              json.decode(entry) as Map<String, dynamic>));
+        } catch (e) {
+          debugPrint('Skipping unreadable round: $e');
+        }
+      }
+    }
+    _roundsCache[prefix] = list;
+    return list;
+  }
+
+  static int pastRoundCountImm(SharedPreferences prefs) =>
+      pastRoundsImm(prefs).length;
+
+  /// Runde [round] (1 = neueste) oder null.
+  static StoredRound? _pastRound(SharedPreferences prefs, int round) {
+    final list = pastRoundsImm(prefs);
+    if (round < 1 || round > list.length) return null;
+    return list[list.length - round];
+  }
+
+  static void _saveRounds(
+      SharedPreferences prefs, String prefix, List<StoredRound> list) {
+    prefs.setStringList(prefix + roundsV2Str,
+        list.map((r) => json.encode(r.toJson())).toList());
+  }
+
+  /// Liest die abgeschlossenen Runden im alten Format (älteste zuerst).
+  static List<StoredRound> _readOldRounds(
+      SharedPreferences prefs, String prefix) {
+    final list = <StoredRound>[];
+    for (var round = _oldStoredRounds; round >= 1; round--) {
+      final date = prefs.getString(prefix + dateStr + round.toString()) ?? "";
+      if (date == "") continue;
+      final players = <int>[];
+      final scores = <List<int>>[];
+      for (var pl = 1; pl <= MAX_PLAYER_CNT; pl++) {
+        final base = prefix + roundStr + round.toString() + playerStr + pl.toString();
+        final id = prefs.getInt(base + playerIdxStr) ?? -1;
+        if (id == -1) break;
+        players.add(id);
+        scores.add([
+          for (var hole = 1; hole <= 18; hole++)
+            prefs.getInt(base + scoreStr + hole.toString()) ?? 0
+        ]);
+      }
+      if (players.isNotEmpty) list.add(StoredRound(date, players, scores));
+    }
+    return list;
+  }
+
+  /// Entfernt die Einträge der abgeschlossenen Runden im alten Format.
+  static void _removeOldRounds(SharedPreferences prefs, String prefix) {
+    for (var round = 1; round <= _oldStoredRounds; round++) {
+      prefs.remove(prefix + dateStr + round.toString());
+      for (var pl = 1; pl <= MAX_PLAYER_CNT; pl++) {
+        final base = prefix + roundStr + round.toString() + playerStr + pl.toString();
+        prefs.remove(base + playerIdxStr);
+        for (var hole = 1; hole <= 18; hole++) {
+          prefs.remove(base + scoreStr + hole.toString());
+        }
+      }
+    }
+  }
 
   static void setLanguage(bool english) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -766,7 +893,10 @@ class Data {
     storeUsedPlayerIndicesImm(prefs, l);
   }
 
+  /// Nur für die laufende Runde (round 0); abgeschlossene Runden werden
+  /// nicht mehr verändert.
   static void storePlayerIndex(int round, int id, int idx) async {
+    if (round != 0) return;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(await getPlayerIdxString(round, id), idx);
   }
@@ -777,11 +907,17 @@ class Data {
 
   static Future<int> getPlayerIndex(int round, int id) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(await getPlayerIdxString(round, id)) ?? -1;
+    return getPlayerIndexImm(prefs, round, id);
   }
 
+  /// Spieler-ID an Position [id] (1-5) in Runde [round], -1 = keiner.
   static int getPlayerIndexImm(SharedPreferences prefs, int round, int id) {
-    return prefs.getInt(getPlayerIdxStringImm(prefs, round, id)) ?? -1;
+    if (round == 0) {
+      return prefs.getInt(getPlayerIdxStringImm(prefs, round, id)) ?? -1;
+    }
+    final r = _pastRound(prefs, round);
+    if (r == null || id < 1 || id > r.players.length) return -1;
+    return r.players[id - 1];
   }
 
   static Future<int> getPlayerIndexCurrent(int id) async {
@@ -841,8 +977,8 @@ class Data {
   }
 
   static List<int> getPlayerIndicesAllRoundsImm(SharedPreferences prefs) {
-    Set<int> indices = Set<int>();
-    for (var round = 1; round <= STORED_ROUNDS; round++) {
+    Set<int> indices = <int>{};
+    for (var round = 1; round <= pastRoundCountImm(prefs); round++) {
       for (var pl = 1; pl <= MAX_PLAYER_CNT; pl++) {
         int idx = getPlayerIndexImm(prefs, round, pl);
         if (idx == -1) break;
@@ -921,24 +1057,29 @@ class Data {
       scores.add([]);
 
       for (var pl = 1; pl <= Data.MAX_PLAYER_CNT; pl++) {
-        int idx = Data.getPlayerIndexImm(prefs, round + 1, pl);
+        int idx = Data.getPlayerIndexImm(prefs, round, pl);
         if (idx == -1) break;
 
-        scores.last..add(Data.getTotalScoreImm(prefs, round, pl));
+        scores.last.add(Data.getTotalScoreImm(prefs, round, pl));
       }
     }
     return scores;
   }
 
-  static Future<List<List<PointPair>>> getScoresAllRounds(int hole) async {
+  /// Verlauf je Spieler über die letzten [limit] Runden (null = alle),
+  /// x = 0 für die älteste davon.
+  static Future<List<List<PointPair>>> getScoresAllRounds(int hole,
+      {int? limit}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    final count = pastRoundCountImm(prefs);
+    final newest = limit == null || limit > count ? count : limit;
     List<int> indices = getPlayerIndicesAllRoundsImm(prefs);
     List<List<PointPair>> scores = [];
     for (var i = 0; i < indices.length; i++) {
       scores.add([]);
       int counter = 0;
-      for (var round = STORED_ROUNDS; round >= 1; round--) {
+      for (var round = newest; round >= 1; round--) {
         var date = getDateImm(prefs, round);
         if (date == "") continue;
 
@@ -960,6 +1101,7 @@ class Data {
   }
 
   static void storeDate(int round, String date) async {
+    if (round != 0) return;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(await getDateString(round), date);
   }
@@ -972,11 +1114,12 @@ class Data {
 
   static Future<String> getDate(int round) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(await getDateString(round)) ?? "";
+    return getDateImm(prefs, round);
   }
 
   static String getDateImm(SharedPreferences prefs, int round) {
-    return prefs.getString(getDateStringImm(prefs, round)) ?? "";
+    if (round == 0) return prefs.getString(getDateStringImm(prefs, round)) ?? "";
+    return _pastRound(prefs, round)?.date ?? "";
   }
 
   static Future<String> getScoreString(int round, int id, int hole) async {
@@ -1001,6 +1144,7 @@ class Data {
   }
 
   static void storeScore(int round, int id, int hole, int score) async {
+    if (round != 0) return;
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(await getScoreString(round, id, hole), score);
   }
@@ -1023,7 +1167,7 @@ class Data {
 
   static Future<int> getScore(int round, int id, int hole) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(await getScoreString(round, id, hole)) ?? 0;
+    return getScoreImm(prefs, round, id, hole);
   }
 
   static Future<List<List<int>>> getPreviousScores(bool current) async {
@@ -1044,8 +1188,16 @@ class Data {
     return scores;
   }
 
+  /// Schläge von Position [id] (1-5) auf Bahn [hole] in Runde [round].
   static int getScoreImm(SharedPreferences prefs, int round, int id, int hole) {
-    return prefs.getInt(getScoreStringImm(prefs, round, id, hole)) ?? 0;
+    if (round == 0) {
+      return prefs.getInt(getScoreStringImm(prefs, round, id, hole)) ?? 0;
+    }
+    final r = _pastRound(prefs, round);
+    if (r == null || id < 1 || id > r.scores.length) return 0;
+    final row = r.scores[id - 1];
+    if (hole < 1 || hole > row.length) return 0;
+    return row[hole - 1];
   }
 
   static Future<int> getScoreCurrent(int id, int hole) {
@@ -1085,7 +1237,7 @@ class Data {
 
   static int getIndexForPlayerIndexImm(
       SharedPreferences prefs, int round, int id) {
-    if (round > STORED_ROUNDS) return -1;
+    if (round > pastRoundCountImm(prefs)) return -1;
 
     for (var pl = 1; pl <= 5; pl++) {
       int n = getPlayerIndexImm(prefs, round, pl);
@@ -1096,18 +1248,25 @@ class Data {
     return -1;
   }
 
-  static void clear() async {
+  /// Löscht alle Runden (auch die laufende), Rekorde und Durchschnitte
+  /// der aktuellen Anlage.
+  static Future<void> clear() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    for (var round = 0; round <= STORED_ROUNDS; round++) {
-      for (var pl = 1; pl <= MAX_PLAYER_CNT; pl++) {
-        for (var hole = 1; hole <= 18; hole++) {
-          prefs.remove(getScoreStringImm(prefs, round, pl, hole));
-        }
+    final prefix = getLocPrefixImm(prefs);
 
-        prefs.remove(getPlayerIdxStringImm(prefs, round, pl));
+    for (var pl = 1; pl <= MAX_PLAYER_CNT; pl++) {
+      for (var hole = 1; hole <= 18; hole++) {
+        prefs.remove(getScoreStringImm(prefs, 0, pl, hole));
       }
-      prefs.remove(getDateStringImm(prefs, round));
+      prefs.remove(getPlayerIdxStringImm(prefs, 0, pl));
     }
+    prefs.remove(getDateStringImm(prefs, 0));
+
+    // Leere Liste statt Entfernen, damit nichts erneut übernommen wird.
+    _roundsCache[prefix] = [];
+    _saveRounds(prefs, prefix, []);
+    _removeOldRounds(prefs, prefix);
+
     prefs.remove(getSumsString(prefs));
 
     // 0 is for total.
@@ -1117,43 +1276,50 @@ class Data {
     }
   }
 
-  static void shift() async {
+  /// Schließt die laufende Runde ab: als neueste Runde speichern,
+  /// Rekorde und Durchschnitte aktualisieren, laufende Runde leeren.
+  static Future<void> shift() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefix = getLocPrefixImm(prefs);
 
-    for (var round = STORED_ROUNDS; round >= 1; round--) {
-      for (var player = 1; player <= MAX_PLAYER_CNT; player++) {
-        int id = getPlayerIndexImm(prefs, round - 1, player);
-        storePlayerIndex(round, player, id);
-
-        for (var hole = 1; hole <= 18; hole++) {
-          int score = getScoreImm(prefs, round - 1, player, hole);
-          storeScore(round, player, hole, score);
-        }
-      }
-      String date = getDateImm(prefs, round - 1);
-      storeDate(round, date);
+    final players = <int>[];
+    final scores = <List<int>>[];
+    for (var pl = 1; pl <= MAX_PLAYER_CNT; pl++) {
+      final id = getPlayerIndexImm(prefs, 0, pl);
+      if (id == -1) break;
+      players.add(id);
+      scores.add([
+        for (var hole = 1; hole <= 18; hole++) getScoreImm(prefs, 0, pl, hole)
+      ]);
+    }
+    if (players.isNotEmpty) {
+      final list = pastRoundsImm(prefs);
+      list.add(StoredRound(getDateImm(prefs, 0), players, scores));
+      _saveRounds(prefs, prefix, list);
     }
 
     for (var player = 1; player <= MAX_PLAYER_CNT; player++) {
       int id = getPlayerIndexImm(prefs, 0, player);
       if (id == -1) continue;
       int total = 0;
-      var scores = <int>[];
+      var holeScores = <int>[];
       for (var hole = 1; hole <= 18; hole++) {
         int score = getScoreImm(prefs, 0, player, hole);
         total += score;
-        scores.add(score);
+        holeScores.add(score);
         checkStoreScore(prefs, id, hole, score);
       }
-      checkStoreScore(prefs, id, 0, total, holes: List<int>.of(scores));
-      storeToSum(prefs, id, scores);
+      checkStoreScore(prefs, id, 0, total, holes: List<int>.of(holeScores));
+      storeToSum(prefs, id, holeScores);
     }
 
     for (var player = 1; player <= MAX_PLAYER_CNT; player++) {
-      storePlayerIndex(0, player, -1);
-      for (var hole = 1; hole <= 18; hole++) storeScore(0, player, hole, 0);
+      prefs.setInt(getPlayerIdxStringImm(prefs, 0, player), -1);
+      for (var hole = 1; hole <= 18; hole++) {
+        prefs.setInt(getScoreStringImm(prefs, 0, player, hole), 0);
+      }
     }
-    storeDate(0, "");
+    prefs.setString(getDateStringImm(prefs, 0), "");
   }
 
   static Future<bool> finished() async {
@@ -1208,13 +1374,11 @@ class Data {
   static Future<List<String>> getValidDates() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    var dates = <String>[];
-    for (var round = 1; round <= STORED_ROUNDS; round++) {
-      var date = getDateImm(prefs, round);
-      if (date == "") break;
-      dates.add(date);
-    }
-    return dates;
+    // Neueste zuerst.
+    return [
+      for (var round = 1; round <= pastRoundCountImm(prefs); round++)
+        getDateImm(prefs, round)
+    ];
   }
 
   static Future<List<String>> getNamesInRound(int round) async {
@@ -1238,7 +1402,7 @@ class Data {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<List<String>> list = [];
-    for (var round = 1; round <= STORED_ROUNDS; round++) {
+    for (var round = 1; round <= pastRoundCountImm(prefs); round++) {
       int id = getPlayerIndexImm(prefs, round, 1);
       if (id == -1) break;
 

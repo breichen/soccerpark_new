@@ -2101,6 +2101,18 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Du kannst sie später in den Einstellungen ändern.'**
   String get choose_park_hint;
+
+  /// No description provided for @range_recent.
+  ///
+  /// In de, this message translates to:
+  /// **'Letzte 20 Runden'**
+  String get range_recent;
+
+  /// No description provided for @range_all.
+  ///
+  /// In de, this message translates to:
+  /// **'Alle {count} Runden'**
+  String range_all(int count);
 }
 
 class _AppLocalizationsDelegate

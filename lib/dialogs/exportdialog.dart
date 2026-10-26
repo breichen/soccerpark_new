@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:soccerpark/generated/app_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../main.dart';
 import '../utils/data.dart';
@@ -89,15 +90,85 @@ class _ExportDialogState extends State<ExportDialog> {
     return chosen;
   }
 
+  /// "dd.MM.yyyy HH:mm" -> "yyyy-MM" (zum Gruppieren nach Monat).
+  String monthKey(String date) {
+    final parts = date.split(' ').first.split('.');
+    return parts.length == 3 ? parts[2] + '-' + parts[1] : date;
+  }
+
+  /// Monatsname zur Anzeige, z. B. "Oktober 2026".
+  String monthLabel(String key) {
+    try {
+      return DateFormat.yMMMM(Localizations.localeOf(context).languageCode)
+          .format(DateTime.parse(key + '-01'));
+    } catch (_) {
+      return key;
+    }
+  }
+
+  /// Runden nach Monat gruppiert (neueste zuerst); ein Tipp auf den Monat
+  /// wählt alle seine Runden aus bzw. ab.
   Widget getRows() {
     List<Widget> rows = [];
-    for (var i = 0; i < dates.length; i++) {
-      if (i > 0) {
-        rows.add(Divider(height: 1, thickness: 1, color: Colors.grey[200]));
+    var i = 0;
+    while (i < dates.length) {
+      final key = monthKey(dates[i]);
+      final start = i;
+      while (i < dates.length && monthKey(dates[i]) == key) {
+        i++;
       }
-      rows.add(getRow(i));
+      final indices = [for (var j = start; j < i; j++) j];
+      if (rows.isNotEmpty) {
+        rows.add(Divider(height: 1, thickness: 1, color: Colors.grey[300]));
+      }
+      rows.add(getMonthRow(key, indices));
+      for (final j in indices) {
+        rows.add(Divider(height: 1, thickness: 1, color: Colors.grey[200]));
+        rows.add(getRow(j));
+      }
     }
     return Column(children: rows);
+  }
+
+  Widget getMonthRow(String key, List<int> indices) {
+    final selected = indices.where((j) => checked[j]).length;
+    final bool? value = selected == 0
+        ? false
+        : (selected == indices.length ? true : null);
+    return Material(
+        color: Color(0xFFF1F1F1),
+        child: InkWell(
+            onTap: () => setState(() {
+                  final all = selected != indices.length;
+                  for (final j in indices) {
+                    checked[j] = all;
+                  }
+                  error = false;
+                }),
+            child: Padding(
+                padding: EdgeInsets.fromLTRB(4, 2, 12, 2),
+                child: Row(children: [
+                  Checkbox(
+                      value: value,
+                      tristate: true,
+                      activeColor: maincolor,
+                      onChanged: (_) => setState(() {
+                            final all = selected != indices.length;
+                            for (final j in indices) {
+                              checked[j] = all;
+                            }
+                            error = false;
+                          })),
+                  Expanded(
+                      child: Text(monthLabel(key),
+                          style: GoogleFonts.lato(
+                              color: maincolor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold))),
+                  Text(indices.length.toString(),
+                      style: GoogleFonts.lato(
+                          color: Colors.grey[600], fontSize: 13)),
+                ]))));
   }
 
   Widget getRow(int i) {

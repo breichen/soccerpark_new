@@ -447,8 +447,11 @@ class _RoundPageState extends State<RoundPage> {
     showDialog(context: context, builder: (BuildContext context) => dialog);
   }
 
-  void finish() {
-    Data.shift();
+  Future<void> finish() async {
+    // Erst speichern, dann weiter: die Finish-Seite liest die Runde schon
+    // als abgeschlossene Runde 1 (Export).
+    await Data.shift();
+    if (!mounted) return;
     setState(() {
       round = 1;
     });

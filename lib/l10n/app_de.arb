@@ -357,5 +357,7 @@
     "hole_done": "Fertig",
     "round_finished": "Runde beendet",
     "chart_title": "Verlauf",
-    "choose_park_hint": "Du kannst sie später in den Einstellungen ändern."
+    "choose_park_hint": "Du kannst sie später in den Einstellungen ändern.",
+    "range_recent": "Letzte 20 Runden",
+    "range_all": "Alle {count} Runden"
 }

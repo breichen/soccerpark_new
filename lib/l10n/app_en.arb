@@ -408,5 +408,14 @@
     "hole_done": "Done",
     "round_finished": "Round complete",
     "chart_title": "Progress",
-    "choose_park_hint": "You can change it later in the settings."
+    "choose_park_hint": "You can change it later in the settings.",
+    "range_recent": "Last 20 rounds",
+    "range_all": "All {count} rounds",
+    "@range_all": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    }
 }
