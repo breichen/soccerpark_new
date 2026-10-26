@@ -374,5 +374,9 @@
     "notif_ios_hint": "Auf dem iPhone zuerst über „Teilen → Zum Home-Bildschirm“ installieren",
     "notif_unsupported": "Dieser Browser unterstützt keine Mitteilungen",
     "notif_failed": "Aktivieren hat nicht geklappt. Bitte später erneut versuchen.",
-    "notif_disable": "Deaktivieren"
+    "notif_disable": "Deaktivieren",
+    "notif_prompt_title": "Neuigkeiten vom Soccerpark erhalten?",
+    "notif_prompt_text": "Kurze Hinweise der Anlage, z. B. zu Öffnungszeiten oder Aktionen. Du kannst sie in den Einstellungen jederzeit wieder abschalten.",
+    "notif_prompt_no": "Nein danke",
+    "notif_prompt_ios": "Auf dem iPhone kannst du Mitteilungen erhalten, wenn du die App über „Teilen → Zum Home-Bildschirm“ installierst."
 }

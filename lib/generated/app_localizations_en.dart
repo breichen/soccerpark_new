@@ -1133,4 +1133,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get notif_disable => 'Turn off';
+
+  @override
+  String get notif_prompt_title => 'Get news from Soccerpark?';
+
+  @override
+  String get notif_prompt_text => 'Short updates from the venue, e.g. about opening hours or special offers. You can turn them off in the settings at any time.';
+
+  @override
+  String get notif_prompt_no => 'No thanks';
+
+  @override
+  String get notif_prompt_ios => 'On iPhone you can get notifications after installing the app via Share → Add to Home Screen.';
 }

@@ -2203,6 +2203,30 @@ abstract class AppLocalizations {
   /// In de, this message translates to:
   /// **'Deaktivieren'**
   String get notif_disable;
+
+  /// No description provided for @notif_prompt_title.
+  ///
+  /// In de, this message translates to:
+  /// **'Neuigkeiten vom Soccerpark erhalten?'**
+  String get notif_prompt_title;
+
+  /// No description provided for @notif_prompt_text.
+  ///
+  /// In de, this message translates to:
+  /// **'Kurze Hinweise der Anlage, z. B. zu Öffnungszeiten oder Aktionen. Du kannst sie in den Einstellungen jederzeit wieder abschalten.'**
+  String get notif_prompt_text;
+
+  /// No description provided for @notif_prompt_no.
+  ///
+  /// In de, this message translates to:
+  /// **'Nein danke'**
+  String get notif_prompt_no;
+
+  /// No description provided for @notif_prompt_ios.
+  ///
+  /// In de, this message translates to:
+  /// **'Auf dem iPhone kannst du Mitteilungen erhalten, wenn du die App über „Teilen → Zum Home-Bildschirm“ installierst.'**
+  String get notif_prompt_ios;
 }
 
 class _AppLocalizationsDelegate

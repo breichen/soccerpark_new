@@ -1142,4 +1142,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get notif_disable => 'Deaktivieren';
+
+  @override
+  String get notif_prompt_title => 'Neuigkeiten vom Soccerpark erhalten?';
+
+  @override
+  String get notif_prompt_text => 'Kurze Hinweise der Anlage, z. B. zu Öffnungszeiten oder Aktionen. Du kannst sie in den Einstellungen jederzeit wieder abschalten.';
+
+  @override
+  String get notif_prompt_no => 'Nein danke';
+
+  @override
+  String get notif_prompt_ios => 'Auf dem iPhone kannst du Mitteilungen erhalten, wenn du die App über „Teilen → Zum Home-Bildschirm“ installierst.';
 }

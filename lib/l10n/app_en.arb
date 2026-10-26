@@ -477,5 +477,9 @@
     "notif_ios_hint": "On iPhone, first install via Share → Add to Home Screen",
     "notif_unsupported": "This browser doesn't support notifications",
     "notif_failed": "Enabling didn't work. Please try again later.",
-    "notif_disable": "Turn off"
+    "notif_disable": "Turn off",
+    "notif_prompt_title": "Get news from Soccerpark?",
+    "notif_prompt_text": "Short updates from the venue, e.g. about opening hours or special offers. You can turn them off in the settings at any time.",
+    "notif_prompt_no": "No thanks",
+    "notif_prompt_ios": "On iPhone you can get notifications after installing the app via Share → Add to Home Screen."
 }

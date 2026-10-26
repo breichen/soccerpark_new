@@ -15,6 +15,7 @@ import '../widgets/toast.dart';
 import '../widgets/appbar.dart';
 import '../widgets/space.dart';
 import '../widgets/chart.dart';
+import '../widgets/pushprompt.dart';
 
 class FinishPage extends StatefulWidget {
   final RoundData data;
@@ -311,6 +312,8 @@ class _FinishPageState extends State<FinishPage> {
                     onSelectionChanged: (s) =>
                         setState(() => detailType = s.first),
                   ))),
+          // Web: einmalig fragen, ob Mitteilungen erwünscht sind.
+          const PushPromptCard(),
         ]));
   }
 
