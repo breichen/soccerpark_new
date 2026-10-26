@@ -95,7 +95,7 @@ class _VersionPageState extends State<VersionPage> {
           Row(children: [
             ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset('assets/pics/ball.jpg',
+                child: Image.asset('assets/pics/app_icon.png',
                     width: 56, height: 56, fit: BoxFit.cover)),
             SpaceH(14),
             Expanded(
@@ -168,7 +168,7 @@ class _VersionPageState extends State<VersionPage> {
                       padding: EdgeInsets.all(8),
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: Image.asset('assets/pics/ball.jpg',
+                          child: Image.asset('assets/pics/app_icon.png',
                               width: 48, height: 48, fit: BoxFit.cover))));
             }, external: false),
           ]),

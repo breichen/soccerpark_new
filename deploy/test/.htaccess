@@ -1,0 +1,18 @@
+# Testinstallation der Soccerpark-PWA (nicht verlinkt).
+# In den Testordner auf dem Webserver legen (neben index.html).
+# Apache / LiteSpeed.
+
+# Nicht in Suchmaschinen aufnehmen.
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+
+# .wasm korrekt ausliefern.
+AddType application/wasm .wasm
+
+# Dateien, die ein App-Update auslösen, nicht zwischenspeichern.
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html|flutter_bootstrap\.js|flutter_service_worker\.js|manifest\.json|version\.json)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

@@ -59,25 +59,29 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/pics/ball.jpg"
+  # Ball füllt das Icon (ca. 86 %); für Android-Adaptive-Icons eine Version
+  # mit Rand, weil Android das Icon rund/abgerundet zuschneidet.
+  image_path: "assets/pics/app_icon.png"
   adaptive_icon_background: "assets/pics/bg.png"
-  adaptive_icon_foreground: "assets/pics/ball.jpg"
+  adaptive_icon_foreground: "assets/pics/app_icon_foreground.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   #adaptive_icon_background: "assets/pics/white.png"
   #adaptive_icon_foreground: "assets/pics/ball.jpg"
   web:
-    generate: true
-    image_path: "assets/pics/ball.jpg"
+    # Web-Icons liegen fertig in web/icons (normal + maskable mit Rand);
+    # nicht überschreiben.
+    generate: false
+    image_path: "assets/pics/app_icon.png"
     background_color: "#FFFFFF"
     theme_color: "#FFFFFF"
     
   windows:
     generate: true
-    image_path: "assets/pics/ball.jpg"
+    image_path: "assets/pics/app_icon.png"
     icon_size: 48 # min:48, max:256, default: 48    
   macos:
     generate: true
-    image_path: "assets/pics/ball_medium.png"
+    image_path: "assets/pics/app_icon.png"
 
 
 # For information on the generic Dart part of this file, see the
@@ -142,7 +146,7 @@ flutter:
     - assets/google_fonts/
 
     - assets/pics/soccer.png
-    - assets/pics/ball.jpg
+    - assets/pics/app_icon.png
     - assets/pics/soccer_wagrain.png
     - assets/pics/soccer_goldberg.png
     - assets/pics/soccer_pic.jpg
