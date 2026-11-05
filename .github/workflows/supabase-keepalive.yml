@@ -1,45 +1,26 @@
-# Hält die kostenlosen Supabase-Projekte aktiv: Supabase pausiert Free-Projekte
-# nach rund einer Woche ohne Datenbankaktivität. Einmal täglich wird je Projekt
-# eine Zeile gelesen; das zählt als Aktivität.
+# Hält das kostenlose Supabase-Projekt pcrxhufbazkfsjgezzui aktiv: Supabase pausiert
+# Free-Projekte nach rund einer Woche ohne Datenbankaktivität. Einmal täglich
+# wird eine Zeile gelesen; das zählt als Aktivität.
 #
-# Benötigte Secrets (Settings -> Secrets and variables -> Actions), jeweils der
-# öffentliche anon-Key aus der App, NICHT der service_role-Key:
-#   KEY_SOCCERPARK  (lib/utils/supabase_config.dart)
-#   KEY_DATES       (Dates / Challenges / Fantasien / Listen: lib/config.dart)
-#   KEY_PAARQUEST   (PaarQuest: lib/config.dart)
-# Fehlt ein Secret, schlägt nur dieser eine Eintrag fehl.
+# Benötigtes Secret (Settings -> Secrets and variables -> Actions):
+#   SUPABASE_ANON_KEY = der öffentliche anon-Key aus lib/utils/supabase_config.dart
+#   (NICHT der service_role-Key)
 name: Supabase wach halten
 on:
   schedule:
-    - cron: "17 6 * * *"   # täglich 06:17 UTC
+    - cron: "17 6 * * *"   # täglich, Uhrzeit in UTC
   workflow_dispatch:         # zum Testen: Actions -> Run workflow
 
 jobs:
   ping:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: SoccerPark
-            url: https://pcrxhufbazkfsjgezzui.supabase.co
-            table: news
-            key: KEY_SOCCERPARK
-          - name: Dates, Challenges, Fantasien, Listen
-            url: https://fpxxljacxuddzojfagqv.supabase.co
-            table: date_plans
-            key: KEY_DATES
-          - name: PaarQuest
-            url: https://dcmyhjbhcifevisbhjav.supabase.co
-            table: tasks
-            key: KEY_PAARQUEST
     steps:
-      - name: ${{ matrix.name }}
+      - name: Eine Zeile aus news lesen
         env:
-          KEY: ${{ secrets[matrix.key] }}
+          KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          if [ -z "$KEY" ]; then echo "Secret ${{ matrix.key }} fehlt"; exit 1; fi
+          if [ -z "$KEY" ]; then echo "Secret SUPABASE_ANON_KEY fehlt"; exit 1; fi
           curl -fsS --retry 3 --retry-delay 10 \
-            "${{ matrix.url }}/rest/v1/${{ matrix.table }}?select=*&limit=1" \
+            "https://pcrxhufbazkfsjgezzui.supabase.co/rest/v1/news?select=*&limit=1" \
             -H "apikey: $KEY" -H "Authorization: Bearer $KEY" > /dev/null
           echo "OK"
